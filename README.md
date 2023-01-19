@@ -13,6 +13,9 @@ git clone https://github.com/miniyus/gofiber.git
 # 도커 컨테이너 및 gorm DB 드라이버는 postgreSQL을 사용 중입니다.
 docker compose up -d --build 
 
+# git pull & go mod download & docker compose up
+make deploy
+
 # 로컬 실행 시
 make start
 # or

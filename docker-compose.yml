@@ -15,7 +15,7 @@ services:
   #    depends_on:
   #      - redis
   #      - pgsql
-  keyword-search-backend:
+  go-fiber:
     container_name: go-fiber
     image: miniyus/gofiber
     build:
