@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/miniyus/go-fiber/internal/core"
+	"github.com/miniyus/gofiber/internal/core"
 )
 
-// @title go-fiber Swagger API Documentation
-// @version 0.0.1
-// @description go-fiber API
+// @title keyword-search-backend Swagger API Documentation
+// @version 1.0.0
+// @description keyword-search-backend API
 // @contact.name miniyus
 // @contact.url https://miniyus.github.io
 // @contact.email miniyu97@gmail.com
@@ -20,6 +20,8 @@ import (
 // @description				   Bearer token type
 func main() {
 	container := core.New()
+
 	container.Stats()
+
 	container.Run()
 }

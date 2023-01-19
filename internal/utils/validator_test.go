@@ -7,18 +7,21 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
-	"github.com/miniyus/go-fiber/internal/utils"
+	"github.com/miniyus/gofiber/internal/utils"
 	"testing"
 )
 
 type TestData struct {
-	Id   string `validate:"required"`
-	Pass string `validate:"required"`
+	Id          string `validate:"required"`
+	Pass        string `validate:"required"`
+	PassConfirm string `validate:"required,eqfield=Pass"`
 }
 
 func TestValidate(t *testing.T) {
 	data := TestData{
-		Id: "test",
+		Id:          "test",
+		Pass:        "test",
+		PassConfirm: "te",
 	}
 
 	validated := utils.Validate(data)
@@ -27,7 +30,7 @@ func TestValidate(t *testing.T) {
 		"Pass": "Key: 'TestData.Pass' Error:Field validation for 'Pass' failed on the 'required' tag",
 	}
 
-	t.Log(validated["Pass"])
+	t.Log(validated)
 	assert.Equal(t, validated, testValidated)
 }
 

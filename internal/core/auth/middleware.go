@@ -5,19 +5,19 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
-	configure "github.com/miniyus/go-fiber/config"
-	"github.com/miniyus/go-fiber/internal/core/api_error"
-	"github.com/miniyus/go-fiber/internal/core/context"
-	"github.com/miniyus/go-fiber/internal/core/database"
-	"github.com/miniyus/go-fiber/internal/entity"
+	configure "github.com/miniyus/gofiber/config"
+	"github.com/miniyus/gofiber/internal/core/container"
+	"github.com/miniyus/gofiber/internal/core/context"
 	"go.uber.org/zap"
 	"log"
 	"strconv"
 	"time"
 )
 
-// 공통 미들웨어 작성
+// 인증 관련 공통 미들웨어 작성
 
+// User
+// context에 저장될 유저 정보 구조체
 type User struct {
 	Id        uint   `json:"id"`
 	GroupId   *uint  `json:"group_id"`
@@ -28,7 +28,10 @@ type User struct {
 	ExpiresIn *int64 `json:"expires_in"`
 }
 
-func Middlewares() []fiber.Handler {
+// Middlewares
+// 미들웨어 슬라이스 리턴
+// 인증 관련된 미들웨어 함수의 집합으로 이 함수에 등록된 순서대로 실행 가능
+func Middlewares(fn ...fiber.Handler) []fiber.Handler {
 	// 순서 중요함
 	mws := []fiber.Handler{
 		JwtMiddleware,  // check exists jwt
@@ -37,29 +40,25 @@ func Middlewares() []fiber.Handler {
 		CheckExpired, // check expired jwt
 	}
 
+	if len(fn) != 0 {
+		mws = append(mws, fn...)
+	}
+
 	return mws
 }
 
-func HasPerm(action ...entity.Action) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		currentUser := c.Locals(context.AuthUser).(*User)
-		if currentUser.Role == entity.Admin.RoleToString() {
-			return c.Next()
-		}
-
-		return fiber.ErrForbidden
-	}
-}
-
+// AccessLogMiddleware
+// log 찍힐 때 user 정보 추가
 func AccessLogMiddleware(c *fiber.Ctx) error {
-	logger, ok := c.Locals(context.Logger).(*zap.SugaredLogger)
-	if !ok {
-		log.Print("Failed Load logger context")
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed Load logger context")
+	var logger *zap.SugaredLogger
+	logger, err := context.GetContext[*zap.SugaredLogger](c, context.Logger)
+
+	if err != nil {
+		return err
 	}
 
 	start := time.Now()
-	err := c.Next()
+	err = c.Next()
 	elapsed := time.Since(start).Milliseconds()
 	cu, ok := c.Locals(context.AuthUser).(*User)
 	userID := ""
@@ -82,8 +81,9 @@ func AccessLogMiddleware(c *fiber.Ctx) error {
 	return err
 }
 
+// GetUserFromJWT
+// get user information from jwt token
 func GetUserFromJWT(c *fiber.Ctx) error {
-
 	jwtData, ok := c.Locals("user").(*jwt.Token)
 	if !ok {
 		log.Print("access guest")
@@ -129,10 +129,12 @@ func GetUserFromJWT(c *fiber.Ctx) error {
 	return c.Next()
 }
 
+// JwtMiddleware
+// jwt 유효성 체크 미들웨어
 func JwtMiddleware(c *fiber.Ctx) error {
-	config, ok := c.Locals(context.Config).(*configure.Configs)
-	if !ok {
-		return fiber.NewError(fiber.StatusInternalServerError, "Can not found Config Context...")
+	config, err := context.GetContext[*configure.Configs](c, context.Config)
+	if err != nil {
+		return err
 	}
 
 	middleware := newJwtMiddleware(config.Auth.Jwt)
@@ -146,49 +148,54 @@ func newJwtMiddleware(config jwtWare.Config) fiber.Handler {
 	return jwtWare.New(jwtConfig)
 }
 
+// jwtError
+// jwt 생성과 해독(? decode...) 관련 에러 핸들링
 func jwtError(c *fiber.Ctx, err error) error {
-	var errRes api_error.ErrorResponse
+	var status int
 
 	if err.Error() == "Missing or malformed JWT" {
-		errRes = api_error.NewErrorResponse(c, fiber.StatusBadRequest, err.Error())
-
-		return errRes.Response()
+		status = fiber.StatusBadRequest
+		return fiber.NewError(status, err.Error())
 	}
 
-	errRes = api_error.NewErrorResponse(c, fiber.StatusBadRequest, "Invalid or expired JWT!")
-
-	return errRes.Response()
+	return fiber.NewError(status, err.Error())
 }
 
+// CheckExpired
+// jwt 만료 기간 체크 미들웨어
 func CheckExpired(c *fiber.Ctx) error {
-	config, ok := c.Locals(context.Config).(*configure.Configs)
-	if !ok {
-		errRes := api_error.NewErrorResponse(c, fiber.StatusUnauthorized, "Can't Find Config Context")
+	wrapper, err := context.GetContext[container.Container](c, context.Container)
 
-		return errRes.Response()
+	if err != nil {
+		return err
 	}
 
-	tokenRepository := NewRepository(database.DB(config.Database))
+	tokenRepository := NewRepository(wrapper.Database())
 
-	user, ok := c.Locals(context.AuthUser).(*User)
-	if !ok {
-		errRes := api_error.NewErrorResponse(c, fiber.StatusUnauthorized, "Can't Find User Context")
-
-		return errRes.Response()
+	user, err := context.GetContext[*User](c, context.AuthUser)
+	if err != nil {
+		return err
 	}
 
 	token, err := tokenRepository.FindByUserId(user.Id)
 	if err != nil {
-		errRes := api_error.NewErrorResponse(c, fiber.StatusUnauthorized, "Can't Find User From Database")
-
-		return errRes.Response()
+		statusCode := fiber.StatusUnauthorized
+		return fiber.NewError(statusCode, "Can't Find User From Database")
 	}
 
-	if token.ExpiresAt.Unix() > time.Now().Unix() {
-		return c.Next()
+	if token.ExpiresAt.Unix() < time.Now().Unix() {
+		statusCode := fiber.StatusUnauthorized
+		return fiber.NewError(statusCode, "JWT is expired")
 	}
 
-	errRes := api_error.NewErrorResponse(c, fiber.StatusUnauthorized, "JWT is expired")
+	return c.Next()
+}
 
-	return errRes.Response()
+func GetAuthUser(c *fiber.Ctx) (*User, error) {
+	user, err := context.GetContext[*User](c, context.AuthUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

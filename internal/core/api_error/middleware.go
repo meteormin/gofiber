@@ -3,7 +3,8 @@ package api_error
 import (
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/go-fiber/internal/core/context"
+	configure "github.com/miniyus/gofiber/config"
+	"github.com/miniyus/gofiber/internal/core/context"
 	"go.uber.org/zap"
 	"runtime/debug"
 )
@@ -13,14 +14,26 @@ func OverrideDefaultErrorHandler(ctx *fiber.Ctx, err error) error {
 		return nil
 	}
 
-	logger, ok := ctx.Locals(context.Logger).(*zap.SugaredLogger)
-	if !ok {
-		debug.PrintStack()
-		return err
+	var config *configure.Configs
+	config, err = context.GetContext[*configure.Configs](ctx, context.Config)
+
+	if err != nil {
+		errRes := NewFromError(ctx, err)
+		return errRes.Response()
+	}
+
+	var logger *zap.SugaredLogger
+	logger, err = context.GetContext[*zap.SugaredLogger](ctx, context.Logger)
+
+	if err != nil {
+		errRes := NewFromError(ctx, err)
+		return errRes.Response()
 	}
 
 	logger.Errorln(err)
-	debug.PrintStack()
+	if config.AppEnv != configure.PRD {
+		debug.PrintStack()
+	}
 
 	errRes := NewFromError(ctx, err)
 	return errRes.Response()
@@ -33,14 +46,26 @@ func ErrorHandler(ctx *fiber.Ctx) error {
 		return nil
 	}
 
-	logger, ok := ctx.Locals(context.Logger).(*zap.SugaredLogger)
-	if !ok {
-		debug.PrintStack()
-		return err
+	var config *configure.Configs
+	config, err = context.GetContext[*configure.Configs](ctx, context.Config)
+
+	if err != nil {
+		errRes := NewFromError(ctx, err)
+		return errRes.Response()
+	}
+
+	var logger *zap.SugaredLogger
+	logger, err = context.GetContext[*zap.SugaredLogger](ctx, context.Logger)
+
+	if err != nil {
+		errRes := NewFromError(ctx, err)
+		return errRes.Response()
 	}
 
 	logger.Errorln(err)
-	debug.PrintStack()
+	if config.AppEnv != configure.PRD {
+		debug.PrintStack()
+	}
 
 	errRes := NewFromError(ctx, err)
 

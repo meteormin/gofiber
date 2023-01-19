@@ -1,7 +1,7 @@
 package rs256_test
 
 import (
-	"github.com/miniyus/go-fiber/pkg/rs256"
+	"github.com/miniyus/gofiber/pkg/rs256"
 	"log"
 	"os"
 	"testing"

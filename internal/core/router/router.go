@@ -2,48 +2,74 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"strings"
 )
 
+// Register
+// sub router 등록을 위해 일관성을 위해 생성한 타입
 type Register = func(router fiber.Router)
 
+// Router
+// Routes wrapper
 type Router interface {
+	App() *fiber.App
 	Route(prefix string, callback Register, middleware ...fiber.Handler) fiber.Router
-	GetRoutes() []*fiber.Router
+	GetRoutes() []fiber.Router
 }
 
+// Wrapper
+// route wrapper struct
 type Wrapper struct {
-	Router     fiber.Router
+	app        *fiber.App
+	router     fiber.Router
 	name       string
+	routes     []fiber.Router
 	GroupCount int
-	routes     []*fiber.Router
 }
 
-func New(router fiber.Router, name ...string) Router {
+// New
+// 라우터 생성
+func New(app *fiber.App, prefix string, name ...string) Router {
 	routeName := ""
 	if len(name) > 0 {
 		routeName = name[0]
 	}
 
-	router.Name(routeName)
+	router := app.Group(prefix).Name(routeName)
 
 	return &Wrapper{
-		Router:     router,
+		app:        app,
+		router:     router,
 		name:       routeName,
+		routes:     make([]fiber.Router, 0),
 		GroupCount: 1,
-		routes:     make([]*fiber.Router, 0),
 	}
 }
 
+// App get fiber app
+func (r *Wrapper) App() *fiber.App {
+	return r.app
+}
+
+// Route
+// route 등록 메서드
 func (r *Wrapper) Route(prefix string, callback Register, middleware ...fiber.Handler) fiber.Router {
-	grp := r.Router.Group(prefix, middleware...)
+	grp := r.router.Group(prefix, middleware...)
 	callback(grp)
 
 	r.GroupCount += 1
-	r.routes = append(r.routes, &grp)
+	r.routes = append(r.routes, grp)
 
-	return grp.Name(r.name + "." + prefix)
+	name := strings.Replace(prefix, "/", ".", -1)
+	if !strings.HasPrefix(name, ".") {
+		name = "." + name
+	}
+
+	return grp.Name(name)
 }
 
-func (r *Wrapper) GetRoutes() []*fiber.Router {
+// GetRoutes
+// 등록한 route slice
+func (r *Wrapper) GetRoutes() []fiber.Router {
 	return r.routes
 }

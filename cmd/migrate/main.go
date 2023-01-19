@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/miniyus/go-fiber/config"
-	"github.com/miniyus/go-fiber/internal/core/database"
-	"github.com/miniyus/go-fiber/internal/core/database/migrations"
+	"github.com/miniyus/gofiber/config"
+	"github.com/miniyus/gofiber/internal/core/database"
+	"github.com/miniyus/gofiber/internal/core/database/migrations"
 )
 
 func main() {

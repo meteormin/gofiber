@@ -45,7 +45,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_auth.User"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_auth.User"
                         }
                     }
                 }
@@ -76,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_app_api_auth.ResetPasswordStruct"
+                            "$ref": "#/definitions/internal_api_api_auth.ResetPasswordStruct"
                         }
                     }
                 ],
@@ -84,13 +84,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_auth.User"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_auth.User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -116,7 +116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_app_api_auth.SignUp"
+                            "$ref": "#/definitions/internal_api_api_auth.SignUp"
                         }
                     }
                 ],
@@ -124,13 +124,13 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_app_api_auth.SignUpResponse"
+                            "$ref": "#/definitions/internal_api_api_auth.SignUpResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -158,13 +158,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_utils.StatusResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_utils.StatusResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -190,7 +190,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_app_api_auth.SignIn"
+                            "$ref": "#/definitions/internal_api_api_auth.SignIn"
                         }
                     }
                 ],
@@ -198,26 +198,26 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_app_api_auth.TokenInfo"
+                            "$ref": "#/definitions/internal_api_api_auth.TokenInfo"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/hosts": {
+        "/api/groups": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "get all hosts",
+                "description": "get all group",
                 "consumes": [
                     "application/json"
                 ],
@@ -225,511 +225,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Hosts"
+                    "Groups"
                 ],
-                "summary": "get all hosts",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostListResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "create host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "create host",
-                "parameters": [
-                    {
-                        "description": "create host",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.CreateHost"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/hosts/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "patch host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "patch host",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "update host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "update host",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "update host",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.UpdateHost"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "Delete host",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_utils.StatusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "patch host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "patch host",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "patch host",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.PatchHost"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/hosts/{id}/search": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "get by host id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "get by host id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_utils.Paginator"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "batch create search by host id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hosts"
-                ],
-                "summary": "batch create search by host id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "host id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "multi create search",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_search.MultiCreateSearch"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_search.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/redirect/{code}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "create search",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Redirect"
-                ],
-                "summary": "create search",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "short url code",
-                        "name": "code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_short_url.RedirectResponse"
-                        }
-                    },
-                    "302": {
-                        "description": "Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/search": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "create search",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Search"
-                ],
-                "summary": "create search",
-                "parameters": [
-                    {
-                        "description": "create search",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_search.CreateSearch"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_search.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/search/all": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "create search",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Search"
-                ],
-                "summary": "create search",
+                "summary": "get all groups",
                 "parameters": [
                     {
                         "type": "integer",
@@ -750,80 +248,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_app_search.ResponseAll"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ListResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/search/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "get search",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Search"
-                ],
-                "summary": "get search",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "search pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_search.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -834,7 +265,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "get search",
+                "description": "update group",
                 "consumes": [
                     "application/json"
                 ],
@@ -842,24 +273,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Search"
+                    "Groups"
                 ],
-                "summary": "get search",
+                "summary": "update group",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "search pk",
+                        "description": "group pk",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "update search",
+                        "description": "creat group",
                         "name": "request",
                         "in": "body",
-                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_app_search.UpdateSearch"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.UpdateGroup"
                         }
                     }
                 ],
@@ -867,25 +297,153 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_app_search.Response"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ValidationErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "create group",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "create group",
+                "parameters": [
+                    {
+                        "description": "creat group",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateGroup"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ValidationErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/groups/name/{name}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get group by name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "get group by name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/groups/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get group by pk",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "get group by pk",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "pk",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -896,7 +454,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "get search",
+                "description": "delete group",
                 "consumes": [
                     "application/json"
                 ],
@@ -904,14 +462,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Search"
+                    "Groups"
                 ],
-                "summary": "get search",
+                "summary": "delete group",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "search pk",
-                        "name": "id",
+                        "description": "name",
+                        "name": "name",
                         "in": "path",
                         "required": true
                     }
@@ -920,87 +478,13 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_utils.StatusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "type": "bool"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "get search",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Search"
-                ],
-                "summary": "get search",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "search pk",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "update search",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_search.PatchSearch"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_search.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse"
                         }
                     }
                 }
@@ -1016,14 +500,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "healthCheck"
+                    "HealthCheck"
                 ],
                 "summary": "health check your server",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_utils.StatusResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_utils.StatusResponse"
                         }
                     }
                 }
@@ -1031,7 +515,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_miniyus_go-fiber_internal_app_api_auth.ResetPasswordStruct": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.ResetPasswordStruct": {
             "type": "object",
             "required": [
                 "password",
@@ -1046,7 +530,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_api_auth.SignIn": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignIn": {
             "type": "object",
             "required": [
                 "password",
@@ -1061,7 +545,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_api_auth.SignUp": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignUp": {
             "type": "object",
             "required": [
                 "email",
@@ -1084,11 +568,14 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_api_auth.SignUpResponse": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignUpResponse": {
             "type": "object",
             "properties": {
                 "expires_at": {
                     "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
                 },
                 "token": {
                     "type": "string"
@@ -1098,54 +585,78 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_api_auth.TokenInfo": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.TokenInfo": {
             "type": "object",
             "properties": {
                 "expires_at": {
                     "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
                 },
                 "token": {
                     "type": "string"
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_hosts.CreateHost": {
+        "github_com_miniyus_gofiber_internal_api_groups.CreateAction": {
             "type": "object",
             "required": [
-                "description",
-                "host",
-                "path",
-                "publish",
-                "subject"
+                "method",
+                "resource"
             ],
             "properties": {
-                "description": {
+                "method": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_permission.Method"
+                },
+                "resource": {
                     "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_hosts.HostListResponse": {
+        "github_com_miniyus_gofiber_internal_api_groups.CreateGroup": {
+            "type": "object",
+            "required": [
+                "name",
+                "permissions"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
+                    }
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_groups.CreatePermission": {
+            "type": "object",
+            "required": [
+                "actions",
+                "name"
+            ],
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateAction"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_hosts.HostResponse"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -1159,232 +670,63 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_hosts.HostResponse": {
+        "github_com_miniyus_gofiber_internal_api_groups.ResponseAction": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
+                "method": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_permission.Method"
                 },
-                "host": {
+                "resource": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_groups.ResponseGroup": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseAction"
+                    }
                 },
                 "id": {
                     "type": "integer"
                 },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_hosts.PatchHost": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_hosts.UpdateHost": {
+        "github_com_miniyus_gofiber_internal_api_groups.UpdateGroup": {
             "type": "object",
-            "required": [
-                "description",
-                "host",
-                "path",
-                "publish",
-                "subject"
-            ],
             "properties": {
-                "description": {
+                "name": {
                     "type": "string"
                 },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_search.CreateSearch": {
-            "type": "object",
-            "required": [
-                "description",
-                "host_id",
-                "publish",
-                "query",
-                "query_key"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_search.MultiCreateSearch": {
-            "type": "object",
-            "required": [
-                "search"
-            ],
-            "properties": {
-                "search": {
+                "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_app_search.CreateSearch"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
                     }
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_search.PatchSearch": {
+        "github_com_miniyus_gofiber_internal_core_api_error.ErrorResponse": {
             "type": "object",
-            "required": [
-                "host_id",
-                "publish"
-            ],
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
+                "code": {
                     "type": "integer"
                 },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
+                "message": {
                     "type": "string"
                 },
-                "query_key": {
+                "status": {
                     "type": "string"
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_app_search.Response": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                },
-                "short_url": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_search.ResponseAll": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.Search"
-                    }
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "page_size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_search.UpdateSearch": {
-            "type": "object",
-            "required": [
-                "description",
-                "host_id",
-                "publish",
-                "query",
-                "query_key"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_app_short_url.RedirectResponse": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_core_api_error.ErrorResponse": {
+        "github_com_miniyus_gofiber_internal_core_api_error.ValidationErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1404,7 +746,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_core_auth.User": {
+        "github_com_miniyus_gofiber_internal_core_auth.User": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1430,183 +772,24 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_go-fiber_internal_entity.BookMark": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.User"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
+        "github_com_miniyus_gofiber_internal_core_permission.Method": {
+            "type": "string",
+            "enum": [
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE"
+            ],
+            "x-enum-varnames": [
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE"
+            ]
         },
-        "github_com_miniyus_go-fiber_internal_entity.Host": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "search": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.Search"
-                    }
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.User"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_entity.Search": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "host": {
-                    "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.Host"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                },
-                "short_url": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_entity.User": {
-            "type": "object",
-            "properties": {
-                "bookmarks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.BookMark"
-                    }
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "email_verified_at": {
-                    "type": "string"
-                },
-                "group_id": {
-                    "type": "integer"
-                },
-                "hosts": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.Host"
-                    }
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_utils.Paginator": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "page": {
-                    "type": "integer"
-                },
-                "page_size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_go-fiber_internal_utils.StatusResponse": {
+        "github_com_miniyus_gofiber_internal_utils.StatusResponse": {
             "type": "object",
             "properties": {
                 "status": {
@@ -1614,19 +797,7 @@ const docTemplate = `{
                 }
             }
         },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
-        "internal_app_api_auth.ResetPasswordStruct": {
+        "internal_api_api_auth.ResetPasswordStruct": {
             "type": "object",
             "required": [
                 "password",
@@ -1641,7 +812,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_app_api_auth.SignIn": {
+        "internal_api_api_auth.SignIn": {
             "type": "object",
             "required": [
                 "password",
@@ -1656,7 +827,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_app_api_auth.SignUp": {
+        "internal_api_api_auth.SignUp": {
             "type": "object",
             "required": [
                 "email",
@@ -1679,11 +850,14 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_app_api_auth.SignUpResponse": {
+        "internal_api_api_auth.SignUpResponse": {
             "type": "object",
             "properties": {
                 "expires_at": {
                     "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
                 },
                 "token": {
                     "type": "string"
@@ -1693,54 +867,78 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_app_api_auth.TokenInfo": {
+        "internal_api_api_auth.TokenInfo": {
             "type": "object",
             "properties": {
                 "expires_at": {
                     "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
                 },
                 "token": {
                     "type": "string"
                 }
             }
         },
-        "internal_app_hosts.CreateHost": {
+        "internal_api_groups.CreateAction": {
             "type": "object",
             "required": [
-                "description",
-                "host",
-                "path",
-                "publish",
-                "subject"
+                "method",
+                "resource"
             ],
             "properties": {
-                "description": {
+                "method": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_permission.Method"
+                },
+                "resource": {
                     "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
-        "internal_app_hosts.HostListResponse": {
+        "internal_api_groups.CreateGroup": {
+            "type": "object",
+            "required": [
+                "name",
+                "permissions"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
+                    }
+                }
+            }
+        },
+        "internal_api_groups.CreatePermission": {
+            "type": "object",
+            "required": [
+                "actions",
+                "name"
+            ],
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreateAction"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_app_hosts.HostResponse"
+                        "$ref": "#/definitions/internal_api_groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -1754,214 +952,45 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_app_hosts.HostResponse": {
+        "internal_api_groups.ResponseAction": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
+                "method": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_internal_core_permission.Method"
                 },
-                "host": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "internal_app_hosts.PatchHost": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
+                "resource": {
                     "type": "string"
                 }
             }
         },
-        "internal_app_hosts.UpdateHost": {
-            "type": "object",
-            "required": [
-                "description",
-                "host",
-                "path",
-                "publish",
-                "subject"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "subject": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "internal_app_search.CreateSearch": {
-            "type": "object",
-            "required": [
-                "description",
-                "host_id",
-                "publish",
-                "query",
-                "query_key"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_app_search.PatchSearch": {
-            "type": "object",
-            "required": [
-                "host_id",
-                "publish"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_app_search.Response": {
+        "internal_api_groups.ResponseGroup": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
-                    "type": "string"
-                },
-                "short_url": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_app_search.ResponseAll": {
-            "type": "object",
-            "properties": {
-                "data": {
+                "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_go-fiber_internal_entity.Search"
+                        "$ref": "#/definitions/internal_api_groups.ResponseAction"
                     }
                 },
-                "page": {
+                "id": {
                     "type": "integer"
                 },
-                "page_size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "internal_app_search.UpdateSearch": {
-            "type": "object",
-            "required": [
-                "description",
-                "host_id",
-                "publish",
-                "query",
-                "query_key"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "host_id": {
-                    "type": "integer"
-                },
-                "publish": {
-                    "type": "boolean"
-                },
-                "query": {
-                    "type": "string"
-                },
-                "query_key": {
+                "name": {
                     "type": "string"
                 }
             }
         },
-        "internal_app_short_url.RedirectResponse": {
+        "internal_api_groups.UpdateGroup": {
             "type": "object",
             "properties": {
-                "url": {
+                "name": {
                     "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
+                    }
                 }
             }
         }
@@ -1978,12 +1007,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.1",
+	Version:          "1.0.0",
 	Host:             "localhost:9090",
 	BasePath:         "/",
 	Schemes:          []string{"http"},
-	Title:            "go-fiber Swagger API Documentation",
-	Description:      "go-fiber API",
+	Title:            "keyword-search-backend Swagger API Documentation",
+	Description:      "keyword-search-backend API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
