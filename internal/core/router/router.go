@@ -17,9 +17,9 @@ type Router interface {
 	GetRoutes() []fiber.Router
 }
 
-// Wrapper
+// wrapper
 // route wrapper struct
-type Wrapper struct {
+type wrapper struct {
 	app        *fiber.App
 	router     fiber.Router
 	name       string
@@ -37,7 +37,7 @@ func New(app *fiber.App, prefix string, name ...string) Router {
 
 	router := app.Group(prefix).Name(routeName)
 
-	return &Wrapper{
+	return &wrapper{
 		app:        app,
 		router:     router,
 		name:       routeName,
@@ -47,13 +47,13 @@ func New(app *fiber.App, prefix string, name ...string) Router {
 }
 
 // App get fiber app
-func (r *Wrapper) App() *fiber.App {
+func (r *wrapper) App() *fiber.App {
 	return r.app
 }
 
 // Route
 // route 등록 메서드
-func (r *Wrapper) Route(prefix string, callback Register, middleware ...fiber.Handler) fiber.Router {
+func (r *wrapper) Route(prefix string, callback Register, middleware ...fiber.Handler) fiber.Router {
 	grp := r.router.Group(prefix, middleware...)
 	callback(grp)
 
@@ -70,6 +70,6 @@ func (r *Wrapper) Route(prefix string, callback Register, middleware ...fiber.Ha
 
 // GetRoutes
 // 등록한 route slice
-func (r *Wrapper) GetRoutes() []fiber.Router {
+func (r *wrapper) GetRoutes() []fiber.Router {
 	return r.routes
 }
