@@ -4,9 +4,8 @@ import (
 	goContext "context"
 	"github.com/go-redis/redis/v9"
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/core/container"
-	cLogger "github.com/miniyus/gofiber/internal/core/logger"
-	"github.com/miniyus/gofiber/internal/core/permission"
+	"github.com/miniyus/gofiber/internal/logger"
+	"github.com/miniyus/gofiber/internal/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	rsGen "github.com/miniyus/gofiber/pkg/rs256"
 	"github.com/miniyus/gofiber/pkg/worker"
@@ -15,8 +14,8 @@ import (
 	"path"
 )
 
-func MakeJwtGenerator(w container.Container) func() jwt.Generator {
-	dataPath := w.Config().Path.DataPath
+func MakeJwtGenerator(cfg *config.Configs) func() jwt.Generator {
+	dataPath := cfg.Path.DataPath
 
 	privateKey := rsGen.PrivatePemDecode(path.Join(dataPath, "secret/private.pem"))
 
@@ -24,20 +23,20 @@ func MakeJwtGenerator(w container.Container) func() jwt.Generator {
 		return &jwt.GeneratorStruct{
 			PrivateKey: privateKey,
 			PublicKey:  privateKey.Public(),
-			Exp:        w.Config().Auth.Exp,
+			Exp:        cfg.Auth.Exp,
 		}
 	}
 }
 
-func MakeLogger(w container.Container) func() *zap.SugaredLogger {
-	loggerConfig := w.Config().CustomLogger
+func MakeLogger(cfg *config.Configs) func() *zap.SugaredLogger {
+	loggerConfig := cfg.CustomLogger
 	return func() *zap.SugaredLogger {
-		return cLogger.New(parseLoggerConfig(loggerConfig))
+		return logger.New(parseLoggerConfig(loggerConfig))
 	}
 }
 
-func parseLoggerConfig(loggerConfig config.LoggerConfig) cLogger.Config {
-	return cLogger.Config{
+func parseLoggerConfig(loggerConfig config.LoggerConfig) logger.Config {
+	return logger.Config{
 		TimeFormat: loggerConfig.TimeFormat,
 		FilePath:   loggerConfig.FilePath,
 		Filename:   loggerConfig.Filename,
@@ -51,10 +50,8 @@ func parseLoggerConfig(loggerConfig config.LoggerConfig) cLogger.Config {
 	}
 }
 
-func MakePermissionCollection(w container.Container) func() permission.Collection {
-	cfg := w.Config().Permission
-
-	permCfg := permission.NewPermissionsFromConfig(parsePermissionConfig(cfg))
+func MakePermissionCollection(cfg *config.Configs) func() permission.Collection {
+	permCfg := permission.NewPermissionsFromConfig(parsePermissionConfig(cfg.Permission))
 
 	return func() permission.Collection {
 		return permission.NewPermissionCollection(permCfg...)
@@ -84,19 +81,19 @@ func parseMethodConstants(methods []config.PermissionMethod) []permission.Method
 	return authMethods
 }
 
-func MakeJobDispatcher(c container.Container) func() worker.Dispatcher {
-	opts := c.Config().QueueConfig
+func MakeJobDispatcher(cfg *config.Configs) func() worker.Dispatcher {
+	opts := cfg.QueueConfig
 
-	opts.Redis = MakeRedisClient(c)
+	opts.Redis = MakeRedisClient(cfg)
 
 	return func() worker.Dispatcher {
 		return worker.NewDispatcher(opts)
 	}
 }
 
-func MakeRedisClient(c container.Container) func() *redis.Client {
+func MakeRedisClient(cfg *config.Configs) func() *redis.Client {
 	return func() *redis.Client {
-		client := redis.NewClient(c.Config().RedisConfig)
+		client := redis.NewClient(cfg.RedisConfig)
 		pong, err := client.Ping(goContext.Background()).Result()
 		log.Print(pong, err)
 		return client

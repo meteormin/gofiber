@@ -2,8 +2,8 @@ package groups
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/internal/core/logger"
 	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/internal/logger"
 	"github.com/miniyus/gofiber/internal/utils"
 )
 

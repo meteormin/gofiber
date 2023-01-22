@@ -6,8 +6,7 @@ import (
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
 	configure "github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/core/container"
-	"github.com/miniyus/gofiber/internal/core/context"
+	"github.com/miniyus/gofiber/pkg/IOContainer"
 	"go.uber.org/zap"
 	"log"
 	"strconv"
@@ -51,7 +50,7 @@ func Middlewares(fn ...fiber.Handler) []fiber.Handler {
 // log 찍힐 때 user 정보 추가
 func AccessLogMiddleware(c *fiber.Ctx) error {
 	var logger *zap.SugaredLogger
-	logger, err := context.GetContext[*zap.SugaredLogger](c, context.Logger)
+	logger, err := configure.GetContext[*zap.SugaredLogger](c, configure.LoggerKey)
 
 	if err != nil {
 		return err
@@ -60,7 +59,7 @@ func AccessLogMiddleware(c *fiber.Ctx) error {
 	start := time.Now()
 	err = c.Next()
 	elapsed := time.Since(start).Milliseconds()
-	cu, ok := c.Locals(context.AuthUser).(*User)
+	cu, ok := c.Locals(configure.AuthUserKey).(*User)
 	userID := ""
 	if !ok {
 		userID = "guest"
@@ -125,14 +124,14 @@ func GetUserFromJWT(c *fiber.Ctx) error {
 		ExpiresIn: &expiresIn,
 	}
 
-	c.Locals(context.AuthUser, currentUser)
+	c.Locals(configure.AuthUserKey, currentUser)
 	return c.Next()
 }
 
 // JwtMiddleware
 // jwt 유효성 체크 미들웨어
 func JwtMiddleware(c *fiber.Ctx) error {
-	config, err := context.GetContext[*configure.Configs](c, context.Config)
+	config, err := configure.GetContext[*configure.Configs](c, configure.ConfigsKey)
 	if err != nil {
 		return err
 	}
@@ -164,7 +163,7 @@ func jwtError(c *fiber.Ctx, err error) error {
 // CheckExpired
 // jwt 만료 기간 체크 미들웨어
 func CheckExpired(c *fiber.Ctx) error {
-	wrapper, err := context.GetContext[container.Container](c, context.Container)
+	wrapper, err := configure.GetContext[IOContainer.Container](c, configure.ContainerKey)
 
 	if err != nil {
 		return err
@@ -172,7 +171,7 @@ func CheckExpired(c *fiber.Ctx) error {
 
 	tokenRepository := NewRepository(wrapper.Database())
 
-	user, err := context.GetContext[*User](c, context.AuthUser)
+	user, err := configure.GetContext[*User](c, configure.AuthUserKey)
 	if err != nil {
 		return err
 	}
@@ -192,7 +191,7 @@ func CheckExpired(c *fiber.Ctx) error {
 }
 
 func GetAuthUser(c *fiber.Ctx) (*User, error) {
-	user, err := context.GetContext[*User](c, context.AuthUser)
+	user, err := configure.GetContext[*User](c, configure.AuthUserKey)
 	if err != nil {
 		return nil, err
 	}

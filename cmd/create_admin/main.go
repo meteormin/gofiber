@@ -1,7 +1,10 @@
 package main
 
-import "github.com/miniyus/gofiber/internal/core"
+import (
+	"github.com/miniyus/gofiber"
+	"github.com/miniyus/gofiber/internal/create_admin"
+)
 
 func main() {
-	core.CreateAdmin(core.New())
+	create_admin.CreateAdmin(gofiber.New())
 }

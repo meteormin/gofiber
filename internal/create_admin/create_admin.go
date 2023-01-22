@@ -1,11 +1,12 @@
-package core
+package create_admin
 
 import (
 	"errors"
-	"github.com/miniyus/gofiber/internal/core/container"
-	"github.com/miniyus/gofiber/internal/core/database"
-	"github.com/miniyus/gofiber/internal/core/permission"
+	"github.com/miniyus/gofiber"
+	"github.com/miniyus/gofiber/internal/database"
 	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/internal/permission"
+	"github.com/miniyus/gofiber/internal/resolver"
 	"github.com/miniyus/gofiber/internal/utils"
 	"gorm.io/gorm"
 	"log"
@@ -28,12 +29,14 @@ func existsAdmin(db *gorm.DB) bool {
 	return true
 }
 
-func CreateAdmin(c container.Container) {
-	db := c.Database()
+func CreateAdmin(app gofiber.Application) {
+	db := app.DB()
 	if existsAdmin(db) {
 		return
 	}
-	configs := c.Config()
+	configs := app.Config()
+	permCollectionFn := resolver.MakePermissionCollection(configs)
+
 	caCfg := configs.CreateAdmin
 
 	username := caCfg.Username
@@ -61,9 +64,7 @@ func CreateAdmin(c container.Container) {
 		EmailVerifiedAt: &now,
 	}
 
-	var permissions permission.Collection
-
-	c.Resolve(&permissions)
+	permissions := permCollectionFn()
 
 	entPerms := make([]entity.Permission, 0)
 

@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/core/database/migrations"
+	"github.com/miniyus/gofiber/internal/database/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

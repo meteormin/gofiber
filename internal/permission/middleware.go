@@ -2,11 +2,11 @@ package permission
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/internal/core/auth"
-	"github.com/miniyus/gofiber/internal/core/container"
-	"github.com/miniyus/gofiber/internal/core/context"
+	"github.com/miniyus/gofiber/config"
+	"github.com/miniyus/gofiber/internal/auth"
 	"github.com/miniyus/gofiber/internal/entity"
 	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/pkg/IOContainer"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -16,7 +16,7 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		pass := false
 
-		currentUser, err := context.GetContext[*auth.User](c, context.AuthUser)
+		currentUser, err := config.GetContext[*auth.User](c, config.AuthUserKey)
 
 		if currentUser.Role == string(entity.Admin) {
 			return c.Next()
@@ -24,7 +24,7 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 
 		var permCollection Collection
 
-		db, err := context.GetContext[*gorm.DB](c, context.DB)
+		db, err := config.GetContext[*gorm.DB](c, config.DBKey)
 		if err != nil {
 			return err
 		}
@@ -40,11 +40,11 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 		}
 
 		if permCollection == nil {
-			permCollection, err = context.GetContext[Collection](c, context.Permissions)
+			permCollection, err = config.GetContext[Collection](c, config.PermissionsKey)
 
 			if err != nil {
 				permCollection = nil
-				containerContext, err := context.GetContext[container.Container](c, context.Container)
+				containerContext, err := config.GetContext[IOContainer.Container](c, config.ContainerKey)
 				if err != nil {
 					return err
 				}

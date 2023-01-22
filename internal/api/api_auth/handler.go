@@ -4,9 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/miniyus/gofiber/internal/api"
-	"github.com/miniyus/gofiber/internal/core/api_error"
-	"github.com/miniyus/gofiber/internal/core/auth"
-	"github.com/miniyus/gofiber/internal/core/logger"
+	"github.com/miniyus/gofiber/internal/api_error"
+	"github.com/miniyus/gofiber/internal/auth"
+	"github.com/miniyus/gofiber/internal/logger"
 	"github.com/miniyus/gofiber/internal/utils"
 )
 

@@ -5,8 +5,7 @@ import (
 	"encoding/json"
 	"github.com/go-redis/redis/v9"
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/internal/core/api_error"
-	"github.com/miniyus/gofiber/internal/core/register/resolver"
+	"github.com/miniyus/gofiber/internal/api_error"
 	"github.com/miniyus/gofiber/internal/utils"
 	jobWorker "github.com/miniyus/gofiber/pkg/worker"
 )
@@ -29,7 +28,7 @@ func FindJobFromQueueWorker(ctx *fiber.Ctx, jobId string, worker ...string) (*jo
 	}
 
 	var jobDispatcher jobWorker.Dispatcher
-	_, err := resolver.Resolve[jobWorker.Dispatcher](ctx, &jobDispatcher)
+	_, err := utils.Resolve[jobWorker.Dispatcher](ctx, &jobDispatcher)
 	if err != nil {
 		return nil, err
 	}

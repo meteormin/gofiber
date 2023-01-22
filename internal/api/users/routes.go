@@ -2,12 +2,12 @@ package users
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/internal/core/router"
+	"github.com/miniyus/gofiber"
 )
 
 const Prefix = "/users"
 
-func Register(handler Handler) router.Register {
+func Register(handler Handler) gofiber.SubRouter {
 	return func(router fiber.Router) {
 		router.Get("/", handler.All).Name("api.users.all")
 		router.Get("/:id", handler.Get).Name("api.users.get")

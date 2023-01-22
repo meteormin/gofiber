@@ -1,50 +1,40 @@
 package routes
 
 import (
+	"github.com/miniyus/gofiber"
 	"github.com/miniyus/gofiber/internal/api/api_auth"
 	"github.com/miniyus/gofiber/internal/api/groups"
 	"github.com/miniyus/gofiber/internal/api/users"
-	"github.com/miniyus/gofiber/internal/core/auth"
-	"github.com/miniyus/gofiber/internal/core/container"
-	"github.com/miniyus/gofiber/internal/core/permission"
-	"github.com/miniyus/gofiber/internal/core/router"
-	"github.com/miniyus/gofiber/pkg/jwt"
-	"github.com/miniyus/gofiber/pkg/worker"
-	"go.uber.org/zap"
+	"github.com/miniyus/gofiber/internal/auth"
+	"github.com/miniyus/gofiber/internal/permission"
+	"github.com/miniyus/gofiber/internal/resolver"
 )
 
 const ApiPrefix = "/api"
 
-func Api(c container.Container) {
-	var jobDispatcher worker.Dispatcher
-	c.Resolve(&jobDispatcher)
+func Api(apiRouter gofiber.Router, app gofiber.Application) {
+	zapLogger := resolver.MakeLogger(app.Config())
 
-	var zapLogger *zap.SugaredLogger
-	c.Resolve(&zapLogger)
-
-	var tokenGenerator jwt.Generator
-	c.Resolve(&tokenGenerator)
-
-	apiRouter := router.New(c.App(), ApiPrefix, "api")
+	tokenGenerator := resolver.MakeJwtGenerator(app.Config())
 
 	apiRouter.Route(
 		api_auth.Prefix,
 		api_auth.Register(api_auth.New(
-			c.Database(),
-			tokenGenerator,
-			zapLogger,
+			app.DB(),
+			tokenGenerator(),
+			zapLogger(),
 		)),
 	).Name("api.auth")
 
 	apiRouter.Route(
 		groups.Prefix,
-		groups.Register(groups.New(c.Database(), zapLogger)),
+		groups.Register(groups.New(app.DB(), zapLogger())),
 		auth.Middlewares(permission.HasPermission())...,
 	).Name("api.groups")
 
 	apiRouter.Route(
 		users.Prefix,
-		users.Register(users.New(c.Database(), zapLogger)),
+		users.Register(users.New(app.DB(), zapLogger())),
 		auth.Middlewares()...,
 	).Name("api.users")
 

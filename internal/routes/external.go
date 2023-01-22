@@ -4,13 +4,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
-	"github.com/miniyus/gofiber/internal/core/container"
-	"github.com/miniyus/gofiber/internal/core/router"
+	"github.com/miniyus/gofiber"
 	"github.com/miniyus/gofiber/internal/utils"
 )
 
-func External(c container.Container) {
-	extRouter := router.New(c.App(), "/", "external")
+func External(extRouter gofiber.Router, app gofiber.Application) {
 	extRouter.Route("/", func(router fiber.Router) {
 		router.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))
 		router.Get("/swagger/*", swagger.HandlerDefault)
