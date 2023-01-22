@@ -14,8 +14,13 @@ import (
 	"path"
 )
 
-func MakeJwtGenerator(cfg *config.Configs) func() jwt.Generator {
-	dataPath := cfg.Path.DataPath
+type JwtGeneratorConfig struct {
+	DataPath string
+	Exp      int
+}
+
+func MakeJwtGenerator(cfg JwtGeneratorConfig) func() jwt.Generator {
+	dataPath := cfg.DataPath
 
 	privateKey := rsGen.PrivatePemDecode(path.Join(dataPath, "secret/private.pem"))
 
@@ -23,13 +28,13 @@ func MakeJwtGenerator(cfg *config.Configs) func() jwt.Generator {
 		return &jwt.GeneratorStruct{
 			PrivateKey: privateKey,
 			PublicKey:  privateKey.Public(),
-			Exp:        cfg.Auth.Exp,
+			Exp:        cfg.Exp,
 		}
 	}
 }
 
-func MakeLogger(cfg *config.Configs) func() *zap.SugaredLogger {
-	loggerConfig := cfg.CustomLogger
+func MakeLogger(cfg config.LoggerConfig) func() *zap.SugaredLogger {
+	loggerConfig := cfg
 	return func() *zap.SugaredLogger {
 		return logger.New(parseLoggerConfig(loggerConfig))
 	}
@@ -50,8 +55,8 @@ func parseLoggerConfig(loggerConfig config.LoggerConfig) logger.Config {
 	}
 }
 
-func MakePermissionCollection(cfg *config.Configs) func() permission.Collection {
-	permCfg := permission.NewPermissionsFromConfig(parsePermissionConfig(cfg.Permission))
+func MakePermissionCollection(cfg []config.PermissionConfig) func() permission.Collection {
+	permCfg := permission.NewPermissionsFromConfig(parsePermissionConfig(cfg))
 
 	return func() permission.Collection {
 		return permission.NewPermissionCollection(permCfg...)
@@ -81,19 +86,24 @@ func parseMethodConstants(methods []config.PermissionMethod) []permission.Method
 	return authMethods
 }
 
-func MakeJobDispatcher(cfg *config.Configs) func() worker.Dispatcher {
-	opts := cfg.QueueConfig
+type JobDispatcherConfig struct {
+	WorkerCfg worker.DispatcherOption
+	RedisCfg  *redis.Options
+}
 
-	opts.Redis = MakeRedisClient(cfg)
+func MakeJobDispatcher(cfg JobDispatcherConfig) func() worker.Dispatcher {
+	opts := cfg.WorkerCfg
+
+	opts.Redis = MakeRedisClient(cfg.RedisCfg)
 
 	return func() worker.Dispatcher {
 		return worker.NewDispatcher(opts)
 	}
 }
 
-func MakeRedisClient(cfg *config.Configs) func() *redis.Client {
+func MakeRedisClient(cfg *redis.Options) func() *redis.Client {
 	return func() *redis.Client {
-		client := redis.NewClient(cfg.RedisConfig)
+		client := redis.NewClient(cfg)
 		pong, err := client.Ping(goContext.Background()).Result()
 		log.Print(pong, err)
 		return client

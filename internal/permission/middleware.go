@@ -5,14 +5,18 @@ import (
 	"github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/internal/auth"
 	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/utils"
-	"github.com/miniyus/gofiber/pkg/IOContainer"
+	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"strings"
 )
 
+type HasPermissionParameter struct {
+	DB           *gorm.DB
+	DefaultPerms Collection
+}
+
 // HasPermission check has permissions middleware
-func HasPermission(permissions ...Permission) fiber.Handler {
+func HasPermission(parameter HasPermissionParameter, permissions ...Permission) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		pass := false
 
@@ -23,10 +27,15 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 		}
 
 		var permCollection Collection
+		var db *gorm.DB
 
-		db, err := config.GetContext[*gorm.DB](c, config.DBKey)
-		if err != nil {
-			return err
+		if parameter.DB == nil {
+			db, err = config.GetContext[*gorm.DB](c, config.DBKey)
+			if err != nil {
+				return err
+			}
+		} else {
+			db = parameter.DB
 		}
 
 		repo := NewRepository(db)
@@ -40,16 +49,14 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 		}
 
 		if permCollection == nil {
-			permCollection, err = config.GetContext[Collection](c, config.PermissionsKey)
+			if parameter.DefaultPerms == nil {
+				permCollection, err = config.GetContext[Collection](c, config.PermissionsKey)
 
-			if err != nil {
-				permCollection = nil
-				containerContext, err := config.GetContext[IOContainer.Container](c, config.ContainerKey)
 				if err != nil {
 					return err
 				}
-
-				containerContext.Resolve(&permCollection)
+			} else {
+				permCollection = parameter.DefaultPerms
 			}
 
 			entities := make([]entity.Permission, 0)
@@ -86,6 +93,10 @@ func HasPermission(permissions ...Permission) fiber.Handler {
 }
 
 func checkPermissionFromCtx(hasPerm []Permission, c *fiber.Ctx) bool {
+	if len(hasPerm) == 0 {
+		return true
+	}
+
 	pass := false
 	utils.NewCollection(hasPerm).For(func(perm Permission, i int) {
 		utils.NewCollection(perm.Actions).For(func(action Action, j int) {

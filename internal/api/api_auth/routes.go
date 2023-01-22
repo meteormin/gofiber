@@ -8,12 +8,12 @@ import (
 
 const Prefix = "/auth"
 
-func Register(handler Handler) gofiber.SubRouter {
+func Register(handler Handler, parameter auth.MiddlewaresParameter) gofiber.SubRouter {
 	return func(router fiber.Router) {
 		router.Post("/register", handler.SignUp).Name("api.auth.register")
 		router.Post("/token", handler.SignIn).Name("api.auth.token")
 
-		authMiddlewares := auth.Middlewares()
+		authMiddlewares := auth.Middlewares(parameter)
 
 		meHandlers := append(authMiddlewares, handler.Me)
 		router.Get("/me", meHandlers...).Name("api.auth.me")

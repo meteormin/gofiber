@@ -1,7 +1,7 @@
 package api_auth
 
 import (
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 type SignUp struct {

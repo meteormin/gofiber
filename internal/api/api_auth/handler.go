@@ -7,7 +7,7 @@ import (
 	"github.com/miniyus/gofiber/internal/api_error"
 	"github.com/miniyus/gofiber/internal/auth"
 	"github.com/miniyus/gofiber/internal/logger"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 type Handler interface {

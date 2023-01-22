@@ -42,11 +42,12 @@ func main() {
 		// Add Context Config
 		fiberApp.Use(config.AddContext(config.ConfigsKey, configure))
 		// Add Context Logger
-		fiberApp.Use(config.AddContext(config.LoggerKey, resolver.MakeLogger(configure)))
+		fiberApp.Use(config.AddContext(config.LoggerKey, resolver.MakeLogger(configure.CustomLogger)))
 	})
 
 	app.Route(routes.ApiPrefix, routes.Api, "api")
 	app.Route("/", routes.External, "external")
 
+	app.Stats()
 	app.Run()
 }

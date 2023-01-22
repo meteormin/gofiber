@@ -6,8 +6,8 @@ import (
 	"github.com/go-redis/redis/v9"
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/internal/api_error"
-	"github.com/miniyus/gofiber/internal/utils"
 	jobWorker "github.com/miniyus/gofiber/pkg/worker"
+	"github.com/miniyus/gofiber/utils"
 )
 
 func HandleValidate(c *fiber.Ctx, data interface{}) *api_error.ValidationErrorResponse {

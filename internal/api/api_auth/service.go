@@ -7,8 +7,8 @@ import (
 	"github.com/miniyus/gofiber/internal/auth"
 	"github.com/miniyus/gofiber/internal/entity"
 	"github.com/miniyus/gofiber/internal/logger"
-	"github.com/miniyus/gofiber/internal/utils"
 	"github.com/miniyus/gofiber/pkg/jwt"
+	"github.com/miniyus/gofiber/utils"
 	"time"
 )
 

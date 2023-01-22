@@ -13,29 +13,44 @@ import (
 const ApiPrefix = "/api"
 
 func Api(apiRouter gofiber.Router, app gofiber.Application) {
-	zapLogger := resolver.MakeLogger(app.Config())
+	zapLogger := resolver.MakeLogger(app.Config().CustomLogger)
+	tokenGenerator := resolver.MakeJwtGenerator(resolver.JwtGeneratorConfig{
+		DataPath: app.Config().Path.DataPath,
+		Exp:      app.Config().Auth.Exp,
+	})
 
-	tokenGenerator := resolver.MakeJwtGenerator(app.Config())
+	authMiddlewareParam := auth.MiddlewaresParameter{
+		Cfg: app.Config().Auth.Jwt,
+		DB:  app.DB(),
+	}
+
+	HasPermParam := permission.HasPermissionParameter{
+		DB:           app.DB(),
+		DefaultPerms: resolver.MakePermissionCollection(app.Config().Permission)(),
+	}
 
 	apiRouter.Route(
 		api_auth.Prefix,
-		api_auth.Register(api_auth.New(
-			app.DB(),
-			tokenGenerator(),
-			zapLogger(),
-		)),
+		api_auth.Register(
+			api_auth.New(
+				app.DB(),
+				tokenGenerator(),
+				zapLogger(),
+			),
+			authMiddlewareParam,
+		),
 	).Name("api.auth")
 
 	apiRouter.Route(
 		groups.Prefix,
 		groups.Register(groups.New(app.DB(), zapLogger())),
-		auth.Middlewares(permission.HasPermission())...,
+		auth.Middlewares(authMiddlewareParam, permission.HasPermission(HasPermParam))...,
 	).Name("api.groups")
 
 	apiRouter.Route(
 		users.Prefix,
 		users.Register(users.New(app.DB(), zapLogger())),
-		auth.Middlewares()...,
+		auth.Middlewares(authMiddlewareParam)...,
 	).Name("api.users")
 
 }

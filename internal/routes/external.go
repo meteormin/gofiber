@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
 	"github.com/miniyus/gofiber"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 func External(extRouter gofiber.Router, app gofiber.Application) {

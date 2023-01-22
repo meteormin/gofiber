@@ -3,7 +3,7 @@ package groups
 import (
 	"github.com/miniyus/gofiber/internal/entity"
 	"github.com/miniyus/gofiber/internal/permission"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 type CreateAction struct {

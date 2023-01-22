@@ -3,7 +3,7 @@ package permission
 import (
 	"github.com/miniyus/gofiber/internal/database"
 	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

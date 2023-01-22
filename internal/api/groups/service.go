@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/internal/entity"
 	"github.com/miniyus/gofiber/internal/logger"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 type Service interface {

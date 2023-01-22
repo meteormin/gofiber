@@ -11,7 +11,6 @@ type ContextKey string
 // context constants
 // ctx.Locals() 메서드에서 주로 사용됨
 const (
-	ContainerKey    ContextKey = "container"
 	DBKey           ContextKey = "db"
 	ConfigsKey      ContextKey = "config"
 	LoggerKey       ContextKey = "logger"

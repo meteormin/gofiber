@@ -3,7 +3,7 @@ package permission
 import (
 	"fmt"
 	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 )
 
 type Method string
