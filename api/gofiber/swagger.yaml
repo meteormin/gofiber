@@ -470,7 +470,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api_groups.ListResponse'
+            $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.ListResponse'
         "403":
           description: Forbidden
           schema:
@@ -489,14 +489,14 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/internal_api_groups.CreateGroup'
+          $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateGroup'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/internal_api_groups.ResponseGroup'
+            $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup'
         "400":
           description: Bad Request
           schema:
@@ -524,14 +524,14 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/internal_api_groups.UpdateGroup'
+          $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.UpdateGroup'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api_groups.ResponseGroup'
+            $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup'
         "400":
           description: Bad Request
           schema:
@@ -588,7 +588,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api_groups.ResponseGroup'
+            $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup'
         "403":
           description: Forbidden
           schema:
@@ -615,7 +615,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api_groups.ResponseGroup'
+            $ref: '#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup'
         "403":
           description: Forbidden
           schema:

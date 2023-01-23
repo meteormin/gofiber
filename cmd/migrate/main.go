@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/database"
-	"github.com/miniyus/gofiber/internal/database/migrations"
+	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/database/migrations"
 )
 
 func main() {
