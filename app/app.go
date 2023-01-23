@@ -1,10 +1,10 @@
-package gofiber
+package app
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/miniyus/gofiber/api_error"
 	configure "github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/api_error"
-	"github.com/miniyus/gofiber/internal/database"
+	"github.com/miniyus/gofiber/database"
 	"gorm.io/gorm"
 	"log"
 	"strconv"
@@ -104,7 +104,7 @@ func New(configs ...*configure.Configs) Application {
 		config = configs[0]
 	}
 
-	config.App.ErrorHandler = api_error.OverrideDefaultErrorHandler
+	config.App.ErrorHandler = api_error.OverrideDefaultErrorHandler(config)
 
 	return &app{
 		fiber.New(config.App),

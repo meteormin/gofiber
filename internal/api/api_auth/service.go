@@ -3,10 +3,10 @@ package api_auth
 import (
 	"github.com/gofiber/fiber/v2"
 	jwtLib "github.com/golang-jwt/jwt/v4"
+	"github.com/miniyus/gofiber/auth"
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/internal/api/users"
-	"github.com/miniyus/gofiber/internal/auth"
-	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/logger"
+	"github.com/miniyus/gofiber/logger"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	"github.com/miniyus/gofiber/utils"
 	"time"

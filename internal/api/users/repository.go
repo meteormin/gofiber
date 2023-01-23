@@ -1,9 +1,9 @@
 package users
 
 import (
-	"github.com/miniyus/gofiber/internal/database"
-	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/logger"
+	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/logger"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

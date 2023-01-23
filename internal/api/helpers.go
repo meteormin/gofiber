@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/go-redis/redis/v9"
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/internal/api_error"
+	"github.com/miniyus/gofiber/api_error"
 	jobWorker "github.com/miniyus/gofiber/pkg/worker"
 	"github.com/miniyus/gofiber/utils"
 )

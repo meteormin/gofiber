@@ -76,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.ResetPasswordStruct"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.ResetPasswordStruct"
                         }
                     }
                 ],
@@ -116,7 +116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignUp"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignUp"
                         }
                     }
                 ],
@@ -124,7 +124,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignUpResponse"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignUpResponse"
                         }
                     },
                     "400": {
@@ -190,7 +190,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignIn"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignIn"
                         }
                     }
                 ],
@@ -198,7 +198,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api_auth.TokenInfo"
+                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.TokenInfo"
                         }
                     },
                     "400": {
@@ -248,7 +248,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/groups.ListResponse"
+                            "$ref": "#/definitions/internal_api_groups.ListResponse"
                         }
                     },
                     "403": {
@@ -289,7 +289,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/groups.UpdateGroup"
+                            "$ref": "#/definitions/internal_api_groups.UpdateGroup"
                         }
                     }
                 ],
@@ -297,7 +297,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_api_groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -337,7 +337,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/groups.CreateGroup"
+                            "$ref": "#/definitions/internal_api_groups.CreateGroup"
                         }
                     }
                 ],
@@ -345,7 +345,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_api_groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -394,7 +394,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_api_groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -437,7 +437,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_api_groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -515,90 +515,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api_auth.ResetPasswordStruct": {
-            "type": "object",
-            "required": [
-                "password",
-                "password_confirm"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignIn": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignUp": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "password_confirm",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignUpResponse": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "api_auth.TokenInfo": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "api_error.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -659,7 +575,91 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.CreateAction": {
+        "github_com_miniyus_gofiber_internal_api_api_auth.ResetPasswordStruct": {
+            "type": "object",
+            "required": [
+                "password",
+                "password_confirm"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignIn": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignUp": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "password_confirm",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_api_auth.SignUpResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_api_auth.TokenInfo": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_miniyus_gofiber_internal_api_groups.CreateAction": {
             "type": "object",
             "required": [
                 "method",
@@ -674,7 +674,7 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.CreateGroup": {
+        "github_com_miniyus_gofiber_internal_api_groups.CreateGroup": {
             "type": "object",
             "required": [
                 "name",
@@ -687,12 +687,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/groups.CreatePermission"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
                     }
                 }
             }
         },
-        "groups.CreatePermission": {
+        "github_com_miniyus_gofiber_internal_api_groups.CreatePermission": {
             "type": "object",
             "required": [
                 "actions",
@@ -702,7 +702,7 @@ const docTemplate = `{
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/groups.CreateAction"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateAction"
                     }
                 },
                 "name": {
@@ -710,13 +710,13 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.ListResponse": {
+        "github_com_miniyus_gofiber_internal_api_groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/groups.ResponseGroup"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -730,7 +730,7 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.ResponseAction": {
+        "github_com_miniyus_gofiber_internal_api_groups.ResponseAction": {
             "type": "object",
             "properties": {
                 "method": {
@@ -741,13 +741,13 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.ResponseGroup": {
+        "github_com_miniyus_gofiber_internal_api_groups.ResponseGroup": {
             "type": "object",
             "properties": {
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/groups.ResponseAction"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseAction"
                     }
                 },
                 "id": {
@@ -758,7 +758,7 @@ const docTemplate = `{
                 }
             }
         },
-        "groups.UpdateGroup": {
+        "github_com_miniyus_gofiber_internal_api_groups.UpdateGroup": {
             "type": "object",
             "properties": {
                 "name": {
@@ -767,7 +767,204 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/groups.CreatePermission"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
+                    }
+                }
+            }
+        },
+        "internal_api_api_auth.ResetPasswordStruct": {
+            "type": "object",
+            "required": [
+                "password",
+                "password_confirm"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_api_auth.SignIn": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_api_auth.SignUp": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "password_confirm",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_api_auth.SignUpResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_api_api_auth.TokenInfo": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.CreateAction": {
+            "type": "object",
+            "required": [
+                "method",
+                "resource"
+            ],
+            "properties": {
+                "method": {
+                    "$ref": "#/definitions/permission.Method"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.CreateGroup": {
+            "type": "object",
+            "required": [
+                "name",
+                "permissions"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
+                    }
+                }
+            }
+        },
+        "internal_api_groups.CreatePermission": {
+            "type": "object",
+            "required": [
+                "actions",
+                "name"
+            ],
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreateAction"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.ListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.ResponseGroup"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_api_groups.ResponseAction": {
+            "type": "object",
+            "properties": {
+                "method": {
+                    "$ref": "#/definitions/permission.Method"
+                },
+                "resource": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.ResponseGroup": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.ResponseAction"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_api_groups.UpdateGroup": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
                     }
                 }
             }

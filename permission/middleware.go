@@ -2,9 +2,9 @@ package permission
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/auth"
-	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"strings"

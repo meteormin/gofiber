@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/entity"
 	"gorm.io/gorm"
 	"log"
 )

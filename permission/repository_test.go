@@ -2,8 +2,8 @@ package permission_test
 
 import (
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/internal/database"
-	"github.com/miniyus/gofiber/internal/permission"
+	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/permission"
 	gormLogger "gorm.io/gorm/logger"
 	"testing"
 	"time"

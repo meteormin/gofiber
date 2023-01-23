@@ -2,7 +2,7 @@ package permission
 
 import (
 	"fmt"
-	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
 )
 

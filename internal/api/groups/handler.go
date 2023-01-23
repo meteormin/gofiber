@@ -2,8 +2,8 @@ package groups
 
 import (
 	"github.com/gofiber/fiber/v2"
+	_ "github.com/miniyus/gofiber/api_error"
 	"github.com/miniyus/gofiber/internal/api"
-	_ "github.com/miniyus/gofiber/internal/api_error"
 	"github.com/miniyus/gofiber/utils"
 	"strconv"
 )

@@ -1,18 +1,18 @@
 package routes
 
 import (
-	"github.com/miniyus/gofiber"
+	"github.com/miniyus/gofiber/app"
+	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/internal/api/api_auth"
 	"github.com/miniyus/gofiber/internal/api/groups"
 	"github.com/miniyus/gofiber/internal/api/users"
-	"github.com/miniyus/gofiber/internal/auth"
-	"github.com/miniyus/gofiber/internal/permission"
-	"github.com/miniyus/gofiber/internal/resolver"
+	"github.com/miniyus/gofiber/permission"
+	"github.com/miniyus/gofiber/resolver"
 )
 
 const ApiPrefix = "/api"
 
-func Api(apiRouter gofiber.Router, app gofiber.Application) {
+func Api(apiRouter app.Router, app app.Application) {
 	zapLogger := resolver.MakeLogger(app.Config().CustomLogger)
 	tokenGenerator := resolver.MakeJwtGenerator(resolver.JwtGeneratorConfig{
 		DataPath: app.Config().Path.DataPath,
@@ -24,7 +24,7 @@ func Api(apiRouter gofiber.Router, app gofiber.Application) {
 		DB:  app.DB(),
 	}
 
-	HasPermParam := permission.HasPermissionParameter{
+	hasPermParam := permission.HasPermissionParameter{
 		DB:           app.DB(),
 		DefaultPerms: resolver.MakePermissionCollection(app.Config().Permission)(),
 	}
@@ -44,7 +44,7 @@ func Api(apiRouter gofiber.Router, app gofiber.Application) {
 	apiRouter.Route(
 		groups.Prefix,
 		groups.Register(groups.New(app.DB(), zapLogger())),
-		auth.Middlewares(authMiddlewareParam, permission.HasPermission(HasPermParam))...,
+		auth.Middlewares(authMiddlewareParam, permission.HasPermission(hasPermParam))...,
 	).Name("api.groups")
 
 	apiRouter.Route(

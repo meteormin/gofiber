@@ -1,8 +1,8 @@
 package groups
 
 import (
-	"github.com/miniyus/gofiber/internal/entity"
-	"github.com/miniyus/gofiber/internal/permission"
+	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/utils"
 )
 

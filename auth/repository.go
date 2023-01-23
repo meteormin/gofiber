@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/miniyus/gofiber/internal/database"
-	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/entity"
 	"gorm.io/gorm"
 )
 

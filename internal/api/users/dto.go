@@ -1,7 +1,7 @@
 package users
 
 import (
-	"github.com/miniyus/gofiber/internal/entity"
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
 )
 

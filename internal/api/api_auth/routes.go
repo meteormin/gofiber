@@ -2,13 +2,13 @@ package api_auth
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber"
-	"github.com/miniyus/gofiber/internal/auth"
+	"github.com/miniyus/gofiber/app"
+	"github.com/miniyus/gofiber/auth"
 )
 
 const Prefix = "/auth"
 
-func Register(handler Handler, parameter auth.MiddlewaresParameter) gofiber.SubRouter {
+func Register(handler Handler, parameter auth.MiddlewaresParameter) app.SubRouter {
 	return func(router fiber.Router) {
 		router.Post("/register", handler.SignUp).Name("api.auth.register")
 		router.Post("/token", handler.SignIn).Name("api.auth.token")

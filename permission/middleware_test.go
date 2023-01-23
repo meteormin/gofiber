@@ -1,7 +1,7 @@
 package permission_test
 
 import (
-	"github.com/miniyus/gofiber/internal/permission"
+	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/utils"
 	"strings"
 	"testing"

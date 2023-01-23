@@ -1,14 +1,14 @@
-package gofiber_test
+package app_test
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber"
+	"github.com/miniyus/gofiber/app"
 	"log"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
-	r := gofiber.NewRouter(fiber.New(), "/", "test")
+	r := app.NewRouter(fiber.New(), "/", "test")
 
 	r.Route("/", func(router fiber.Router) {
 		router.Get("/", func(ctx *fiber.Ctx) error {
