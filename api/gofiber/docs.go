@@ -76,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.ResetPasswordStruct"
+                            "$ref": "#/definitions/internal_api_auth.ResetPasswordStruct"
                         }
                     }
                 ],
@@ -116,7 +116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignUp"
+                            "$ref": "#/definitions/internal_api_auth.SignUp"
                         }
                     }
                 ],
@@ -124,7 +124,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignUpResponse"
+                            "$ref": "#/definitions/internal_api_auth.SignUpResponse"
                         }
                     },
                     "400": {
@@ -190,7 +190,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.SignIn"
+                            "$ref": "#/definitions/internal_api_auth.SignIn"
                         }
                     }
                 ],
@@ -198,7 +198,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_api_auth.TokenInfo"
+                            "$ref": "#/definitions/internal_api_auth.TokenInfo"
                         }
                     },
                     "400": {
@@ -248,7 +248,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ListResponse"
+                            "$ref": "#/definitions/internal_groups.ListResponse"
                         }
                     },
                     "403": {
@@ -289,7 +289,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.UpdateGroup"
+                            "$ref": "#/definitions/internal_groups.UpdateGroup"
                         }
                     }
                 ],
@@ -297,7 +297,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -337,7 +337,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateGroup"
+                            "$ref": "#/definitions/internal_groups.CreateGroup"
                         }
                     }
                 ],
@@ -345,7 +345,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -394,7 +394,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -437,7 +437,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                            "$ref": "#/definitions/internal_groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -575,7 +575,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_api_auth.ResetPasswordStruct": {
+        "github_com_miniyus_gofiber_internal_api_auth.ResetPasswordStruct": {
             "type": "object",
             "required": [
                 "password",
@@ -590,7 +590,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_api_auth.SignIn": {
+        "github_com_miniyus_gofiber_internal_api_auth.SignIn": {
             "type": "object",
             "required": [
                 "password",
@@ -605,7 +605,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_api_auth.SignUp": {
+        "github_com_miniyus_gofiber_internal_api_auth.SignUp": {
             "type": "object",
             "required": [
                 "email",
@@ -628,7 +628,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_api_auth.SignUpResponse": {
+        "github_com_miniyus_gofiber_internal_api_auth.SignUpResponse": {
             "type": "object",
             "properties": {
                 "expires_at": {
@@ -645,7 +645,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_api_auth.TokenInfo": {
+        "github_com_miniyus_gofiber_internal_api_auth.TokenInfo": {
             "type": "object",
             "properties": {
                 "expires_at": {
@@ -659,7 +659,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.CreateAction": {
+        "github_com_miniyus_gofiber_internal_groups.CreateAction": {
             "type": "object",
             "required": [
                 "method",
@@ -674,7 +674,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.CreateGroup": {
+        "github_com_miniyus_gofiber_internal_groups.CreateGroup": {
             "type": "object",
             "required": [
                 "name",
@@ -687,12 +687,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission"
                     }
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.CreatePermission": {
+        "github_com_miniyus_gofiber_internal_groups.CreatePermission": {
             "type": "object",
             "required": [
                 "actions",
@@ -702,7 +702,7 @@ const docTemplate = `{
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreateAction"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreateAction"
                     }
                 },
                 "name": {
@@ -710,13 +710,13 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.ListResponse": {
+        "github_com_miniyus_gofiber_internal_groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseGroup"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -730,7 +730,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.ResponseAction": {
+        "github_com_miniyus_gofiber_internal_groups.ResponseAction": {
             "type": "object",
             "properties": {
                 "method": {
@@ -741,13 +741,13 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.ResponseGroup": {
+        "github_com_miniyus_gofiber_internal_groups.ResponseGroup": {
             "type": "object",
             "properties": {
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.ResponseAction"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseAction"
                     }
                 },
                 "id": {
@@ -758,7 +758,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_groups.UpdateGroup": {
+        "github_com_miniyus_gofiber_internal_groups.UpdateGroup": {
             "type": "object",
             "properties": {
                 "name": {
@@ -767,12 +767,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_api_groups.CreatePermission"
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission"
                     }
                 }
             }
         },
-        "internal_api_api_auth.ResetPasswordStruct": {
+        "internal_api_auth.ResetPasswordStruct": {
             "type": "object",
             "required": [
                 "password",
@@ -787,7 +787,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_api_auth.SignIn": {
+        "internal_api_auth.SignIn": {
             "type": "object",
             "required": [
                 "password",
@@ -802,7 +802,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_api_auth.SignUp": {
+        "internal_api_auth.SignUp": {
             "type": "object",
             "required": [
                 "email",
@@ -825,7 +825,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_api_auth.SignUpResponse": {
+        "internal_api_auth.SignUpResponse": {
             "type": "object",
             "properties": {
                 "expires_at": {
@@ -842,7 +842,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_api_auth.TokenInfo": {
+        "internal_api_auth.TokenInfo": {
             "type": "object",
             "properties": {
                 "expires_at": {
@@ -856,7 +856,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.CreateAction": {
+        "internal_groups.CreateAction": {
             "type": "object",
             "required": [
                 "method",
@@ -871,7 +871,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.CreateGroup": {
+        "internal_groups.CreateGroup": {
             "type": "object",
             "required": [
                 "name",
@@ -884,12 +884,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
+                        "$ref": "#/definitions/internal_groups.CreatePermission"
                     }
                 }
             }
         },
-        "internal_api_groups.CreatePermission": {
+        "internal_groups.CreatePermission": {
             "type": "object",
             "required": [
                 "actions",
@@ -899,7 +899,7 @@ const docTemplate = `{
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_api_groups.CreateAction"
+                        "$ref": "#/definitions/internal_groups.CreateAction"
                     }
                 },
                 "name": {
@@ -907,13 +907,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.ListResponse": {
+        "internal_groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_api_groups.ResponseGroup"
+                        "$ref": "#/definitions/internal_groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -927,7 +927,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.ResponseAction": {
+        "internal_groups.ResponseAction": {
             "type": "object",
             "properties": {
                 "method": {
@@ -938,13 +938,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.ResponseGroup": {
+        "internal_groups.ResponseGroup": {
             "type": "object",
             "properties": {
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_api_groups.ResponseAction"
+                        "$ref": "#/definitions/internal_groups.ResponseAction"
                     }
                 },
                 "id": {
@@ -955,7 +955,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api_groups.UpdateGroup": {
+        "internal_groups.UpdateGroup": {
             "type": "object",
             "properties": {
                 "name": {
@@ -964,7 +964,7 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_api_groups.CreatePermission"
+                        "$ref": "#/definitions/internal_groups.CreatePermission"
                     }
                 }
             }

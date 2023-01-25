@@ -3,7 +3,7 @@ package groups
 import (
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/miniyus/gofiber/api_error"
-	"github.com/miniyus/gofiber/internal/api"
+	"github.com/miniyus/gofiber/internal"
 	"github.com/miniyus/gofiber/utils"
 	"strconv"
 )
@@ -47,7 +47,7 @@ func (h *HandlerStruct) Create(ctx *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	errRes := api.HandleValidate(ctx, dto)
+	errRes := internal.HandleValidate(ctx, dto)
 	if errRes != nil {
 		return errRes.Response()
 	}
@@ -85,7 +85,7 @@ func (h *HandlerStruct) Update(ctx *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	errRes := api.HandleValidate(ctx, dto)
+	errRes := internal.HandleValidate(ctx, dto)
 	if errRes != nil {
 		return errRes.Response()
 	}
@@ -108,7 +108,7 @@ func (h *HandlerStruct) Patch(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	errRes := api.HandleValidate(ctx, dto)
+	errRes := internal.HandleValidate(ctx, dto)
 	if errRes != nil {
 		return errRes.Response()
 	}

@@ -5,7 +5,7 @@ import (
 	jwtLib "github.com/golang-jwt/jwt/v4"
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/internal/api/users"
+	"github.com/miniyus/gofiber/internal/users"
 	"github.com/miniyus/gofiber/logger"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	"github.com/miniyus/gofiber/utils"

@@ -2,7 +2,7 @@ package api_auth
 
 import (
 	"github.com/miniyus/gofiber/auth"
-	"github.com/miniyus/gofiber/internal/api/users"
+	"github.com/miniyus/gofiber/internal/users"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

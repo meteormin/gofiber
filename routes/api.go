@@ -3,9 +3,9 @@ package routes
 import (
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/auth"
-	"github.com/miniyus/gofiber/internal/api/api_auth"
-	"github.com/miniyus/gofiber/internal/api/groups"
-	"github.com/miniyus/gofiber/internal/api/users"
+	api_auth2 "github.com/miniyus/gofiber/internal/api_auth"
+	groups2 "github.com/miniyus/gofiber/internal/groups"
+	users2 "github.com/miniyus/gofiber/internal/users"
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/resolver"
 )
@@ -30,9 +30,9 @@ func Api(apiRouter app.Router, app app.Application) {
 	}
 
 	apiRouter.Route(
-		api_auth.Prefix,
-		api_auth.Register(
-			api_auth.New(
+		api_auth2.Prefix,
+		api_auth2.Register(
+			api_auth2.New(
 				app.DB(),
 				tokenGenerator(),
 				zapLogger(),
@@ -42,14 +42,14 @@ func Api(apiRouter app.Router, app app.Application) {
 	).Name("api.auth")
 
 	apiRouter.Route(
-		groups.Prefix,
-		groups.Register(groups.New(app.DB(), zapLogger())),
+		groups2.Prefix,
+		groups2.Register(groups2.New(app.DB(), zapLogger())),
 		auth.Middlewares(authMiddlewareParam, permission.HasPermission(hasPermParam))...,
 	).Name("api.groups")
 
 	apiRouter.Route(
-		users.Prefix,
-		users.Register(users.New(app.DB(), zapLogger())),
+		users2.Prefix,
+		users2.Register(users2.New(app.DB(), zapLogger())),
 		auth.Middlewares(authMiddlewareParam)...,
 	).Name("api.users")
 
