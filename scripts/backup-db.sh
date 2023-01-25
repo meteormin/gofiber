@@ -15,4 +15,4 @@ fi
 
 export "$(grep -v "^#" "$ENV_FILE" | xargs -d "\n")"
 
-docker exec "$CONTAINER_NAME" pg_dump -h localhost -U "$DB_USERNAME" -d "$DB_DATABASE" -F t >"$DATA_DIR/go-pgsql_$(date "+%Y-%m-%d").tar"
+docker exec "$CONTAINER_NAME" pg_dump -h localhost -U "$DB_USERNAME" -d "$DB_DATABASE" -F t >"$DATA_DIR/pgsql_$(date "+%Y-%m-%d").tar"
