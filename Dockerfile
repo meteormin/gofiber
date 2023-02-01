@@ -50,7 +50,7 @@ WORKDIR /home/gofiber
 
 COPY --from=build /fiber/build ./build
 
-COPY .env${SELECT_ENV} ./.env
+COPY .env${SELECT_ENV} .env
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start-container.sh /usr/local/bin/start-container
 
