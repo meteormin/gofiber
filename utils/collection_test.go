@@ -1,7 +1,7 @@
 package utils_test
 
 import (
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/utils"
 	"log"
 	"testing"
 )
@@ -69,7 +69,7 @@ func TestBaseCollection_Except(t *testing.T) {
 		return v == 1
 	})
 
-	for _, n := range result {
+	for _, n := range result.Items() {
 		if n == 1 {
 			t.Error("FAIL!")
 		}
@@ -82,7 +82,7 @@ func TestBaseCollection_Filter(t *testing.T) {
 		return v == 1
 	})
 
-	for _, n := range resultCollection {
+	for _, n := range resultCollection.Items() {
 		if n != 1 {
 			t.Error("FAIL!")
 		}
@@ -104,7 +104,7 @@ func TestBaseCollection_Map(t *testing.T) {
 		return i + 1
 	})
 
-	for i, n := range result {
+	for i, n := range result.Items() {
 		log.Print(i, n)
 		if n != testData[i] {
 			t.Error("Fail")

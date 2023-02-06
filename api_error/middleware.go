@@ -3,41 +3,22 @@ package api_error
 import (
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	configure "github.com/miniyus/gofiber/config"
-	"go.uber.org/zap"
+	"github.com/miniyus/gofiber/app"
+	"github.com/miniyus/gofiber/log"
 	"runtime/debug"
 )
 
-func OverrideDefaultErrorHandler(cfg *configure.Configs) fiber.ErrorHandler {
-
+func OverrideDefaultErrorHandler(appEnv app.Env) fiber.ErrorHandler {
 	return func(ctx *fiber.Ctx, err error) error {
 
 		if err == nil {
 			return nil
 		}
 
-		var config *configure.Configs
-		if cfg == nil {
-			config, err = configure.GetContext[*configure.Configs](ctx, configure.ConfigsKey)
-			if err != nil {
-				errRes := NewFromError(ctx, err)
-				return errRes.Response()
-			}
-
-		} else {
-			config = cfg
-		}
-
-		var logger *zap.SugaredLogger
-		logger, err = configure.GetContext[*zap.SugaredLogger](ctx, configure.LoggerKey)
-
-		if err != nil {
-			errRes := NewFromError(ctx, err)
-			return errRes.Response()
-		}
+		logger := log.GetLogger()
 
 		logger.Errorln(err)
-		if config.AppEnv != configure.PRD {
+		if appEnv != app.PRD {
 			debug.PrintStack()
 		}
 
@@ -46,7 +27,7 @@ func OverrideDefaultErrorHandler(cfg *configure.Configs) fiber.ErrorHandler {
 	}
 }
 
-func ErrorHandler(cfg *configure.Configs) fiber.Handler {
+func ErrorHandler(appEnv app.Env) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		err := ctx.Next()
 
@@ -54,27 +35,10 @@ func ErrorHandler(cfg *configure.Configs) fiber.Handler {
 			return nil
 		}
 
-		var config *configure.Configs
-		if cfg == nil {
-			config, err = configure.GetContext[*configure.Configs](ctx, configure.ConfigsKey)
-			if err != nil {
-				errRes := NewFromError(ctx, err)
-				return errRes.Response()
-			}
-		} else {
-			config = cfg
-		}
-
-		var logger *zap.SugaredLogger
-		logger, err = configure.GetContext[*zap.SugaredLogger](ctx, configure.LoggerKey)
-
-		if err != nil {
-			errRes := NewFromError(ctx, err)
-			return errRes.Response()
-		}
+		logger := log.GetLogger()
 
 		logger.Errorln(err)
-		if config.AppEnv != configure.PRD {
+		if appEnv != app.PRD {
 			debug.PrintStack()
 		}
 

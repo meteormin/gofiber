@@ -1,20 +1,21 @@
-package permission_test
+package migrations_test
 
 import (
 	"github.com/miniyus/gofiber/database"
-	"github.com/miniyus/gofiber/permission"
+	"github.com/miniyus/gofiber/database/migrations"
 	gormLogger "gorm.io/gorm/logger"
 	"testing"
 	"time"
 )
 
-func TestRepositoryStruct(t *testing.T) {
-	var groupId uint = 1
-	db := database.New(database.Config{
+func TestMigrate(t *testing.T) {
+	cfg := database.Config{
+		Name:        "default",
+		Driver:      "postgres",
 		Host:        "localhost",
 		Dbname:      "go_fiber",
-		Username:    "",
-		Password:    "",
+		Username:    "smyoo",
+		Password:    "smyoo",
 		Port:        "5432",
 		TimeZone:    "Asia/Seoul",
 		SSLMode:     false,
@@ -26,20 +27,11 @@ func TestRepositoryStruct(t *testing.T) {
 			Colorful:                  true,
 		},
 		MaxIdleConn: 10,
-		MaxOpenConn: 100,
+		MaxOpenConn: 10,
 		MaxLifeTime: time.Hour,
-	})
-
-	repo := permission.NewRepository(db)
-
-	get, err := repo.Get(groupId)
-	if err != nil {
-		t.Error(err)
-	}
-	save, err := repo.Save(get)
-	if err != nil {
-		t.Error(err)
 	}
 
-	t.Error(save)
+	db := database.New(cfg)
+
+	migrations.Migrate(db)
 }

@@ -39,135 +39,46 @@ definitions:
       username:
         type: string
     type: object
-  github_com_miniyus_gofiber_internal_api_auth.ResetPasswordStruct:
+  github_com_miniyus_gofiber_pkg_worker.Job:
     properties:
-      password:
+      created_at:
         type: string
-      password_confirm:
+      job_id:
         type: string
-    required:
-    - password
-    - password_confirm
+      meta:
+        additionalProperties: true
+        type: object
+      status:
+        $ref: '#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus'
+      updated_at:
+        type: string
+      uuid:
+        type: string
+      worker_name:
+        type: string
     type: object
-  github_com_miniyus_gofiber_internal_api_auth.SignIn:
+  github_com_miniyus_gofiber_pkg_worker.JobStatus:
+    enum:
+    - success
+    - fail
+    - wait
+    - progress
+    type: string
+    x-enum-varnames:
+    - SUCCESS
+    - FAIL
+    - WAIT
+    - PROGRESS
+  github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo:
     properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  github_com_miniyus_gofiber_internal_api_auth.SignUp:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-      password_confirm:
-        type: string
-      username:
-        type: string
-    required:
-    - email
-    - password
-    - password_confirm
-    - username
-    type: object
-  github_com_miniyus_gofiber_internal_api_auth.SignUpResponse:
-    properties:
-      expires_at:
-        type: string
-      expires_in:
+      is_running:
+        type: boolean
+      job_count:
         type: integer
-      token:
-        type: string
-      user_id:
-        type: integer
-    type: object
-  github_com_miniyus_gofiber_internal_api_auth.TokenInfo:
-    properties:
-      expires_at:
-        type: string
-      expires_in:
-        type: integer
-      token:
-        type: string
-    type: object
-  github_com_miniyus_gofiber_internal_groups.CreateAction:
-    properties:
-      method:
-        $ref: '#/definitions/permission.Method'
-      resource:
-        type: string
-    required:
-    - method
-    - resource
-    type: object
-  github_com_miniyus_gofiber_internal_groups.CreateGroup:
-    properties:
-      name:
-        type: string
-      permissions:
-        items:
-          $ref: '#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission'
-        type: array
-    required:
-    - name
-    - permissions
-    type: object
-  github_com_miniyus_gofiber_internal_groups.CreatePermission:
-    properties:
-      actions:
-        items:
-          $ref: '#/definitions/github_com_miniyus_gofiber_internal_groups.CreateAction'
-        type: array
-      name:
-        type: string
-    required:
-    - actions
-    - name
-    type: object
-  github_com_miniyus_gofiber_internal_groups.ListResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseGroup'
-        type: array
-      page:
-        type: integer
-      page_size:
-        type: integer
-      total_count:
-        type: integer
-    type: object
-  github_com_miniyus_gofiber_internal_groups.ResponseAction:
-    properties:
-      method:
-        $ref: '#/definitions/permission.Method'
-      resource:
-        type: string
-    type: object
-  github_com_miniyus_gofiber_internal_groups.ResponseGroup:
-    properties:
-      actions:
-        items:
-          $ref: '#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseAction'
-        type: array
-      id:
+      max_job_count:
         type: integer
       name:
         type: string
-    type: object
-  github_com_miniyus_gofiber_internal_groups.UpdateGroup:
-    properties:
-      name:
-        type: string
-      permissions:
-        items:
-          $ref: '#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission'
-        type: array
     type: object
   internal_api_auth.ResetPasswordStruct:
     properties:
@@ -299,6 +210,40 @@ definitions:
           $ref: '#/definitions/internal_groups.CreatePermission'
         type: array
     type: object
+  internal_jobs.GetJob:
+    properties:
+      created_at:
+        type: string
+      job_id:
+        type: string
+      meta:
+        additionalProperties: true
+        type: object
+      status:
+        $ref: '#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus'
+      updated_at:
+        type: string
+      uuid:
+        type: string
+      worker_name:
+        type: string
+    type: object
+  internal_jobs.GetJobs:
+    properties:
+      jobs:
+        items:
+          $ref: '#/definitions/github_com_miniyus_gofiber_pkg_worker.Job'
+        type: array
+    type: object
+  internal_jobs.GetStatus:
+    properties:
+      worker_count:
+        type: integer
+      workers:
+        items:
+          $ref: '#/definitions/github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo'
+        type: array
+    type: object
   permission.Method:
     enum:
     - GET
@@ -324,10 +269,10 @@ info:
     email: miniyu97@gmail.com
     name: miniyus
     url: https://miniyus.github.io
-  description: keyword-search-backend API
+  description: gofiber API
   license:
     name: MIT
-  title: keyword-search-backend Swagger API Documentation
+  title: gofiber Swagger API Documentation
   version: 1.0.0
 paths:
   /api/auth/me:
@@ -625,6 +570,98 @@ paths:
       summary: get group by name
       tags:
       - Groups
+  /api/worker/{worker}/jobs:
+    get:
+      consumes:
+      - application/json
+      description: get jobs
+      parameters:
+      - description: worker name
+        in: path
+        name: worker
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_jobs.GetJobs'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: get jobs
+      tags:
+      - Jobs
+  /api/worker/{worker}/jobs/{job}:
+    get:
+      consumes:
+      - application/json
+      description: get job
+      parameters:
+      - description: worker name
+        in: path
+        name: worker
+        required: true
+        type: string
+      - description: job id
+        in: path
+        name: job
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_jobs.GetJob'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: get job
+      tags:
+      - Jobs
+  /api/worker/status:
+    get:
+      consumes:
+      - application/json
+      description: jobs status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_jobs.GetStatus'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: jobs status
+      tags:
+      - Jobs
   /health-check:
     get:
       consumes:

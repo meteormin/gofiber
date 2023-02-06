@@ -65,7 +65,7 @@ DB_AUTO_MIGRATE=true
   |-- api_error: api error, error response 관련 기능
   |-- auth: 인증 관련 기능
   |-- database: database, gorm 연결
-  |-- logger: 로거
+  |-- log: 로거
   |-- permission: permission 관련 기능  
   |-- resolver: factory 패턴을 이용하여, 필요한 모듈 생성 함수를 정의해 놓은 패키지
   |-- entity: db 스키마를 가진 구조체 집합

@@ -6,7 +6,7 @@ import (
 	"github.com/miniyus/gofiber/api_error"
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/internal"
-	"github.com/miniyus/gofiber/logger"
+	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 )
 
@@ -16,18 +16,15 @@ type Handler interface {
 	Me(ctx *fiber.Ctx) error
 	ResetPassword(ctx *fiber.Ctx) error
 	RevokeToken(ctx *fiber.Ctx) error
-	logger.HasLogger
 }
 
 type HandlerStruct struct {
 	service Service
-	logger.HasLoggerStruct
 }
 
 func NewHandler(service Service) Handler {
 	return &HandlerStruct{
-		service:         service,
-		HasLoggerStruct: logger.HasLoggerStruct{Logger: service.GetLogger()},
+		service: service,
 	}
 }
 
@@ -122,7 +119,7 @@ func (h *HandlerStruct) SignIn(ctx *fiber.Ctx) error {
 func (h *HandlerStruct) Me(ctx *fiber.Ctx) error {
 	user, err := auth.GetAuthUser(ctx)
 	if err != nil {
-		h.GetLogger().Error(user)
+		log.GetLogger().Error(user)
 		return fiber.NewError(500, "Can't Load Context AuthUser")
 	}
 

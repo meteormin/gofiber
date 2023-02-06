@@ -4,8 +4,8 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "keyword-search-backend API",
-        "title": "keyword-search-backend Swagger API Documentation",
+        "description": "gofiber API",
+        "title": "gofiber Swagger API Documentation",
         "contact": {
             "name": "miniyus",
             "url": "https://miniyus.github.io",
@@ -486,6 +486,151 @@
                 }
             }
         },
+        "/api/worker/status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "jobs status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "jobs status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_jobs.GetStatus"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/worker/{worker}/jobs": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get jobs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "get jobs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "worker name",
+                        "name": "worker",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_jobs.GetJobs"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/worker/{worker}/jobs/{job}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "get job",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "worker name",
+                        "name": "worker",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "job id",
+                        "name": "job",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_jobs.GetJob"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/health-check": {
             "get": {
                 "description": "health check your server",
@@ -571,200 +716,62 @@
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_auth.ResetPasswordStruct": {
+        "github_com_miniyus_gofiber_pkg_worker.Job": {
             "type": "object",
-            "required": [
-                "password",
-                "password_confirm"
-            ],
             "properties": {
-                "password": {
+                "created_at": {
                     "type": "string"
                 },
-                "password_confirm": {
+                "job_id": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "status": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "worker_name": {
                     "type": "string"
                 }
             }
         },
-        "github_com_miniyus_gofiber_internal_api_auth.SignIn": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
+        "github_com_miniyus_gofiber_pkg_worker.JobStatus": {
+            "type": "string",
+            "enum": [
+                "success",
+                "fail",
+                "wait",
+                "progress"
             ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
+            "x-enum-varnames": [
+                "SUCCESS",
+                "FAIL",
+                "WAIT",
+                "PROGRESS"
+            ]
         },
-        "github_com_miniyus_gofiber_internal_api_auth.SignUp": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "password_confirm",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_api_auth.SignUpResponse": {
+        "github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo": {
             "type": "object",
             "properties": {
-                "expires_at": {
-                    "type": "string"
+                "is_running": {
+                    "type": "boolean"
                 },
-                "expires_in": {
+                "job_count": {
                     "type": "integer"
                 },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_api_auth.TokenInfo": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.CreateAction": {
-            "type": "object",
-            "required": [
-                "method",
-                "resource"
-            ],
-            "properties": {
-                "method": {
-                    "$ref": "#/definitions/permission.Method"
-                },
-                "resource": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.CreateGroup": {
-            "type": "object",
-            "required": [
-                "name",
-                "permissions"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission"
-                    }
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.CreatePermission": {
-            "type": "object",
-            "required": [
-                "actions",
-                "name"
-            ],
-            "properties": {
-                "actions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreateAction"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.ListResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseGroup"
-                    }
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "page_size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.ResponseAction": {
-            "type": "object",
-            "properties": {
-                "method": {
-                    "$ref": "#/definitions/permission.Method"
-                },
-                "resource": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.ResponseGroup": {
-            "type": "object",
-            "properties": {
-                "actions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.ResponseAction"
-                    }
-                },
-                "id": {
+                "max_job_count": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_internal_groups.UpdateGroup": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_internal_groups.CreatePermission"
-                    }
                 }
             }
         },
@@ -961,6 +968,58 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/internal_groups.CreatePermission"
+                    }
+                }
+            }
+        },
+        "internal_jobs.GetJob": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "job_id": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "status": {
+                    "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "worker_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_jobs.GetJobs": {
+            "type": "object",
+            "properties": {
+                "jobs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.Job"
+                    }
+                }
+            }
+        },
+        "internal_jobs.GetStatus": {
+            "type": "object",
+            "properties": {
+                "worker_count": {
+                    "type": "integer"
+                },
+                "workers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo"
                     }
                 }
             }

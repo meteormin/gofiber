@@ -6,7 +6,7 @@ import (
 )
 
 // SubRouter
-// sub router 등록을 위해 일관성을 위해 생성한 타입
+// sub router 등록할 때 일관성 유지를 위해 생성한 타입
 type SubRouter func(router fiber.Router)
 
 // Router
@@ -14,6 +14,8 @@ type SubRouter func(router fiber.Router)
 type Router interface {
 	App() *fiber.App
 	Route(prefix string, callback SubRouter, middleware ...fiber.Handler) fiber.Router
+	Name(name string)
+	Middleware(handlers ...fiber.Handler)
 	GetRoutes() []fiber.Router
 }
 
@@ -49,6 +51,20 @@ func NewRouter(app *fiber.App, prefix string, name ...string) Router {
 // App get fiber app
 func (r *routerStruct) App() *fiber.App {
 	return r.app
+}
+
+func (r *routerStruct) Name(name string) {
+	r.router.Name(name)
+}
+
+func (r *routerStruct) Middleware(handlers ...fiber.Handler) {
+	if len(handlers) == 0 {
+		return
+	}
+
+	for _, h := range handlers {
+		r.router.Use(h)
+	}
 }
 
 // Route

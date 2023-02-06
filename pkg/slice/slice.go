@@ -56,6 +56,13 @@ func Chunk[T interface{}](s []T, chunkSize int, fn ...func(v []T, i int)) [][]T 
 		}
 	}
 
+	if len(chunkSlice) != 0 {
+		if len(fn) != 0 {
+			fn[0](chunkSlice, chunkedIndex)
+			chunkedSlice = append(chunkedSlice, chunkSlice)
+		}
+	}
+
 	return chunkedSlice
 }
 

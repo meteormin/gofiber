@@ -2,11 +2,10 @@ package create_admin
 
 import (
 	"errors"
-	"github.com/miniyus/gofiber/app"
+	"github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/permission"
-	"github.com/miniyus/gofiber/resolver"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"log"
@@ -15,7 +14,7 @@ import (
 
 func existsAdmin(db *gorm.DB) bool {
 	admin := &entity.User{}
-	rs := db.Where(entity.User{Role: string(entity.Admin)}).Find(admin)
+	rs := db.Where(entity.User{Role: entity.Admin}).Find(admin)
 	rs, err := database.HandleResult(rs)
 	if rs.RowsAffected == 0 {
 		return false
@@ -25,17 +24,16 @@ func existsAdmin(db *gorm.DB) bool {
 		return false
 	}
 
-	log.Println("Skip create admin: already exists admin account")
 	return true
 }
 
-func CreateAdmin(app app.Application) {
-	db := app.DB()
+func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 	if existsAdmin(db) {
+		log.Println("Skip create admin: already exists admin account")
 		return
 	}
-	configs := app.Config()
-	permCollectionFn := resolver.MakePermissionCollection(configs.Permission)
+
+	permCollection := permission.NewPermissionCollection(permission.NewPermissionsFromConfig(configs.Permission)...)
 
 	caCfg := configs.CreateAdmin
 
@@ -60,17 +58,20 @@ func CreateAdmin(app app.Application) {
 		Username:        username,
 		Password:        hashedPassword,
 		Email:           email,
-		Role:            string(entity.Admin),
+		Role:            entity.Admin,
 		EmailVerifiedAt: &now,
 	}
 
-	permissions := permCollectionFn()
+	permissions := permCollection
 
 	entPerms := make([]entity.Permission, 0)
 
-	permissions.For(func(perm permission.Permission, i int) {
-		entPerms = append(entPerms, permission.ToPermissionEntity(perm))
-	})
+	get, err := permissions.Get(string(entity.Admin))
+	if err != nil {
+		return
+	}
+
+	entPerms = append(entPerms, permission.ToPermissionEntity(*get))
 
 	group := &entity.Group{
 		Name:        "Admin",

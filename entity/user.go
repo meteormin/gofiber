@@ -5,12 +5,10 @@ import (
 	"time"
 )
 
-type Role string
+type UserRole string
 
 const (
-	Admin   Role = "admin"
-	Manager Role = "manager"
-	Member  Role = "member"
+	Admin UserRole = "admin"
 )
 
 type User struct {
@@ -19,7 +17,7 @@ type User struct {
 	Email           string     `gorm:"column:email;type:varchar(100);uniqueIndex" json:"email"`
 	Password        string     `gorm:"column:password;type:varchar(255)" json:"-"`
 	GroupId         *uint      `gorm:"column:group_id;type:bigint" json:"group_id"`
-	Role            string     `gorm:"column:role;type:varchar(10)" json:"role"`
+	Role            UserRole   `gorm:"column:role;type:varchar(10)" json:"role"`
 	EmailVerifiedAt *time.Time `gorm:"column:email_verified_at" json:"email_verified_at"`
 	Group           Group
 }

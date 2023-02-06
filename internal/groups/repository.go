@@ -3,9 +3,7 @@ package groups
 import (
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/logger"
 	"github.com/miniyus/gofiber/utils"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -17,16 +15,14 @@ type Repository interface {
 	Find(pk uint) (*entity.Group, error)
 	FindByName(groupName string) (*entity.Group, error)
 	Delete(pk uint) (bool, error)
-	logger.HasLogger
 }
 
 type RepositoryStruct struct {
 	db *gorm.DB
-	logger.HasLoggerStruct
 }
 
-func NewRepository(db *gorm.DB, log *zap.SugaredLogger) Repository {
-	return &RepositoryStruct{db, logger.HasLoggerStruct{Logger: log}}
+func NewRepository(db *gorm.DB) Repository {
+	return &RepositoryStruct{db}
 }
 
 func (r *RepositoryStruct) Count(group entity.Group) (int64, error) {

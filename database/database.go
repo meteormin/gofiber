@@ -2,33 +2,81 @@ package database
 
 import (
 	"fmt"
-	"github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	gormLogger "gorm.io/gorm/logger"
 	"log"
 	"os"
+	"time"
 )
 
-// DB
+type Config struct {
+	Name        string
+	Driver      string
+	Host        string
+	Dbname      string
+	Username    string
+	Password    string
+	Port        string
+	TimeZone    string
+	SSLMode     bool
+	AutoMigrate bool
+	Logger      gormLogger.Config
+	MaxIdleConn int
+	MaxOpenConn int
+	MaxLifeTime time.Duration
+}
+
+var connections = make(map[string]*gorm.DB)
+
+func GetDB(name ...string) *gorm.DB {
+	if len(name) == 0 {
+		return connections["default"]
+	}
+
+	return connections[name[0]]
+}
+
+func switchDriver(driver string) func(dsn string) gorm.Dialector {
+	switch driver {
+	case "postgres":
+		return postgres.Open
+	case "pgsql":
+		return postgres.Open
+	default:
+		return postgres.Open
+	}
+}
+
+// New
 // gorm.DB 객체 생성 함수
-func DB(config config.DB) *gorm.DB {
+func New(config ...Config) *gorm.DB {
+	var cfg Config
+	if len(config) != 0 {
+		cfg = config[0]
+	} else {
+		panic("새 데이터베이스 연결을 생성하려면 database.Config(이)가 필요합니다.")
+	}
+
 	var sslMode string = "disable"
-	if config.SSLMode {
+	if cfg.SSLMode {
 		sslMode = "enable"
 	}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		config.Host, config.Username, config.Password, config.Dbname, config.Port, sslMode, config.TimeZone,
+		cfg.Host, cfg.Username, cfg.Password, cfg.Dbname, cfg.Port, sslMode, cfg.TimeZone,
 	)
 
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		config.Logger,
+		cfg.Logger,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	driver := switchDriver(cfg.Driver)
+
+	db, err := gorm.Open(driver(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 
@@ -38,7 +86,7 @@ func DB(config config.DB) *gorm.DB {
 
 	log.Println("Success: Connect DB")
 
-	if config.AutoMigrate {
+	if cfg.AutoMigrate {
 		migrations.Migrate(db)
 	}
 
@@ -47,9 +95,11 @@ func DB(config config.DB) *gorm.DB {
 		log.Fatalf("Failed: Connect sqlDB %v", err)
 	}
 
-	sqlDB.SetConnMaxLifetime(config.MaxLifeTime)
-	sqlDB.SetMaxIdleConns(config.MaxIdleConn)
-	sqlDB.SetMaxOpenConns(config.MaxOpenConn)
+	sqlDB.SetConnMaxLifetime(cfg.MaxLifeTime)
+	sqlDB.SetMaxIdleConns(cfg.MaxIdleConn)
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConn)
+
+	connections[cfg.Name] = db
 
 	return db
 }
