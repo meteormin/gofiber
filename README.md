@@ -87,42 +87,106 @@ import "github.com/miniyus/gofiber/config"
 
 func main() {
 	config.GetConfigs()
-
 }
 
 ```
 
-### internal
-- 기능 구현
-
-### app.go
+### database
 
 ```go
 package main
 
-import "github.com/miniyus/gofiber"
+import (
+  "github.com/miniyus/gofiber/database"
+  "os"
+  "time"
+)
 
 func main() {
-	// 애플리케이션 생성
-	container := gofiber.New()
-	container.Run()
+  cfg := database.Config{
+    Name:        "default",
+    Driver:      "postgres",
+    Host:        os.Getenv("DB_HOST"),
+    Dbname:      os.Getenv("DB_DATABASE"),
+    Username:    os.Getenv("DB_USERNAME"),
+    Password:    os.Getenv("DB_PASSWORD"),
+    Port:        os.Getenv("DB_PORT"),
+    TimeZone:    os.Getenv("TIME_ZONE"),
+    SSLMode:     false,
+    AutoMigrate: autoMigrate,
+    Logger: gormLogger.Config{
+      SlowThreshold:             time.Second,
+      LogLevel:                  gormLogger.Silent,
+      IgnoreRecordNotFoundError: true,
+      Colorful:                  true,
+    },
+    MaxIdleConn: 10,
+    MaxOpenConn: 100,
+    MaxLifeTime: time.Hour,
+  }
+  
+  database.New(cfg)
+}
+```
+
+### log
+
+```go
+package main
+
+import (
+  "github.com/miniyus/gofiber/log"
+  "go.uber.org/zap/zapcore"
+  "os"
+)
+
+func main() {
+  cfg := log.Config{
+    Name:       "default",
+    TimeFormat: "2006-01-02 15:04:05",
+    FilePath:   "filePath",
+    Filename:   "filename",
+    MaxSize:    10,
+    MaxBackups: 30,
+    MaxAge:     30,
+    Compress:   true,
+    TimeKey:    "timestamp",
+    TimeZone:   os.Getenv("TIME_ZONE"),
+    LogLevel:   zapcore.DebugLevel,
+  }
+  log.New()
 }
 
 ```
 
-**Routes**
+### app
+
+```go
+package main
+
+import "github.com/miniyus/gofiber/app"
+
+func main() {
+	// 애플리케이션 생성
+	a := app.New()
+	a.Run()
+}
+
+```
+
+### Routes
 
 ```go
 package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber"
+	"github.com/miniyus/gofiber/app"
 )
 
 const ApiPrefix = "/api"
 
-func Api(router gofiber.Router, app gofiber.Application) {
+func Api(router app.Router, a app.Application) {
 	router.Route(
 		"test",
 		func(r fiber.Router) {
@@ -134,3 +198,6 @@ func Api(router gofiber.Router, app gofiber.Application) {
 }
 
 ```
+
+### internal
+- 기능 구현

@@ -52,14 +52,7 @@ func switchDriver(driver string) func(dsn string) gorm.Dialector {
 
 // New
 // gorm.DB 객체 생성 함수
-func New(config ...Config) *gorm.DB {
-	var cfg Config
-	if len(config) != 0 {
-		cfg = config[0]
-	} else {
-		panic("새 데이터베이스 연결을 생성하려면 database.Config(이)가 필요합니다.")
-	}
-
+func New(cfg Config) *gorm.DB {
 	var sslMode string = "disable"
 	if cfg.SSLMode {
 		sslMode = "enable"
