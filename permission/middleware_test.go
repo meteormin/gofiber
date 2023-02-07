@@ -27,7 +27,7 @@ func TestCheckPermission(t *testing.T) {
 	method := "GET"
 	utils.NewCollection(hasPerm).For(func(perm permission.Permission, i int) {
 		utils.NewCollection(perm.Actions).For(func(action permission.Action, j int) {
-			routePath := "/test"
+			routePath := "/api/test/1"
 			if strings.Contains(routePath, action.Resource) {
 
 				if method == "OPTION" {

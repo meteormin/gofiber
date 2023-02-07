@@ -2,6 +2,7 @@ package permission
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
@@ -12,7 +13,6 @@ import (
 type HasPermissionParameter struct {
 	DB           *gorm.DB
 	DefaultPerms Collection
-	GroupId      uint
 	FilterFunc   func(ctx *fiber.Ctx, groupId uint, p Permission) bool
 }
 
@@ -29,9 +29,11 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 			db = database.GetDB()
 		}
 
+		authUser, err := auth.GetAuthUser(c)
+
 		repo := NewRepository(db)
 
-		get, err := repo.Get(parameter.GroupId)
+		get, err := repo.Get(*authUser.GroupId)
 		if err == nil {
 			permCollection = NewPermissionCollection()
 			utils.NewCollection(get).For(func(v entity.Permission, i int) {
@@ -59,11 +61,11 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 
 		userHasPerm := permCollection.Filter(func(p Permission, i int) bool {
 			if parameter.FilterFunc != nil {
-				return parameter.FilterFunc(c, parameter.GroupId, p)
+				return parameter.FilterFunc(c, *authUser.GroupId, p)
 			}
 
-			if parameter.GroupId != 0 {
-				return parameter.GroupId == p.GroupId
+			if *authUser.GroupId != 0 {
+				return *authUser.GroupId == p.GroupId
 			}
 
 			return false
@@ -98,7 +100,7 @@ func checkPermissionFromCtx(hasPerm []Permission, c *fiber.Ctx) bool {
 					return string(v) == method
 				})
 
-				if len(filtered.Items()) != 0 {
+				if filtered.Count() != 0 {
 					pass = true
 				}
 			}
