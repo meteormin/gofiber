@@ -41,7 +41,7 @@ func New(configs ...config.Configs) app.Application {
 	// register boot
 	a.Register(boot)
 
-	//a.Route(routes.ApiPrefix, routes.Api, "api")
+	a.Route(routes.ApiPrefix, routes.Api, "api")
 	a.Route("/", routes.External, "external")
 
 	return a
@@ -85,9 +85,12 @@ func bind(configs *config.Configs) app.Register {
 			return dispatcher
 		})
 
+		logger := cLog.New(configs.CustomLogger["default"])
+
 		var zLogger *zap.SugaredLogger
+		// like singleton
 		a.Bind(&zLogger, func() *zap.SugaredLogger {
-			return cLog.New(configs.CustomLogger["default"])
+			return logger
 		})
 	}
 }
@@ -121,6 +124,7 @@ func boot(a app.Application) {
 	a.Resolve(&configs)
 
 	create_admin.CreateAdmin(db, configs)
+
 	job_queue.RecordHistory(dispatcher, db)
 
 	dispatcher.Run()
