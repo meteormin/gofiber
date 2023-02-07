@@ -80,7 +80,7 @@ func Api(apiRouter app.Router, a app.Application) {
 				jDispatcher,
 			),
 		),
-	)
+	).Name("api.jobs")
 
 	apiRouter.Route(
 		groups.Prefix,
