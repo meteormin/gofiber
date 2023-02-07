@@ -1065,7 +1065,7 @@ const docTemplategofiber = `{
 
 // SwaggerInfogofiber holds exported Swagger Info so clients can modify it
 var SwaggerInfogofiber = &swag.Spec{
-	Version:          "1.1.6",
+	Version:          "1.1.7",
 	Host:             "localhost:9090",
 	BasePath:         "/",
 	Schemes:          []string{"http"},

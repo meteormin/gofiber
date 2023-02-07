@@ -12,7 +12,10 @@ import (
 func External(extRouter app.Router, app app.Application) {
 	extRouter.Route("/", func(router fiber.Router) {
 		router.Get("/metrics", monitor.New(monitor.Config{Title: "MyService Metrics Page"}))
-		router.Get("/swagger/*", swagger.HandlerDefault)
+		router.Get("/swagger/*", swagger.New(swagger.Config{
+			InstanceName: "gofiber",
+			Title:        "Swagger UI: miniyus/gofiber",
+		}))
 		router.Get("/health-check", healthCheck)
 	})
 
