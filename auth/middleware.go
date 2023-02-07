@@ -6,6 +6,9 @@ import (
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
 	configure "github.com/miniyus/gofiber/config"
+	"github.com/miniyus/gofiber/database"
+	mLog "github.com/miniyus/gofiber/log"
+	"github.com/miniyus/gofiber/utils"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"log"
@@ -64,16 +67,13 @@ func AccessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
 		var err error
 
 		if zLogger == nil {
-			zLogger, err = configure.GetContext[*zap.SugaredLogger](c, configure.LoggerKey)
-			if err != nil {
-				return err
-			}
+			zLogger = mLog.GetLogger()
 		}
 
 		start := time.Now()
 		err = c.Next()
 		elapsed := time.Since(start).Milliseconds()
-		cu, ok := c.Locals(configure.AuthUserKey).(*User)
+		cu, ok := c.Locals(utils.AuthUserKey).(*User)
 		userID := ""
 		if !ok {
 			userID = "guest"
@@ -140,7 +140,7 @@ func GetUserFromJWT() fiber.Handler {
 			ExpiresIn: &expiresIn,
 		}
 
-		c.Locals(configure.AuthUserKey, currentUser)
+		c.Locals(utils.AuthUserKey, currentUser)
 		return c.Next()
 	}
 }
@@ -155,10 +155,7 @@ func JwtMiddleware(jwtConfig ...jwtWare.Config) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
 		if config == nil {
-			cfg, err := configure.GetContext[*configure.Configs](c, configure.ConfigsKey)
-			if err != nil {
-				return err
-			}
+			cfg := configure.GetConfigs()
 			config = &cfg.Auth.Jwt
 		}
 
@@ -191,19 +188,19 @@ func jwtError() fiber.ErrorHandler {
 
 // CheckExpired
 // jwt 만료 기간 체크 미들웨어
-func CheckExpired(database ...*gorm.DB) fiber.Handler {
+func CheckExpired(gormDB ...*gorm.DB) fiber.Handler {
 	var db *gorm.DB
-	if len(database) != 0 {
-		db = database[0]
+	if len(gormDB) != 0 {
+		db = gormDB[0]
 	}
 
 	return func(c *fiber.Ctx) error {
-		user, err := configure.GetContext[*User](c, configure.AuthUserKey)
+		user, err := utils.GetContext[*User](c, utils.AuthUserKey)
 		if err != nil {
 			return err
 		}
 		if db == nil {
-			db, err = configure.GetContext[*gorm.DB](c, configure.DBKey)
+			db = database.GetDB()
 
 			if err != nil {
 				return err
@@ -228,7 +225,7 @@ func CheckExpired(database ...*gorm.DB) fiber.Handler {
 }
 
 func GetAuthUser(c *fiber.Ctx) (*User, error) {
-	user, err := configure.GetContext[*User](c, configure.AuthUserKey)
+	user, err := utils.GetContext[*User](c, utils.AuthUserKey)
 	if err != nil {
 		return nil, err
 	}
