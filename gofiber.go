@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	flogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	_ "github.com/miniyus/gofiber/api/gofiber"
 	"github.com/miniyus/gofiber/api_error"
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/config"
@@ -22,7 +21,7 @@ import (
 
 // New
 // @title gofiber Swagger API Documentation
-// @version 1.0.0
+// @version 1.1.3
 // @description gofiber API
 // @contact.name miniyus
 // @contact.url https://miniyus.github.io

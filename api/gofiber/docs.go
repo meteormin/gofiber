@@ -9,7 +9,14 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "miniyus",
+            "url": "https://miniyus.github.io",
+            "email": "miniyu97@gmail.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -1045,17 +1052,25 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Bearer token type",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.1.3",
+	Host:             "localhost:9090",
+	BasePath:         "/",
+	Schemes:          []string{"http"},
+	Title:            "gofiber Swagger API Documentation",
+	Description:      "gofiber API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   api_auth.ResetPasswordStruct:
     properties:
@@ -262,8 +263,17 @@ definitions:
       name:
         type: string
     type: object
+host: localhost:9090
 info:
-  contact: {}
+  contact:
+    email: miniyu97@gmail.com
+    name: miniyus
+    url: https://miniyus.github.io
+  description: gofiber API
+  license:
+    name: MIT
+  title: gofiber Swagger API Documentation
+  version: 1.1.3
 paths:
   /api/auth/me:
     get:
@@ -667,4 +677,12 @@ paths:
       summary: health check your server
       tags:
       - HealthCheck
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: Bearer token type
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
