@@ -5,7 +5,7 @@ import (
 )
 
 // @title gofiber Swagger API Documentation
-// @version 1.1.3
+// @version 1.1.4
 // @description gofiber API
 // @contact.name miniyus
 // @contact.url https://miniyus.github.io
