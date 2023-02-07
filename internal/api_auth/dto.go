@@ -1,7 +1,7 @@
 package api_auth
 
 import (
-	"github.com/miniyus/gofiber/utils"
+	"time"
 )
 
 type SignUp struct {
@@ -17,9 +17,9 @@ type SignIn struct {
 }
 
 type TokenInfo struct {
-	Token     string         `json:"token"`
-	ExpiresAt utils.JsonTime `json:"expires_at"`
-	ExpiresIn int64          `json:"expires_in"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
+	ExpiresIn int64     `json:"expires_in"`
 }
 
 type SignUpResponse struct {

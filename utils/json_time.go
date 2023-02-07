@@ -13,7 +13,7 @@ func (jt *JsonTime) UnmarshalJSON(b []byte) error {
 		return nil
 	}
 
-	t, err := time.Parse("2006-01-02", value) //parse time
+	t, err := time.Parse(DefaultDateLayout, value) //parse time
 	if err != nil {
 		return err
 	}

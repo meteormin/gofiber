@@ -39,6 +39,7 @@ func (r *RepositoryStruct) Save(permission []entity.Permission) ([]entity.Permis
 	rs := r.db.Clauses(clause.OnConflict{
 		Columns: []clause.Column{
 			{Name: "id"},
+			{Name: "permission"},
 		},
 		DoUpdates: clause.AssignmentColumns([]string{"permission"}),
 	}).Create(&permission)

@@ -16,6 +16,7 @@ type Service interface {
 	SignUp(signUp *SignUp) (*SignUpResponse, error)
 	ResetPassword(pk uint, passwordStruct *ResetPasswordStruct) (*entity.User, error)
 	RevokeToken(pk uint, token string) (bool, error)
+	GetTokenExp() int64
 }
 
 type ServiceStruct struct {
@@ -30,6 +31,10 @@ func NewService(repo auth.Repository, userRepo users.Repository, generator jwt.G
 		userRepo:       userRepo,
 		tokenGenerator: generator,
 	}
+}
+
+func (s *ServiceStruct) GetTokenExp() int64 {
+	return int64(s.tokenGenerator.GetExp())
 }
 
 func hashPassword(password string) (string, error) {
@@ -141,7 +146,7 @@ func (s *ServiceStruct) SignUp(up *SignUp) (*SignUpResponse, error) {
 			UserId: user.ID,
 			TokenInfo: TokenInfo{
 				Token:     token.Token,
-				ExpiresAt: utils.JsonTime(token.ExpiresAt),
+				ExpiresAt: token.ExpiresAt,
 				ExpiresIn: token.ExpiresAt.Unix(),
 			},
 		}

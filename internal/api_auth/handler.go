@@ -103,7 +103,8 @@ func (h *HandlerStruct) SignIn(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(TokenInfo{
 		Token:     result.Token,
-		ExpiresAt: utils.JsonTime(result.ExpiresAt),
+		ExpiresAt: result.ExpiresAt,
+		ExpiresIn: h.service.GetTokenExp(),
 	})
 }
 
