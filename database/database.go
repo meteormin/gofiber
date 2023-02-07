@@ -22,7 +22,7 @@ type Config struct {
 	Port        string
 	TimeZone    string
 	SSLMode     bool
-	AutoMigrate bool
+	AutoMigrate []interface{}
 	Logger      gormLogger.Config
 	MaxIdleConn int
 	MaxOpenConn int
@@ -79,8 +79,8 @@ func New(cfg Config) *gorm.DB {
 
 	log.Println("Success: Connect DB")
 
-	if cfg.AutoMigrate {
-		migrations.Migrate(db)
+	if cfg.AutoMigrate != nil && len(cfg.AutoMigrate) != 0 {
+		migrations.Migrate(db, cfg.AutoMigrate...)
 	}
 
 	sqlDB, err := db.DB()

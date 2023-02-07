@@ -22,7 +22,7 @@ func TestNew(t *testing.T) {
 		Port:        "5432",
 		TimeZone:    "Asia/Seoul",
 		SSLMode:     false,
-		AutoMigrate: false,
+		AutoMigrate: nil,
 		Logger: gormLogger.Config{
 			SlowThreshold:             time.Second,
 			LogLevel:                  gormLogger.Silent,
