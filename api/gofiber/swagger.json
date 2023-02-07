@@ -1,23 +1,8 @@
 {
-    "schemes": [
-        "http"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "gofiber API",
-        "title": "gofiber Swagger API Documentation",
-        "contact": {
-            "name": "miniyus",
-            "url": "https://miniyus.github.io",
-            "email": "miniyu97@gmail.com"
-        },
-        "license": {
-            "name": "MIT"
-        },
-        "version": "1.0.0"
+        "contact": {}
     },
-    "host": "localhost:9090",
-    "basePath": "/",
     "paths": {
         "/api/auth/me": {
             "get": {
@@ -1048,14 +1033,6 @@
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "description": "Bearer token type",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }
