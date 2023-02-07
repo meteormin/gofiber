@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
-	configure "github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
 	mLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
@@ -147,19 +146,9 @@ func GetUserFromJWT() fiber.Handler {
 
 // JwtMiddleware
 // jwt 유효성 체크 미들웨어
-func JwtMiddleware(jwtConfig ...jwtWare.Config) fiber.Handler {
-	var config *jwtWare.Config
-	if len(jwtConfig) != 0 {
-		config = &jwtConfig[0]
-	}
-
+func JwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		if config == nil {
-			cfg := configure.GetConfigs()
-			config = &cfg.Auth.Jwt
-		}
-
-		middleware := newJwtMiddleware(*config)
+		middleware := newJwtMiddleware(jwtConfig)
 
 		return middleware(c)
 	}
