@@ -9,7 +9,6 @@ import (
 	"github.com/miniyus/gofiber/internal/groups"
 	"github.com/miniyus/gofiber/internal/jobs"
 	"github.com/miniyus/gofiber/internal/users"
-	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	rsGen "github.com/miniyus/gofiber/pkg/rs256"
 	"github.com/miniyus/gofiber/pkg/worker"
@@ -42,18 +41,9 @@ func Api(apiRouter app.Router, a app.Application) {
 	privateKey := rsGen.PrivatePemDecode(path.Join(cfg.Path.DataPath, "secret/private.pem"))
 	tokenGenerator := jwt.NewGenerator(privateKey, privateKey.Public(), cfg.Auth.Exp)
 
-	permissions := permission.NewPermissionsFromConfig(cfg.Permission)
-	permissionCollection := permission.NewPermissionCollection(permissions...)
-
 	authMiddlewareParam := auth.MiddlewaresParameter{
 		Cfg: cfg.Auth.Jwt,
 		DB:  db,
-	}
-
-	hasPermParam := permission.HasPermissionParameter{
-		DB:           db,
-		DefaultPerms: permissionCollection,
-		FilterFunc:   nil,
 	}
 
 	apiRouter.Route(
@@ -68,7 +58,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	).Name("api.auth")
 
 	// 해당 라인 이후로는 auth middleware가 공통으로 적용된다.
-	apiRouter.Middleware(auth.Middlewares(authMiddlewareParam, permission.HasPermission(hasPermParam))...)
+	apiRouter.Middleware(auth.Middlewares(authMiddlewareParam)...)
 	// job 메타 데이터에 user_id 추가
 	apiRouter.Middleware(jobs.AddJobMeta(jDispatcher, db))
 

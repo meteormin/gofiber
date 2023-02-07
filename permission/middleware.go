@@ -45,12 +45,10 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 			permCollection = parameter.DefaultPerms
 		}
 
-		entities := make([]entity.Permission, 0)
 		permCollection.For(func(perm Permission, i int) {
-			entities = append(entities, ToPermissionEntity(perm))
+			_, err = repo.Save(ToPermissionEntity(perm))
 		})
 
-		_, err = repo.Save(entities)
 		if err != nil {
 			return err
 		}

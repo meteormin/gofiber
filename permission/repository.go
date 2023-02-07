@@ -3,13 +3,11 @@ package permission
 import (
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type Repository interface {
-	Save(permission []entity.Permission) ([]entity.Permission, error)
+	Save(permission entity.Permission) (*entity.Permission, error)
 	Get(groupId uint) ([]entity.Permission, error)
 }
 
@@ -23,65 +21,15 @@ func NewRepository(db *gorm.DB) Repository {
 	}
 }
 
-func (r *RepositoryStruct) Save(permission []entity.Permission) ([]entity.Permission, error) {
-	actions := make([][]entity.Action, 0)
+func (r *RepositoryStruct) Save(permission entity.Permission) (*entity.Permission, error) {
+	tx := r.db.Save(&permission)
 
-	permission = utils.NewCollection(permission).Map(func(v entity.Permission, i int) entity.Permission {
-		if len(v.Actions) != 0 && v.Actions != nil {
-			actions = append(actions, v.Actions)
-			v.Actions = nil
-		} else {
-			actions = append(actions, nil)
-		}
-		return v
-	}).Items()
-
-	rs := r.db.Clauses(clause.OnConflict{
-		Columns: []clause.Column{
-			{Name: "id"},
-			{Name: "permission"},
-		},
-		DoUpdates: clause.AssignmentColumns([]string{"permission"}),
-	}).Create(&permission)
-	_, err := database.HandleResult(rs)
-
+	tx, err := database.HandleResult(tx)
 	if err != nil {
-		return make([]entity.Permission, 0), err
+		return nil, err
 	}
 
-	var createActions []entity.Action
-
-	utils.NewCollection(permission).For(func(v entity.Permission, i int) {
-		if actions[i] != nil {
-			for _, action := range actions[i] {
-				action.PermissionId = v.ID
-				createActions = append(createActions, action)
-			}
-		}
-	})
-
-	rs = r.db.Clauses(clause.OnConflict{
-		Columns: []clause.Column{
-			{Name: "id"},
-		},
-		DoUpdates: clause.AssignmentColumns([]string{"method", "resource"}),
-	}).Create(&createActions)
-	_, err = database.HandleResult(rs)
-
-	if err != nil {
-		return permission, err
-	}
-
-	created := utils.NewCollection(permission).Map(func(perm entity.Permission, i int) entity.Permission {
-		permActions := utils.NewCollection(createActions).Filter(func(action entity.Action, j int) bool {
-			return action.PermissionId == perm.ID
-		})
-		perm.Actions = permActions.Items()
-
-		return perm
-	})
-
-	return created.Items(), nil
+	return &permission, nil
 }
 
 func (r *RepositoryStruct) Get(groupId uint) ([]entity.Permission, error) {

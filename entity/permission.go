@@ -6,9 +6,9 @@ import (
 
 type Action struct {
 	gorm.Model
-	Method       string `json:"method" gorm:"column:method;type:varchar(10)"`
-	Resource     string `json:"resource" gorm:"column:resource;type:varchar(50)"`
-	PermissionId uint   `json:"permission_id" gorm:"column:permission_id;type:bigint"`
+	Method       string `json:"method" gorm:"column:method;type:varchar(10);index:actions_unique,unique'"`
+	Resource     string `json:"resource" gorm:"column:resource;type:varchar(50);index:actions_unique,unique"`
+	PermissionId uint   `json:"permission_id" gorm:"column:permission_id;type:bigint;index:actions_unique,unique"`
 }
 
 type Permission struct {
