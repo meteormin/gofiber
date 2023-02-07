@@ -40,7 +40,7 @@ func New(configs ...config.Configs) app.Application {
 	// register boot
 	a.Register(boot)
 
-	a.Route(routes.ApiPrefix, routes.Api, "api")
+	//a.Route(routes.ApiPrefix, routes.Api, "api")
 	a.Route("/", routes.External, "external")
 
 	return a
