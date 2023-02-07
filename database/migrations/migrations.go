@@ -12,7 +12,8 @@ func Migrate(db *gorm.DB, dst ...interface{}) {
 	err := db.AutoMigrate(dst...)
 
 	if err != nil {
-		log.Fatalf("Failed Migration")
+		log.Println("Failed Migration")
+		log.Println(err)
 	}
 
 	log.Println("Success Migrate...")
