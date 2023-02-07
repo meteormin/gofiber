@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
-	_ "github.com/miniyus/gofiber/api/gofiber"
+	_ "github.com/miniyus/gofiber/api"
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/utils"
 )
