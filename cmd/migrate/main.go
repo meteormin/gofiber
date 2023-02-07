@@ -9,7 +9,7 @@ import (
 func main() {
 	configure := config.GetConfigs()
 
-	db := database.DB(configure.Database)
+	db := database.New(configure.Database["default"])
 
 	migrations.Migrate(db)
 }

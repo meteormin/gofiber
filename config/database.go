@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/entity"
 	gormLogger "gorm.io/gorm/logger"
 	"os"
 	"strconv"
@@ -11,8 +12,21 @@ import (
 func databaseConfig() map[string]database.Config {
 	autoMigrate, err := strconv.ParseBool(os.Getenv("DB_AUTO_MIGRATE"))
 
+	var autoMigrateEntities []interface{}
+
 	if err != nil {
 		autoMigrate = false
+	}
+
+	if autoMigrate {
+		autoMigrateEntities = []interface{}{
+			&entity.AccessToken{},
+			&entity.Action{},
+			&entity.Permission{},
+			&entity.Group{},
+			&entity.User{},
+			&entity.JobHistory{},
+		}
 	}
 
 	return map[string]database.Config{
@@ -26,7 +40,7 @@ func databaseConfig() map[string]database.Config {
 			Port:        os.Getenv("DB_PORT"),
 			TimeZone:    os.Getenv("TIME_ZONE"),
 			SSLMode:     false,
-			AutoMigrate: autoMigrate,
+			AutoMigrate: autoMigrateEntities,
 			Logger: gormLogger.Config{
 				SlowThreshold:             time.Second,
 				LogLevel:                  gormLogger.Silent,
