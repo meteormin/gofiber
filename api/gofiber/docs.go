@@ -75,7 +75,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_api_auth.ResetPasswordStruct"
+                            "$ref": "#/definitions/api_auth.ResetPasswordStruct"
                         }
                     }
                 ],
@@ -115,7 +115,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_api_auth.SignUp"
+                            "$ref": "#/definitions/api_auth.SignUp"
                         }
                     }
                 ],
@@ -123,7 +123,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_api_auth.SignUpResponse"
+                            "$ref": "#/definitions/api_auth.SignUpResponse"
                         }
                     },
                     "400": {
@@ -189,7 +189,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_api_auth.SignIn"
+                            "$ref": "#/definitions/api_auth.SignIn"
                         }
                     }
                 ],
@@ -197,7 +197,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_api_auth.TokenInfo"
+                            "$ref": "#/definitions/api_auth.TokenInfo"
                         }
                     },
                     "400": {
@@ -247,7 +247,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.ListResponse"
+                            "$ref": "#/definitions/groups.ListResponse"
                         }
                     },
                     "403": {
@@ -288,7 +288,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.UpdateGroup"
+                            "$ref": "#/definitions/groups.UpdateGroup"
                         }
                     }
                 ],
@@ -296,7 +296,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.ResponseGroup"
+                            "$ref": "#/definitions/groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -336,7 +336,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.CreateGroup"
+                            "$ref": "#/definitions/groups.CreateGroup"
                         }
                     }
                 ],
@@ -344,7 +344,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.ResponseGroup"
+                            "$ref": "#/definitions/groups.ResponseGroup"
                         }
                     },
                     "400": {
@@ -393,7 +393,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.ResponseGroup"
+                            "$ref": "#/definitions/groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -436,7 +436,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_groups.ResponseGroup"
+                            "$ref": "#/definitions/groups.ResponseGroup"
                         }
                     },
                     "403": {
@@ -511,7 +511,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_jobs.GetStatus"
+                            "$ref": "#/definitions/jobs.GetStatus"
                         }
                     },
                     "403": {
@@ -560,7 +560,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_jobs.GetJobs"
+                            "$ref": "#/definitions/jobs.GetJobs"
                         }
                     },
                     "403": {
@@ -616,7 +616,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_jobs.GetJob"
+                            "$ref": "#/definitions/jobs.GetJob"
                         }
                     },
                     "403": {
@@ -659,6 +659,90 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api_auth.ResetPasswordStruct": {
+            "type": "object",
+            "required": [
+                "password",
+                "password_confirm"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "api_auth.SignIn": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api_auth.SignUp": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "password_confirm",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api_auth.SignUpResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api_auth.TokenInfo": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "api_error.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -719,150 +803,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_miniyus_gofiber_pkg_worker.Job": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "job_id": {
-                    "type": "string"
-                },
-                "meta": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "status": {
-                    "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
-                },
-                "worker_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_miniyus_gofiber_pkg_worker.JobStatus": {
-            "type": "string",
-            "enum": [
-                "success",
-                "fail",
-                "wait",
-                "progress"
-            ],
-            "x-enum-varnames": [
-                "SUCCESS",
-                "FAIL",
-                "WAIT",
-                "PROGRESS"
-            ]
-        },
-        "github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo": {
-            "type": "object",
-            "properties": {
-                "is_running": {
-                    "type": "boolean"
-                },
-                "job_count": {
-                    "type": "integer"
-                },
-                "max_job_count": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_api_auth.ResetPasswordStruct": {
-            "type": "object",
-            "required": [
-                "password",
-                "password_confirm"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_api_auth.SignIn": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_api_auth.SignUp": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "password_confirm",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_api_auth.SignUpResponse": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "internal_api_auth.TokenInfo": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_groups.CreateAction": {
+        "groups.CreateAction": {
             "type": "object",
             "required": [
                 "method",
@@ -877,7 +818,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_groups.CreateGroup": {
+        "groups.CreateGroup": {
             "type": "object",
             "required": [
                 "name",
@@ -890,12 +831,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_groups.CreatePermission"
+                        "$ref": "#/definitions/groups.CreatePermission"
                     }
                 }
             }
         },
-        "internal_groups.CreatePermission": {
+        "groups.CreatePermission": {
             "type": "object",
             "required": [
                 "actions",
@@ -905,7 +846,7 @@ const docTemplate = `{
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_groups.CreateAction"
+                        "$ref": "#/definitions/groups.CreateAction"
                     }
                 },
                 "name": {
@@ -913,13 +854,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_groups.ListResponse": {
+        "groups.ListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_groups.ResponseGroup"
+                        "$ref": "#/definitions/groups.ResponseGroup"
                     }
                 },
                 "page": {
@@ -933,7 +874,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_groups.ResponseAction": {
+        "groups.ResponseAction": {
             "type": "object",
             "properties": {
                 "method": {
@@ -944,13 +885,13 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_groups.ResponseGroup": {
+        "groups.ResponseGroup": {
             "type": "object",
             "properties": {
                 "actions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_groups.ResponseAction"
+                        "$ref": "#/definitions/groups.ResponseAction"
                     }
                 },
                 "id": {
@@ -961,7 +902,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_groups.UpdateGroup": {
+        "groups.UpdateGroup": {
             "type": "object",
             "properties": {
                 "name": {
@@ -970,12 +911,12 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/internal_groups.CreatePermission"
+                        "$ref": "#/definitions/groups.CreatePermission"
                     }
                 }
             }
         },
-        "internal_jobs.GetJob": {
+        "jobs.GetJob": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -989,7 +930,7 @@ const docTemplate = `{
                     "additionalProperties": true
                 },
                 "status": {
-                    "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.JobStatus"
+                    "$ref": "#/definitions/worker.JobStatus"
                 },
                 "updated_at": {
                     "type": "string"
@@ -1002,18 +943,18 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_jobs.GetJobs": {
+        "jobs.GetJobs": {
             "type": "object",
             "properties": {
                 "jobs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.Job"
+                        "$ref": "#/definitions/worker.Job"
                     }
                 }
             }
         },
-        "internal_jobs.GetStatus": {
+        "jobs.GetStatus": {
             "type": "object",
             "properties": {
                 "worker_count": {
@@ -1022,7 +963,7 @@ const docTemplate = `{
                 "workers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_miniyus_gofiber_pkg_worker.StatusWorkerInfo"
+                        "$ref": "#/definitions/worker.StatusWorkerInfo"
                     }
                 }
             }
@@ -1049,6 +990,65 @@ const docTemplate = `{
             "properties": {
                 "status": {
                     "type": "boolean"
+                }
+            }
+        },
+        "worker.Job": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "job_id": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "status": {
+                    "$ref": "#/definitions/worker.JobStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "worker_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "worker.JobStatus": {
+            "type": "string",
+            "enum": [
+                "success",
+                "fail",
+                "wait",
+                "progress"
+            ],
+            "x-enum-varnames": [
+                "SUCCESS",
+                "FAIL",
+                "WAIT",
+                "PROGRESS"
+            ]
+        },
+        "worker.StatusWorkerInfo": {
+            "type": "object",
+            "properties": {
+                "is_running": {
+                    "type": "boolean"
+                },
+                "job_count": {
+                    "type": "integer"
+                },
+                "max_job_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }

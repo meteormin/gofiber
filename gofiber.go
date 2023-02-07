@@ -58,7 +58,7 @@ func bind(configs *config.Configs) app.Register {
 		dbConfig := configs.Database["default"]
 
 		if fiber.IsChild() {
-			dbConfig.AutoMigrate = false
+			dbConfig.AutoMigrate = nil
 		}
 
 		db := database.New(dbConfig)
