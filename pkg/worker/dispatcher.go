@@ -10,6 +10,8 @@ import (
 
 type Logger interface {
 	Info(args ...interface{})
+
+	//Infof implements message with Sprint, Sprintf, or neither.
 	Infof(template string, args ...interface{})
 	Infoln(args ...interface{})
 	Error(args ...interface{})

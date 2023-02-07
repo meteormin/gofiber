@@ -260,7 +260,9 @@ func (w *JobWorker) work(job *Job) {
 
 func (w *JobWorker) routine() {
 	log.Printf("start rountine(worker: %s):", w.Name)
-
+	if w.logger != nil {
+		w.logger.Infof("start routine(worker: %s):", w.Name)
+	}
 	for {
 		jobChan, err := w.queue.Dequeue()
 		if err != nil {
