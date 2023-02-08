@@ -40,10 +40,10 @@ func HandleValidate(c *fiber.Ctx, data interface{}) *api_error.ValidationErrorRe
 	return nil
 }
 
-func base64UrlEncode(data string) string {
+func Base64UrlEncode(data string) string {
 	return base64.UrlEncode(data)
 }
 
-func base64UrlDecode(data string) (string, error) {
+func Base64UrlDecode(data string) (string, error) {
 	return base64.UrlDecode(data)
 }
