@@ -42,38 +42,35 @@ DB_USERNAME=?
 DB_PASSWORD=?
 DB_AUTO_MIGRATE=true
 
+REDIS_HOST=go-redis
+REDIS_PORT=6379
+REDIS_PASSWORD=""
+REDIS_DATABASE=0
+
+CREATE_ADMIN=true
+CREATE_ADMIN_USERNAME=smyoo
+CREATE_ADMIN_PASSWORD=smyoo
+CREATE_ADMIN_EMAIL=admin@email.com
+
 ```
 
-## Directory Structure
+## Packages
 
-```shell
-/project-root
-|-- build: build된 파일이 저장
-|-- cmd: go 실행 및 makefile을 통한 cli 명령을 실행할 수 있는 main.go 파일
-|-- config: 설정
-  |-- context: fiber context Locals를 통해 가져올 항목들을 미리 정의
-|-- data: local data 저장소
-|-- internal: api를 실질적으로 구현하는 곳 입니다.
-  |-- api: api 요청 시, 수행되는 코드들
-    |-- service_directory(example: users, groups...): 특정 end point 패키징
-      |-- dto: DTO 정의 및 매핑 함수 정의
-      |-- factory: Handler 생성을 위한 팩토리 패턴 적용
-      |-- handler: 요청을 받고 응답을 해준다.
-      |-- service: handler 요청의 비즈니스 로직 처리
-      |-- repositroy: db, entity를 통해 데이터 CRUD 동작 수행
-      |-- routes: 그룹화된 API 적용을 위한 서브 라우터
-  |-- api_error: api error, error response 관련 기능
-  |-- auth: 인증 관련 기능
-  |-- database: database, gorm 연결
-  |-- log: 로거
-  |-- permission: permission 관련 기능  
-  |-- resolver: factory 패턴을 이용하여, 필요한 모듈 생성 함수를 정의해 놓은 패키지
-  |-- entity: db 스키마를 가진 구조체 집합
-  |-- routes: 라우팅
-  |-- utils: 유틸 함수들
-|-- pkg: 독립적인 기능을 수핼 할 수 있는 기능들의 집합입니다.
-|-- tests: .env, 파일시스템 등의 활용을 위한 패키지의 경우 경로의 깊이가 영향을 끼치기 때문에 테스트용 폴더를 따로 구분 
+### gofiber
+- create new application
+- run fiber web application
+
+```go
+package main
+
+import "github.com/miniyus/gofiber"
+
+func main(){
+	gofiber.New() // 지정된 기본 설정을 가지고 새로운 application 생성
+	
+}
 ```
+
 
 ### config
 
@@ -83,10 +80,38 @@ DB_AUTO_MIGRATE=true
 ```go
 package main
 
-import "github.com/miniyus/gofiber/config"
+import (
+  "github.com/go-redis/redis/v9"
+  fCors "github.com/gofiber/fiber/v2/middleware/cors"
+  fCsrf "github.com/gofiber/fiber/v2/middleware/csrf"
+  fLoggerMiddleware "github.com/gofiber/fiber/v2/middleware/logger"
+  "github.com/miniyus/gofiber/app"
+  "github.com/miniyus/gofiber/config"
+  "github.com/miniyus/gofiber/database"
+  cLog "github.com/miniyus/gofiber/log"
+  "github.com/miniyus/gofiber/permission"
+  "github.com/miniyus/gofiber/pkg/worker"
+)
 
 func main() {
-	config.GetConfigs()
+  cfg := config.GetConfigs() // 기본 설정 가져오기
+
+}
+
+type Configs struct {
+  App            app.Config
+  Logger         fLoggerMiddleware.Config
+  CustomLogger   map[string]cLog.Config
+  Database       map[string]database.Config
+  Path           Path
+  Auth           Auth
+  Cors           fCors.Config
+  Csrf           fCsrf.Config
+  Permission     []permission.Config
+  CreateAdmin    CreateAdminConfig
+  RedisConfig    *redis.Options
+  JobQueueConfig worker.DispatcherOption
+  Validation     Validation
 }
 
 ```
@@ -164,12 +189,21 @@ func main() {
 ```go
 package main
 
-import "github.com/miniyus/gofiber/app"
+import (
+  "github.com/gofiber/fiber/v2"
+  "github.com/miniyus/gofiber/app"
+)
 
 func main() {
-	// 애플리케이션 생성
-	a := app.New()
-	a.Run()
+  // 애플리케이션 생성
+  a := app.New(app.Config{
+    Env:         app.PRD,
+    Port:        8000,
+    Locale:      "",
+    TimeZone:    "Asia/Seoul",
+    FiberConfig: fiber.Config{},
+  })
+  a.Run()
 }
 
 ```
@@ -199,5 +233,32 @@ func Api(router app.Router, a app.Application) {
 
 ```
 
-### internal
-- 기능 구현
+### 기타 기능
+- api_error: 기본 error 핸들러, 에러 응답 관련 기능
+- auth: jwt 토큰 기반의 인증 기능
+  - 회원가입, 로그인, 로그아웃, 패스워드 변경등의 기본 API 구현
+- create_admin: 초기 최고 관리자 생성을 위한 패키지
+- entity: db 연동 관련되어 gorm.Model을 이용하여 생성한 entity 구조체
+- groups: group 관련 api
+- internal: 내부 사용 기능
+  - base64
+  - datetime
+  - hash
+  - reflect
+- job_queue: 대기열 작업 큐 + DB(job history 관련) 기능 및 hooks
+- jobs: 작업 관련 api
+  - 현재 작업 워커 현황 체크
+  - 현재 redis에 활성화되어 있는 작업 조회
+- ~~permission: 권한 관련 기능 및 미들웨어 구현~~(Feature)
+
+### pkg
+- IOContainer
+  - [test코드 참조](./pkg/IOContainer/container_test.go)
+- jwt
+  - [test코드 참조](./tests/jwt_test/jwt_test.go)
+- rs256
+  - [test코드 참조](./tests/rs256_test/rs256_test.go)
+- slice
+  - [test코드 참조](./pkg/slice/slice_test.go)
+- validation
+  - [test코드 참조](./pkg/validation/validator_test.go)
