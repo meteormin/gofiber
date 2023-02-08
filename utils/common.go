@@ -5,7 +5,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/api_error"
 	"github.com/miniyus/gofiber/internal/base64"
+	"github.com/miniyus/gofiber/internal/datetime"
 	"github.com/miniyus/gofiber/pkg/validation"
+	"time"
 )
 
 type StatusResponse struct {
@@ -14,6 +16,14 @@ type StatusResponse struct {
 
 type DataResponse[T interface{}] struct {
 	Data T `json:"data"`
+}
+
+const DefaultDateLayout = datetime.DefaultDateLayout
+
+type JsonTime datetime.JsonTime
+
+func TimeIn(t time.Time, tz string) time.Time {
+	return datetime.TimeIn(t, tz)
 }
 
 func RedisClientMaker(options *redis.Options) func() *redis.Client {
