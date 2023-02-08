@@ -1,13 +1,12 @@
-package api_auth
+package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
 	jwtLib "github.com/golang-jwt/jwt/v4"
-	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/internal/users"
+	"github.com/miniyus/gofiber/internal/hash"
 	"github.com/miniyus/gofiber/pkg/jwt"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/users"
 	"time"
 )
 
@@ -20,12 +19,12 @@ type Service interface {
 }
 
 type ServiceStruct struct {
-	repo           auth.Repository
+	repo           Repository
 	userRepo       users.Repository
 	tokenGenerator jwt.Generator
 }
 
-func NewService(repo auth.Repository, userRepo users.Repository, generator jwt.Generator) Service {
+func NewService(repo Repository, userRepo users.Repository, generator jwt.Generator) Service {
 	return &ServiceStruct{
 		repo:           repo,
 		userRepo:       userRepo,
@@ -38,13 +37,13 @@ func (s *ServiceStruct) GetTokenExp() int64 {
 }
 
 func hashPassword(password string) (string, error) {
-	hashPass, err := utils.HashPassword(password)
+	hashPass, err := hash.Bcrypt.HashPassword(password)
 
 	return hashPass, err
 }
 
 func hashCheck(hashPass string, password string) bool {
-	return utils.HashCheck(hashPass, password)
+	return hash.Bcrypt.HashCheck(hashPass, password)
 }
 
 func (s *ServiceStruct) generateToken(user *entity.User, exp int64) (*string, error) {

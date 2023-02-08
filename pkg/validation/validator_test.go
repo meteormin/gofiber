@@ -1,4 +1,4 @@
-package utils_test
+package validation_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/pkg/validation"
 	"testing"
 )
 
@@ -24,7 +24,7 @@ func TestValidate(t *testing.T) {
 		PassConfirm: "te",
 	}
 
-	validated := utils.Validate(data)
+	validated := validation.Validate(data)
 
 	testValidated := map[string]string{
 		"Pass": "Key: 'TestData.Pass' Error:Field validation for 'Pass' failed on the 'required' tag",

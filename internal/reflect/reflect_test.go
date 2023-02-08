@@ -1,7 +1,7 @@
-package utils_test
+package reflect_test
 
 import (
-	"github.com/miniyus/gofiber/internal/utils"
+	"github.com/miniyus/gofiber/internal/reflect"
 	"testing"
 )
 
@@ -14,7 +14,7 @@ func TestHasField(t *testing.T) {
 		Test: "test",
 	}
 
-	hasField := utils.HasField(&testObj, "Test")
+	hasField := reflect.HasField(&testObj, "Test")
 
 	if !hasField {
 		t.Error(testObj)

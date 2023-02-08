@@ -1,4 +1,4 @@
-package utils
+package validation
 
 import (
 	"github.com/go-playground/locales"
@@ -18,12 +18,11 @@ func init() {
 
 func newValidator() *validator.Validate {
 	v := validator.New()
-	registerValidation(v)
 	trans = newTranslator(en.New())
 	if trans != nil {
 		transErr = enTranslations.RegisterDefaultTranslations(v, trans)
-		if transErr == nil {
-			registerTranslation(v, trans)
+		if transErr != nil {
+			panic(transErr)
 		}
 	}
 
@@ -40,8 +39,8 @@ func newTranslator(locale locales.Translator) (t ut.Translator) {
 	return nil
 }
 
-func registerValidation(validate *validator.Validate) {
-	for _, v := range validations() {
+func RegisterValidation(tags []Tag) {
+	for _, v := range validations(tags) {
 		_ = validate.RegisterValidation(
 			v.tag,
 			v.fn,
@@ -49,8 +48,8 @@ func registerValidation(validate *validator.Validate) {
 	}
 }
 
-func registerTranslation(validate *validator.Validate, trans ut.Translator) {
-	for _, t := range translations(trans) {
+func RegisterTranslation(tags []TranslationTag) {
+	for _, t := range translations(trans, tags) {
 		_ = validate.RegisterTranslation(
 			t.tag,
 			t.trans,

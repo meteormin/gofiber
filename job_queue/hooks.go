@@ -1,8 +1,12 @@
 package job_queue
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-redis/redis/v9"
+	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/pkg/worker"
@@ -133,4 +137,35 @@ func AddMetaOnDispatch(dispatcher worker.Dispatcher, db *gorm.DB, meta map[Write
 		j.Meta = jobMeta
 		return createJobHistory(db, j)
 	})
+}
+
+func FindJobFromQueueWorker(jobDispatcher worker.Dispatcher) func(ctx *fiber.Ctx, jobId string, worker ...string) (*worker.Job, error) {
+	return func(ctx *fiber.Ctx, jobId string, jobWorker ...string) (*worker.Job, error) {
+		workerName := worker.DefaultWorker
+
+		if len(jobWorker) != 0 {
+			workerName = jobWorker[0]
+		}
+
+		jobDispatcher.SelectWorker(workerName)
+
+		redisClient := jobDispatcher.GetRedis()()
+
+		var convJob *worker.Job
+		value, err := redisClient.Get(context.Background(), jobId).Result()
+		if err == redis.Nil {
+			return nil, nil
+		} else if err != nil {
+			return nil, err
+		} else {
+
+			bytes := []byte(value)
+			err = json.Unmarshal(bytes, &convJob)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return convJob, nil
+	}
 }

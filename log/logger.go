@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/internal/datetime"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -47,7 +47,7 @@ func New(config ...Config) *zap.SugaredLogger {
 	encoderConfig.CallerKey = "caller"
 	encoderConfig.MessageKey = "msg"
 	encoderConfig.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-		t = utils.TimeIn(t, cfg.TimeZone)
+		t = datetime.TimeIn(t, cfg.TimeZone)
 		type appendTimeEncoder interface {
 			AppendTimeLayout(time.Time, string)
 		}

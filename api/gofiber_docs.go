@@ -75,7 +75,7 @@ const docTemplategofiber = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.ResetPasswordStruct"
+                            "$ref": "#/definitions/auth.ResetPasswordStruct"
                         }
                     }
                 ],
@@ -115,7 +115,7 @@ const docTemplategofiber = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignUp"
+                            "$ref": "#/definitions/auth.SignUp"
                         }
                     }
                 ],
@@ -123,7 +123,7 @@ const docTemplategofiber = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignUpResponse"
+                            "$ref": "#/definitions/auth.SignUpResponse"
                         }
                     },
                     "400": {
@@ -189,7 +189,7 @@ const docTemplategofiber = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_auth.SignIn"
+                            "$ref": "#/definitions/auth.SignIn"
                         }
                     }
                 ],
@@ -197,7 +197,7 @@ const docTemplategofiber = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api_auth.TokenInfo"
+                            "$ref": "#/definitions/auth.TokenInfo"
                         }
                     },
                     "400": {
@@ -659,90 +659,6 @@ const docTemplategofiber = `{
         }
     },
     "definitions": {
-        "api_auth.ResetPasswordStruct": {
-            "type": "object",
-            "required": [
-                "password",
-                "password_confirm"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignIn": {
-            "type": "object",
-            "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignUp": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "password_confirm",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "password_confirm": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api_auth.SignUpResponse": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "api_auth.TokenInfo": {
-            "type": "object",
-            "properties": {
-                "expires_at": {
-                    "type": "string"
-                },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "api_error.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -773,6 +689,90 @@ const docTemplategofiber = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.ResetPasswordStruct": {
+            "type": "object",
+            "required": [
+                "password",
+                "password_confirm"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.SignIn": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.SignUp": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "password_confirm",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirm": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.SignUpResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "auth.TokenInfo": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string"
+                },
+                "expires_in": {
+                    "type": "integer"
+                },
+                "token": {
                     "type": "string"
                 }
             }
@@ -1065,7 +1065,7 @@ const docTemplategofiber = `{
 
 // SwaggerInfogofiber holds exported Swagger Info so clients can modify it
 var SwaggerInfogofiber = &swag.Spec{
-	Version:          "1.2,0",
+	Version:          "1.0,0",
 	Host:             "localhost:9090",
 	BasePath:         "/",
 	Schemes:          []string{"http"},

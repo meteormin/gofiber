@@ -5,8 +5,8 @@ import (
 	"github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/internal/hash"
 	"github.com/miniyus/gofiber/permission"
-	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"log"
 	"time"
@@ -46,7 +46,7 @@ func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 		return
 	}
 
-	hashedPassword, err := utils.HashPassword(password)
+	hashedPassword, err := hash.Bcrypt.HashPassword(password)
 	if err != nil {
 		log.Println(err)
 		return

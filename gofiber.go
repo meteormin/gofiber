@@ -12,6 +12,7 @@ import (
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/job_queue"
 	cLog "github.com/miniyus/gofiber/log"
+	"github.com/miniyus/gofiber/pkg/validation"
 	"github.com/miniyus/gofiber/pkg/worker"
 	"github.com/miniyus/gofiber/routes"
 	"github.com/miniyus/gofiber/utils"
@@ -120,12 +121,15 @@ func boot(a app.Application) {
 	var db *gorm.DB
 	a.Resolve(&db)
 
-	var configs *config.Configs
-	a.Resolve(&configs)
+	var cfg *config.Configs
+	a.Resolve(&cfg)
 
-	create_admin.CreateAdmin(db, configs)
+	create_admin.CreateAdmin(db, cfg)
 
 	job_queue.RecordHistory(dispatcher, db)
 
 	dispatcher.Run()
+
+	validation.RegisterValidation(cfg.Validation.Validations)
+	validation.RegisterTranslation(cfg.Validation.Translations)
 }

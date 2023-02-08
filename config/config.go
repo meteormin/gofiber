@@ -25,6 +25,7 @@ type Configs struct {
 	CreateAdmin    CreateAdminConfig
 	RedisConfig    *redis.Options
 	JobQueueConfig worker.DispatcherOption
+	Validation     Validation
 }
 
 var cfg *Configs
@@ -43,6 +44,7 @@ func init() {
 		CreateAdmin:    createAdminConfig(),
 		RedisConfig:    redisConfig(),
 		JobQueueConfig: jobQueueConfig(),
+		Validation:     validationConfig(),
 	}
 }
 

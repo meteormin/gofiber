@@ -1,11 +1,9 @@
-package api_auth
+package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/miniyus/gofiber/api_error"
-	"github.com/miniyus/gofiber/auth"
-	"github.com/miniyus/gofiber/internal"
 	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 )
@@ -29,7 +27,7 @@ func NewHandler(service Service) Handler {
 }
 
 func validateSignUp(ctx *fiber.Ctx, signUp *SignUp) (bool, *api_error.ValidationErrorResponse) {
-	errRes := internal.HandleValidate(ctx, signUp)
+	errRes := utils.HandleValidate(ctx, signUp)
 	if errRes != nil {
 		return false, errRes
 	}
@@ -67,7 +65,7 @@ func (h *HandlerStruct) SignUp(ctx *fiber.Ctx) error {
 }
 
 func validateSignIn(ctx *fiber.Ctx, in *SignIn) (bool, *api_error.ValidationErrorResponse) {
-	errRes := internal.HandleValidate(ctx, in)
+	errRes := utils.HandleValidate(ctx, in)
 	if errRes != nil {
 		return false, errRes
 	}
@@ -118,7 +116,7 @@ func (h *HandlerStruct) SignIn(ctx *fiber.Ctx) error {
 // @Router /api/auth/me [get]
 // @Security BearerAuth
 func (h *HandlerStruct) Me(ctx *fiber.Ctx) error {
-	user, err := auth.GetAuthUser(ctx)
+	user, err := GetAuthUser(ctx)
 	if err != nil {
 		log.GetLogger().Error(user)
 		return fiber.NewError(500, "Can't Load Context AuthUser")
@@ -139,7 +137,7 @@ func (h *HandlerStruct) Me(ctx *fiber.Ctx) error {
 // @Router /api/auth/password [patch]
 // @Security BearerAuth
 func (h *HandlerStruct) ResetPassword(ctx *fiber.Ctx) error {
-	user, err := auth.GetAuthUser(ctx)
+	user, err := GetAuthUser(ctx)
 	if err != nil {
 		return err
 	}
@@ -151,7 +149,7 @@ func (h *HandlerStruct) ResetPassword(ctx *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	errRes := internal.HandleValidate(ctx, dto)
+	errRes := utils.HandleValidate(ctx, dto)
 	if errRes != nil {
 		return errRes.Response()
 	}
@@ -176,7 +174,7 @@ func (h *HandlerStruct) ResetPassword(ctx *fiber.Ctx) error {
 // @Router /api/auth/revoke [delete]
 // @Security BearerAuth
 func (h *HandlerStruct) RevokeToken(ctx *fiber.Ctx) error {
-	user, err := auth.GetAuthUser(ctx)
+	user, err := GetAuthUser(ctx)
 	if err != nil {
 		return err
 	}

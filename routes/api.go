@@ -5,13 +5,12 @@ import (
 	"github.com/miniyus/gofiber/auth"
 	configure "github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
-	"github.com/miniyus/gofiber/internal/api_auth"
-	"github.com/miniyus/gofiber/internal/groups"
-	"github.com/miniyus/gofiber/internal/jobs"
-	"github.com/miniyus/gofiber/internal/users"
+	groups2 "github.com/miniyus/gofiber/groups"
+	jobs2 "github.com/miniyus/gofiber/jobs"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	rsGen "github.com/miniyus/gofiber/pkg/rs256"
 	"github.com/miniyus/gofiber/pkg/worker"
+	users2 "github.com/miniyus/gofiber/users"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"path"
@@ -47,9 +46,9 @@ func Api(apiRouter app.Router, a app.Application) {
 	}
 
 	apiRouter.Route(
-		api_auth.Prefix,
-		api_auth.Register(
-			api_auth.New(
+		auth.Prefix,
+		auth.Register(
+			auth.New(
 				db,
 				tokenGenerator,
 			),
@@ -60,12 +59,12 @@ func Api(apiRouter app.Router, a app.Application) {
 	// 해당 라인 이후로는 auth middleware가 공통으로 적용된다.
 	apiRouter.Middleware(auth.Middlewares(authMiddlewareParam)...)
 	// job 메타 데이터에 user_id 추가
-	apiRouter.Middleware(jobs.AddJobMeta(jDispatcher, db))
+	apiRouter.Middleware(jobs2.AddJobMeta(jDispatcher, db))
 
 	apiRouter.Route(
-		jobs.Prefix,
-		jobs.Register(
-			jobs.New(
+		jobs2.Prefix,
+		jobs2.Register(
+			jobs2.New(
 				utils.RedisClientMaker(cfg.RedisConfig),
 				jDispatcher,
 			),
@@ -73,13 +72,13 @@ func Api(apiRouter app.Router, a app.Application) {
 	).Name("api.jobs")
 
 	apiRouter.Route(
-		groups.Prefix,
-		groups.Register(groups.New(db)),
+		groups2.Prefix,
+		groups2.Register(groups2.New(db)),
 	).Name("api.groups")
 
 	apiRouter.Route(
-		users.Prefix,
-		users.Register(users.New(db)),
+		users2.Prefix,
+		users2.Register(users2.New(db)),
 	).Name("api.users")
 
 }

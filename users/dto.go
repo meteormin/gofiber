@@ -2,7 +2,7 @@ package users
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/internal/datetime"
 )
 
 type UserResponse struct {
@@ -22,14 +22,14 @@ type PatchUser struct {
 }
 
 func ToUserResponse(user *entity.User) UserResponse {
-	createdAt := utils.TimeIn(user.CreatedAt, "Asia/Seoul")
-	updatedAt := utils.TimeIn(user.UpdatedAt, "Asia/Seoul")
+	createdAt := datetime.TimeIn(user.CreatedAt, "Asia/Seoul")
+	updatedAt := datetime.TimeIn(user.UpdatedAt, "Asia/Seoul")
 
 	var emailVerifiedAt *string
 	if user.EmailVerifiedAt == nil {
 		emailVerifiedAt = nil
 	} else {
-		formatString := user.EmailVerifiedAt.Format(utils.DefaultDateLayout)
+		formatString := user.EmailVerifiedAt.Format(datetime.DefaultDateLayout)
 		emailVerifiedAt = &formatString
 	}
 
@@ -39,7 +39,7 @@ func ToUserResponse(user *entity.User) UserResponse {
 		Role:            string(user.Role),
 		Email:           user.Email,
 		EmailVerifiedAt: emailVerifiedAt,
-		CreatedAt:       createdAt.Format(utils.DefaultDateLayout),
-		UpdatedAt:       updatedAt.Format(utils.DefaultDateLayout),
+		CreatedAt:       createdAt.Format(datetime.DefaultDateLayout),
+		UpdatedAt:       updatedAt.Format(datetime.DefaultDateLayout),
 	}
 }
