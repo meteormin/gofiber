@@ -36,8 +36,6 @@ type Register func(app Application)
 
 type RouterGroup func(router Router, app Application)
 
-type RegisterFiber func(fiber *fiber.App)
-
 type MiddlewareRegister func(fiber *fiber.App, app Application)
 
 type Application interface {
