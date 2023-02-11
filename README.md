@@ -253,12 +253,17 @@ func Api(router app.Router, a app.Application) {
 
 ### pkg
 - IOContainer
+  - 구조체 주입 및 인터페이스 > 구현체 바인딩
   - [test코드 참조](./pkg/IOContainer/container_test.go)
 - jwt
+  - json web token generator 
   - [test코드 참조](./tests/jwt_test/jwt_test.go)
 - rs256
+  - rs256 encode and decode 
   - [test코드 참조](./tests/rs256_test/rs256_test.go)
 - slice
+  - slice 배열 편의 함수  
   - [test코드 참조](./pkg/slice/slice_test.go)
 - validation
+  - 커스텀 유효성 검사 및 번역 
   - [test코드 참조](./pkg/validation/validator_test.go)
