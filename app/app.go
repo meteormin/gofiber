@@ -48,7 +48,6 @@ type Application interface {
 	Status()
 	Run()
 	Register(fn Register)
-	RegisterFiber(fn RegisterFiber)
 }
 
 type app struct {
@@ -82,16 +81,6 @@ func New(cfgs ...Config) Application {
 
 func (a *app) Register(fn Register) {
 	fn(a)
-}
-
-// RegisterFiber
-// fiber application을 클로저를 통해 제어
-func (a *app) RegisterFiber(fn RegisterFiber) {
-	if fn == nil {
-		return
-	}
-
-	fn(a.fiber)
 }
 
 // Middleware
