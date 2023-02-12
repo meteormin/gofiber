@@ -48,6 +48,12 @@ type Application interface {
 	Register(fn Register)
 }
 
+var a Application
+
+func App() Application {
+	return a
+}
+
 type app struct {
 	IOContainer.Container
 	fiber  *fiber.App
@@ -69,12 +75,14 @@ func New(cfgs ...Config) Application {
 		fiberConfig = cfg.FiberConfig
 	}
 
-	return &app{
+	a = &app{
 		Container: IOContainer.NewContainer(),
 		config:    cfg,
 		fiber:     fiber.New(fiberConfig),
 		isRun:     false,
 	}
+
+	return a
 }
 
 func (a *app) Register(fn Register) {
