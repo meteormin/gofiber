@@ -67,10 +67,13 @@ func createJobHistory(db *gorm.DB, j *worker.Job) error {
 
 	jh := convJobHistory(j, nil)
 	jh = parseMeta(jh, j.Meta)
-	tx := db.Create(&jh)
 
-	if tx.Error != nil {
-		return tx.Error
+	err := db.Transaction(func(tx *gorm.DB) error {
+		return db.Create(&jh).Error
+	})
+
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -44,10 +44,7 @@ func (repo *RepositoryStruct) All() ([]*entity.AccessToken, error) {
 // 토큰 생성
 func (repo *RepositoryStruct) Create(token entity.AccessToken) (*entity.AccessToken, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&token).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Create(&token).Error
 	})
 
 	if err != nil {
@@ -73,10 +70,7 @@ func (repo *RepositoryStruct) Find(pk uint) (*entity.AccessToken, error) {
 // update token
 func (repo *RepositoryStruct) Update(token entity.AccessToken) (*entity.AccessToken, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Save(&token).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Save(&token).Error
 	})
 
 	if err != nil {
@@ -95,12 +89,7 @@ func (repo *RepositoryStruct) Delete(pk uint) (bool, error) {
 	}
 
 	err = repo.db.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Delete(&token).Error; err != nil {
-			return err
-		}
-
-		return nil
-
+		return tx.Delete(&token).Error
 	})
 
 	if err != nil {

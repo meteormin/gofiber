@@ -22,11 +22,9 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (r *RepositoryStruct) Save(permission entity.Permission) (*entity.Permission, error) {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Save(&permission).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Save(&permission).Error
 	})
+
 	if err != nil {
 		return nil, err
 	}

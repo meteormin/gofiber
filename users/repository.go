@@ -25,10 +25,7 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (repo *RepositoryStruct) Create(user entity.User) (*entity.User, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&user).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Create(&user).Error
 	})
 
 	if err != nil {
@@ -65,10 +62,7 @@ func (repo *RepositoryStruct) Update(pk uint, user entity.User) (*entity.User, e
 
 	user.ID = exists.ID
 	err = repo.db.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Save(&user).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Save(&user).Error
 	})
 
 	if err != nil {
@@ -86,10 +80,7 @@ func (repo *RepositoryStruct) Delete(pk uint) (bool, error) {
 	}
 
 	err = repo.db.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Delete(user).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Delete(user).Error
 	})
 
 	if err != nil {

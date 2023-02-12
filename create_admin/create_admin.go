@@ -72,10 +72,7 @@ func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 	}
 
 	err = db.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Debug().Create(group).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Debug().Create(group).Error
 	})
 
 	if err != nil {

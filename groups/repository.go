@@ -27,10 +27,7 @@ func NewRepository(db *gorm.DB) Repository {
 func (r *RepositoryStruct) Count(group entity.Group) (int64, error) {
 	var count int64 = 0
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&group).Count(&count).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Model(&group).Count(&count).Error
 	})
 
 	if err != nil {
@@ -58,11 +55,7 @@ func (r *RepositoryStruct) All(page utils.Page) ([]entity.Group, int64, error) {
 
 func (r *RepositoryStruct) Create(group entity.Group) (*entity.Group, error) {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&group).Error; err != nil {
-			return err
-		}
-
-		return nil
+		return tx.Create(&group).Error
 	})
 
 	if err != nil {
@@ -83,17 +76,11 @@ func (r *RepositoryStruct) Update(pk uint, group entity.Group) (*entity.Group, e
 	}
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		if group.ID == exists.ID {
-			if err = tx.Save(&group).Error; err != nil {
-				return err
-			}
+			return tx.Save(&group).Error
 		} else {
 			group.ID = exists.ID
-			if err = tx.Save(&group).Error; err != nil {
-				return err
-			}
+			return tx.Save(&group).Error
 		}
-
-		return nil
 	})
 
 	if err != nil {
@@ -129,10 +116,7 @@ func (r *RepositoryStruct) Delete(pk uint) (bool, error) {
 	}
 
 	err = r.db.Transaction(func(tx *gorm.DB) error {
-		if err = tx.Delete(exists).Error; err != nil {
-			return err
-		}
-		return nil
+		return tx.Delete(exists).Error
 	})
 
 	if err != nil {
