@@ -96,13 +96,3 @@ func New(cfg Config) *gorm.DB {
 
 	return db
 }
-
-// HandleResult
-// db 실행 결과 handle
-func HandleResult(rs *gorm.DB) (*gorm.DB, error) {
-	if rs.Error != nil {
-		return nil, rs.Error
-	}
-
-	return rs, nil
-}

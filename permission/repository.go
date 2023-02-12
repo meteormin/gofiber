@@ -1,7 +1,6 @@
 package permission
 
 import (
-	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"gorm.io/gorm"
 )
@@ -22,9 +21,12 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 func (r *RepositoryStruct) Save(permission entity.Permission) (*entity.Permission, error) {
-	tx := r.db.Save(&permission)
-
-	tx, err := database.HandleResult(tx)
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(&permission).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +37,7 @@ func (r *RepositoryStruct) Save(permission entity.Permission) (*entity.Permissio
 func (r *RepositoryStruct) Get(groupId uint) ([]entity.Permission, error) {
 	permissions := make([]entity.Permission, 0)
 
-	rs := r.db.Preload("Actions").Where(entity.Permission{GroupId: groupId}).Find(&permissions)
-	_, err := database.HandleResult(rs)
+	err := r.db.Preload("Actions").Where(entity.Permission{GroupId: groupId}).Find(&permissions).Error
 
 	return permissions, err
 }

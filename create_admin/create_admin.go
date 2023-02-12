@@ -1,9 +1,7 @@
 package create_admin
 
 import (
-	"errors"
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/internal/hash"
 	"github.com/miniyus/gofiber/permission"
@@ -14,13 +12,7 @@ import (
 
 func existsAdmin(db *gorm.DB) bool {
 	admin := &entity.User{}
-	rs := db.Where(entity.User{Role: entity.Admin}).Find(admin)
-	rs, err := database.HandleResult(rs)
-	if rs.RowsAffected == 0 {
-		return false
-	}
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := db.Where(entity.User{Role: entity.Admin}).Find(admin).Error; err != nil {
 		return false
 	}
 
@@ -79,8 +71,13 @@ func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 		Users:       []entity.User{*user},
 	}
 
-	rs := db.Debug().Create(group)
-	_, err = database.HandleResult(rs)
+	err = db.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Debug().Create(group).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
 	if err != nil {
 		log.Println(err)
 		return

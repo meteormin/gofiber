@@ -1,7 +1,6 @@
 package groups
 
 import (
-	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
@@ -27,8 +26,16 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (r *RepositoryStruct) Count(group entity.Group) (int64, error) {
 	var count int64 = 0
-	rs := r.db.Model(&group).Count(&count)
-	_, err := database.HandleResult(rs)
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&group).Count(&count).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
 
 	return count, err
 }
@@ -39,16 +46,25 @@ func (r *RepositoryStruct) All(page utils.Page) ([]entity.Group, int64, error) {
 	count, err := r.Count(entity.Group{})
 
 	if count != 0 {
-		result := r.db.Scopes(utils.Paginate(page)).Order("id desc").Find(&groups)
-		_, err = database.HandleResult(result)
+		if err = r.db.Scopes(utils.Paginate(page)).Order("id desc").Find(&groups).Error; err != nil {
+			return make([]entity.Group, 0), 0, err
+		}
+	} else {
+		return make([]entity.Group, 0), 0, nil
 	}
 
 	return groups, count, err
 }
 
 func (r *RepositoryStruct) Create(group entity.Group) (*entity.Group, error) {
-	result := r.db.Create(&group)
-	_, err := database.HandleResult(result)
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&group).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
@@ -65,17 +81,23 @@ func (r *RepositoryStruct) Update(pk uint, group entity.Group) (*entity.Group, e
 	if exists == nil {
 		return nil, gorm.ErrRecordNotFound
 	}
-
-	if group.ID == exists.ID {
-		result := r.db.Save(&group)
-		_, err = database.HandleResult(result)
-		if err != nil {
-			return nil, err
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		if group.ID == exists.ID {
+			if err = tx.Save(&group).Error; err != nil {
+				return err
+			}
+		} else {
+			group.ID = exists.ID
+			if err = tx.Save(&group).Error; err != nil {
+				return err
+			}
 		}
-	} else {
-		group.ID = exists.ID
-		result := r.db.Save(&group)
-		_, err = database.HandleResult(result)
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
 	}
 
 	return &group, nil
@@ -83,26 +105,21 @@ func (r *RepositoryStruct) Update(pk uint, group entity.Group) (*entity.Group, e
 
 func (r *RepositoryStruct) Find(pk uint) (*entity.Group, error) {
 	group := entity.Group{}
-	result := r.db.Preload("Permissions.Actions").First(&group, pk)
-	_, err := database.HandleResult(result)
-
-	if err != nil {
+	if err := r.db.Preload("Permissions.Actions").First(&group, pk).Error; err != nil {
 		return nil, err
 	}
 
-	return &group, err
+	return &group, nil
 }
 
 func (r *RepositoryStruct) FindByName(groupName string) (*entity.Group, error) {
 	group := &entity.Group{}
 
-	result := r.db.Preload("Permissions.Actions").Where(entity.Group{Name: groupName}).First(group)
-	_, err := database.HandleResult(result)
-	if err != nil {
+	if err := r.db.Preload("Permissions.Actions").Where(entity.Group{Name: groupName}).First(group).Error; err != nil {
 		return nil, err
 	}
 
-	return group, err
+	return group, nil
 }
 
 func (r *RepositoryStruct) Delete(pk uint) (bool, error) {
@@ -111,8 +128,13 @@ func (r *RepositoryStruct) Delete(pk uint) (bool, error) {
 		return false, err
 	}
 
-	result := r.db.Delete(exists)
-	_, err = database.HandleResult(result)
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Delete(exists).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
 	if err != nil {
 		return false, err
 	}

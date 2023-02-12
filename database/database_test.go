@@ -69,9 +69,7 @@ type Cnt struct {
 func TestHandleResult(t *testing.T) {
 	get := database.GetDB()
 	var cnt Cnt
-	tx := get.Raw("SELECT count(*) as cnt FROM pg_catalog.pg_tables").Scan(&cnt)
-	tx, err := database.HandleResult(tx)
-	if err != nil {
+	if err := get.Raw("SELECT count(*) as cnt FROM pg_catalog.pg_tables").Scan(&cnt).Error; err != nil {
 		t.Error(err)
 	}
 

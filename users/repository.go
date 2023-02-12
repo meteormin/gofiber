@@ -1,7 +1,6 @@
 package users
 
 import (
-	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"gorm.io/gorm"
 )
@@ -25,13 +24,15 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 func (repo *RepositoryStruct) Create(user entity.User) (*entity.User, error) {
-	result := repo.db.Create(&user)
-	if result.Error != nil {
-		return nil, result.Error
-	}
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&user).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 
-	if result.RowsAffected == 0 {
-		return nil, nil
+	if err != nil {
+		return nil, err
 	}
 
 	return &user, nil
@@ -40,9 +41,7 @@ func (repo *RepositoryStruct) Create(user entity.User) (*entity.User, error) {
 func (repo *RepositoryStruct) Find(pk uint) (*entity.User, error) {
 	user := entity.User{}
 
-	result := repo.db.First(&user, pk)
-	_, err := database.HandleResult(result)
-	if err != nil {
+	if err := repo.db.First(&user, pk).Error; err != nil {
 		return nil, err
 	}
 
@@ -51,10 +50,8 @@ func (repo *RepositoryStruct) Find(pk uint) (*entity.User, error) {
 
 func (repo *RepositoryStruct) All() ([]entity.User, error) {
 	var users []entity.User
-	result := repo.db.Find(&users)
-	_, err := database.HandleResult(result)
-	if err != nil {
-		return nil, err
+	if err := repo.db.Find(&users).Error; err != nil {
+		return make([]entity.User, 0), err
 	}
 
 	return users, nil
@@ -67,10 +64,12 @@ func (repo *RepositoryStruct) Update(pk uint, user entity.User) (*entity.User, e
 	}
 
 	user.ID = exists.ID
-
-	result := repo.db.Save(&user)
-
-	_, err = database.HandleResult(result)
+	err = repo.db.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Save(&user).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 
 	if err != nil {
 		return nil, err
@@ -86,9 +85,13 @@ func (repo *RepositoryStruct) Delete(pk uint) (bool, error) {
 		return false, err
 	}
 
-	result := repo.db.Delete(user)
+	err = repo.db.Transaction(func(tx *gorm.DB) error {
+		if err = tx.Delete(user).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 
-	_, err = database.HandleResult(result)
 	if err != nil {
 		return false, err
 	}
@@ -99,9 +102,7 @@ func (repo *RepositoryStruct) Delete(pk uint) (bool, error) {
 func (repo *RepositoryStruct) FindByUsername(username string) (*entity.User, error) {
 	var user entity.User
 
-	result := repo.db.Where(&entity.User{Username: username}).First(&user)
-	_, err := database.HandleResult(result)
-	if err != nil {
+	if err := repo.db.Where(&entity.User{Username: username}).First(&user).Error; err != nil {
 		return nil, err
 	}
 
@@ -110,10 +111,7 @@ func (repo *RepositoryStruct) FindByUsername(username string) (*entity.User, err
 
 func (repo *RepositoryStruct) FindByEntity(user entity.User) (*entity.User, error) {
 	var rsUser entity.User
-	result := repo.db.Where(&user).First(&rsUser)
-
-	_, err := database.HandleResult(result)
-	if err != nil {
+	if err := repo.db.Where(&user).First(&rsUser).Error; err != nil {
 		return nil, err
 	}
 
