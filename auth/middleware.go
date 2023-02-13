@@ -35,16 +35,29 @@ type MiddlewaresParameter struct {
 	DB     *gorm.DB
 }
 
-// Middlewares
+// Middleware auth middleware
+func Middleware(parameter MiddlewaresParameter) fiber.Handler {
+	middlewares := mergeMiddlewares(parameter)
+
+	return func(ctx *fiber.Ctx) error {
+		for _, mw := range middlewares {
+			ctx.App().Use(mw)
+		}
+
+		return ctx.Next()
+	}
+}
+
+// mergeMiddlewares
 // 미들웨어 슬라이스 리턴
 // 인증 관련된 미들웨어 함수의 집합으로 이 함수에 등록된 순서대로 실행 가능
-func Middlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
+func mergeMiddlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
 	// 순서 중요함
 	mws := []fiber.Handler{
-		JwtMiddleware(parameter.Cfg), // check exists jwt
-		GetUserFromJWT(),             // get user information from jwt
-		AccessLogMiddleware(parameter.Logger),
-		CheckExpired(parameter.DB), // check expired jwt
+		jwtMiddleware(parameter.Cfg), // check exists jwt
+		getUserFromJWT(),             // get user information from jwt
+		checkExpired(parameter.DB),   // check expired jwt
+		accessLogMiddleware(parameter.Logger),
 	}
 
 	if len(fn) != 0 {
@@ -54,9 +67,9 @@ func Middlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Ha
 	return mws
 }
 
-// AccessLogMiddleware
+// accessLogMiddleware
 // log 찍힐 때 user 정보 추가
-func AccessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
+func accessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
 	var zLogger *zap.SugaredLogger
 	if len(logger) != 0 {
 		zLogger = logger[0]
@@ -72,9 +85,9 @@ func AccessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
 		start := time.Now()
 		err = c.Next()
 		elapsed := time.Since(start).Milliseconds()
-		cu, ok := c.Locals(utils.AuthUserKey).(*User)
+		cu, err := utils.GetContext[*User](c, utils.AuthUserKey)
 		userID := ""
-		if !ok {
+		if err != nil {
 			userID = "guest"
 		} else {
 			userID = strconv.Itoa(int(cu.Id))
@@ -94,9 +107,9 @@ func AccessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
 	}
 }
 
-// GetUserFromJWT
+// getUserFromJWT
 // get user information from jwt token
-func GetUserFromJWT() fiber.Handler {
+func getUserFromJWT() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		jwtData, ok := c.Locals("user").(*jwt.Token)
 		if !ok {
@@ -144,9 +157,9 @@ func GetUserFromJWT() fiber.Handler {
 	}
 }
 
-// JwtMiddleware
+// jwtMiddleware
 // jwt 유효성 체크 미들웨어
-func JwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
+func jwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		middleware := newJwtMiddleware(jwtConfig)
 
@@ -175,9 +188,9 @@ func jwtError() fiber.ErrorHandler {
 	}
 }
 
-// CheckExpired
+// checkExpired
 // jwt 만료 기간 체크 미들웨어
-func CheckExpired(gormDB ...*gorm.DB) fiber.Handler {
+func checkExpired(gormDB ...*gorm.DB) fiber.Handler {
 	var db *gorm.DB
 	if len(gormDB) != 0 {
 		db = gormDB[0]

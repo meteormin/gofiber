@@ -68,12 +68,23 @@ func bind(configs *config.Configs) app.Register {
 			return db
 		})
 
+		var zLogger *zap.SugaredLogger
+		// like singleton
+		a.Bind(&zLogger, func() *zap.SugaredLogger {
+			return cLog.New(configs.CustomLogger["default"])
+		})
+
 		opts := configs.JobQueueConfig
 		opts.Redis = utils.RedisClientMaker(configs.RedisConfig)
 
 		opts.WorkerOptions = utils.NewCollection(opts.WorkerOptions).Map(func(v worker.Option, i int) worker.Option {
-			wLoggerCfg := configs.CustomLogger["default_worker"]
-			v.Logger = cLog.New(wLoggerCfg)
+			wLoggerCfg, ok := configs.CustomLogger["default_worker"]
+			if ok {
+				v.Logger = cLog.New(wLoggerCfg)
+			} else {
+				a.Resolve(&zLogger)
+				v.Logger = zLogger
+			}
 
 			return v
 		}).Items()
@@ -86,13 +97,6 @@ func bind(configs *config.Configs) app.Register {
 			return dispatcher
 		})
 
-		logger := cLog.New(configs.CustomLogger["default"])
-
-		var zLogger *zap.SugaredLogger
-		// like singleton
-		a.Bind(&zLogger, func() *zap.SugaredLogger {
-			return logger
-		})
 	}
 }
 
@@ -104,12 +108,15 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 	application.Resolve(&cfg)
 
 	fiberApp.Use(flogger.New(cfg.Logger))
+
 	fiberApp.Use(recover.New(recover.Config{
 		EnableStackTrace: !application.IsProduction(),
 	}))
 
-	fiberApp.Use(api_error.ErrorHandler(cfg.App.Env))
 	fiberApp.Use(cors.New(cfg.Cors))
+
+	fiberApp.Use(api_error.ErrorHandler(cfg.App.Env))
+
 }
 
 // boot

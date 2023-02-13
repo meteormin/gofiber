@@ -19,12 +19,6 @@ type Router interface {
 	GetRoutes() []fiber.Router
 }
 
-var r Router
-
-func GetRouter() Router {
-	return r
-}
-
 // routerStruct
 // route wrapper struct
 type routerStruct struct {
@@ -44,16 +38,13 @@ func NewRouter(app *fiber.App, prefix string, name ...string) Router {
 	}
 
 	router := app.Group(prefix).Name(routeName)
-
-	r = &routerStruct{
+	return &routerStruct{
 		app:        app,
 		router:     router,
 		name:       routeName,
 		routes:     make([]fiber.Router, 0),
 		GroupCount: 1,
 	}
-
-	return r
 }
 
 // App get fiber app

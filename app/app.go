@@ -41,8 +41,10 @@ type MiddlewareRegister func(fiber *fiber.App, app Application)
 type Application interface {
 	IOContainer.Container
 	IsProduction() bool
+	Config() Config
 	Middleware(fn MiddlewareRegister)
 	Route(prefix string, fn RouterGroup, name ...string)
+	GetRouters() []Router
 	Status()
 	Run()
 	Register(fn Register)
@@ -56,9 +58,11 @@ func App() Application {
 
 type app struct {
 	IOContainer.Container
-	fiber  *fiber.App
-	config Config
-	isRun  bool
+	fiber      *fiber.App
+	config     Config
+	router     []Router
+	middleware []fiber.Handler
+	isRun      bool
 }
 
 // New
@@ -85,6 +89,10 @@ func New(cfgs ...Config) Application {
 	return a
 }
 
+func (a *app) Config() Config {
+	return a.config
+}
+
 func (a *app) Register(fn Register) {
 	fn(a)
 }
@@ -107,8 +115,14 @@ func (a *app) Route(prefix string, fn RouterGroup, name ...string) {
 		if _, ok := this.(*app); ok {
 			r := NewRouter(this.(*app).fiber, prefix, name...)
 			fn(r, a)
+
+			this.(*app).router = append(this.(*app).router, r)
 		}
 	})
+}
+
+func (a *app) GetRouters() []Router {
+	return a.router
 }
 
 // Status

@@ -57,7 +57,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	).Name("api.auth")
 
 	// 해당 라인 이후로는 auth middleware가 공통으로 적용된다.
-	apiRouter.Middleware(auth.Middlewares(authMiddlewareParam)...)
+	apiRouter.Middleware(auth.Middleware(authMiddlewareParam))
 	// jobs 메타 데이터에 user_id 추가
 	apiRouter.Middleware(jobs.AddJobMeta(jDispatcher, db))
 
