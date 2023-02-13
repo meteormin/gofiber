@@ -5,6 +5,7 @@ import (
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"strings"
@@ -45,24 +46,23 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 			permCollection = parameter.DefaultPerms
 		}
 
-		permCollection.For(func(perm Permission, i int) {
-			_, err = repo.Save(ToPermissionEntity(perm))
-		})
-
-		if err != nil {
-			return err
-		}
-
 		if len(permissions) != 0 {
 			permCollection.Concat(permissions)
 		}
+
+		permCollection.For(func(perm Permission, i int) {
+			_, err = repo.Save(ToPermissionEntity(perm))
+			if err != nil {
+				log.GetLogger().Error(err)
+			}
+		})
 
 		userHasPerm := permCollection.Filter(func(p Permission, i int) bool {
 			if parameter.FilterFunc != nil {
 				return parameter.FilterFunc(c, *authUser.GroupId, p)
 			}
 
-			if *authUser.GroupId != 0 {
+			if authUser.GroupId != nil {
 				return *authUser.GroupId == p.GroupId
 			}
 
@@ -90,12 +90,12 @@ func checkPermissionFromCtx(hasPerm []Permission, c *fiber.Ctx) bool {
 			routePath := c.Path()
 			if strings.Contains(routePath, action.Resource) {
 				method := c.Method()
-				if method == "OPTION" {
+				if strings.ToUpper(method) == "OPTION" {
 					method = "GET"
 				}
 
 				filtered := utils.NewCollection(action.Methods).Filter(func(v Method, i int) bool {
-					return string(v) == method
+					return strings.ToUpper(string(v)) == strings.ToUpper(method)
 				})
 
 				if filtered.Count() != 0 {

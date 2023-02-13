@@ -1,4 +1,4 @@
-package app
+package gofiber
 
 import (
 	"github.com/joho/godotenv"
