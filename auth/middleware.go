@@ -35,17 +35,42 @@ type MiddlewaresParameter struct {
 	DB     *gorm.DB
 }
 
-// Middleware auth middleware
-func Middleware(parameter MiddlewaresParameter) fiber.Handler {
-	middlewares := mergeMiddlewares(parameter)
+type mw func(ctx *fiber.Ctx) (*fiber.Ctx, error)
 
-	return func(ctx *fiber.Ctx) error {
-		for _, mw := range middlewares {
-			ctx.App().Use(mw)
+// jwtMiddleware
+// jwt 유효성 체크 미들웨어
+func jwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		middleware := newJwtMiddleware(jwtConfig)
+
+		return middleware(c)
+	}
+}
+
+func newJwtMiddleware(config jwtWare.Config) fiber.Handler {
+	jwtConfig := config
+	jwtConfig.ErrorHandler = jwtError()
+	return jwtWare.New(jwtConfig)
+}
+
+// jwtError
+// jwt 생성과 해독(? decode...) 관련 에러 핸들링
+func jwtError() fiber.ErrorHandler {
+	return func(c *fiber.Ctx, err error) error {
+		var status int
+
+		if err.Error() == "Missing or malformed JWT" {
+			status = fiber.StatusBadRequest
+			return fiber.NewError(status, err.Error())
 		}
 
-		return ctx.Next()
+		return fiber.NewError(status, err.Error())
 	}
+}
+
+// Middlewares auth middleware
+func Middlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
+	return mergeMiddlewares(parameter, fn...)
 }
 
 // mergeMiddlewares
@@ -54,14 +79,16 @@ func Middleware(parameter MiddlewaresParameter) fiber.Handler {
 func mergeMiddlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
 	// 순서 중요함
 	mws := []fiber.Handler{
-		jwtMiddleware(parameter.Cfg), // check exists jwt
-		getUserFromJWT(),             // get user information from jwt
-		checkExpired(parameter.DB),   // check expired jwt
+		jwtMiddleware(parameter.Cfg),
+		getUserFromJWT(),           // get user information from jwt
+		checkExpired(parameter.DB), // check expired jwt
 		accessLogMiddleware(parameter.Logger),
 	}
 
 	if len(fn) != 0 {
-		mws = append(mws, fn...)
+		for _, f := range fn {
+			mws = append(mws, f)
+		}
 	}
 
 	return mws
@@ -85,9 +112,9 @@ func accessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
 		start := time.Now()
 		err = c.Next()
 		elapsed := time.Since(start).Milliseconds()
-		cu, err := utils.GetContext[*User](c, utils.AuthUserKey)
+		cu, ctxErr := utils.GetContext[*User](c, utils.AuthUserKey)
 		userID := ""
-		if err != nil {
+		if ctxErr != nil {
 			userID = "guest"
 		} else {
 			userID = strconv.Itoa(int(cu.Id))
@@ -152,39 +179,8 @@ func getUserFromJWT() fiber.Handler {
 			ExpiresIn: &expiresIn,
 		}
 
-		c.Locals(utils.AuthUserKey, currentUser)
-		return c.Next()
-	}
-}
-
-// jwtMiddleware
-// jwt 유효성 체크 미들웨어
-func jwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		middleware := newJwtMiddleware(jwtConfig)
-
-		return middleware(c)
-	}
-}
-
-func newJwtMiddleware(config jwtWare.Config) fiber.Handler {
-	jwtConfig := config
-	jwtConfig.ErrorHandler = jwtError()
-	return jwtWare.New(jwtConfig)
-}
-
-// jwtError
-// jwt 생성과 해독(? decode...) 관련 에러 핸들링
-func jwtError() fiber.ErrorHandler {
-	return func(c *fiber.Ctx, err error) error {
-		var status int
-
-		if err.Error() == "Missing or malformed JWT" {
-			status = fiber.StatusBadRequest
-			return fiber.NewError(status, err.Error())
-		}
-
-		return fiber.NewError(status, err.Error())
+		addContext := utils.AddContext(utils.AuthUserKey, currentUser)
+		return addContext(c)
 	}
 }
 
@@ -199,8 +195,10 @@ func checkExpired(gormDB ...*gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, err := utils.GetContext[*User](c, utils.AuthUserKey)
 		if err != nil {
+			log.Print(err)
 			return err
 		}
+
 		if db == nil {
 			db = database.GetDB()
 
