@@ -3,7 +3,10 @@ package permission
 import (
 	"fmt"
 	"github.com/miniyus/gofiber/entity"
+	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
+	"gorm.io/gorm"
+	"log"
 )
 
 type Method string
@@ -104,7 +107,6 @@ func (p *CollectionStruct) Get(name string) (*Permission, error) {
 
 	if filtered.Count() == 0 {
 		return nil, fmt.Errorf("can't found %s Permission", name)
-
 	}
 
 	return &filtered.Items()[0], nil
@@ -149,4 +151,25 @@ func EntityToPermission(permission entity.Permission) Permission {
 		Name:    permission.Permission,
 		Actions: actions,
 	}
+}
+
+func CreateDefaultPermissions(db *gorm.DB, cfgs []Config) {
+	perms := NewPermissionsFromConfig(cfgs)
+	permCollection := NewPermissionCollection(perms...)
+
+	repo := NewRepository(db)
+	var entities []entity.Permission
+
+	permCollection.For(func(perm Permission, i int) {
+		entities = append(entities, ToPermissionEntity(perm))
+	})
+
+	_, err := repo.BatchCreate(entities)
+	if err != nil {
+		if err != nil {
+			cLog.GetLogger().Error(err)
+			log.Print(err)
+		}
+	}
+
 }

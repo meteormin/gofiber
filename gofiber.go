@@ -12,6 +12,7 @@ import (
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/job_queue"
 	cLog "github.com/miniyus/gofiber/log"
+	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/validation"
 	"github.com/miniyus/gofiber/pkg/worker"
 	"github.com/miniyus/gofiber/routes"
@@ -131,6 +132,9 @@ func boot(a app.Application) {
 	var cfg *config.Configs
 	a.Resolve(&cfg)
 
+	var zLogger *zap.SugaredLogger
+	a.Resolve(&zLogger)
+
 	create_admin.CreateAdmin(db, cfg)
 
 	job_queue.RecordHistory(dispatcher, db)
@@ -139,4 +143,6 @@ func boot(a app.Application) {
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)
+
+	permission.CreateDefaultPermissions(db, cfg.Permission)
 }

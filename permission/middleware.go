@@ -5,7 +5,6 @@ import (
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 	"strings"
@@ -49,13 +48,6 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 		if len(permissions) != 0 {
 			permCollection.Concat(permissions)
 		}
-
-		permCollection.For(func(perm Permission, i int) {
-			_, err = repo.Save(ToPermissionEntity(perm))
-			if err != nil {
-				log.GetLogger().Error(err)
-			}
-		})
 
 		userHasPerm := permCollection.Filter(func(p Permission, i int) bool {
 			if parameter.FilterFunc != nil {

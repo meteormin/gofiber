@@ -3,10 +3,12 @@ package permission
 import (
 	"github.com/miniyus/gofiber/entity"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Repository interface {
-	Save(permission entity.Permission) (*entity.Permission, error)
+	BatchCreate(permission []entity.Permission) ([]entity.Permission, error)
+	Create(permission entity.Permission) (*entity.Permission, error)
 	Get(groupId uint) ([]entity.Permission, error)
 }
 
@@ -20,9 +22,27 @@ func NewRepository(db *gorm.DB) Repository {
 	}
 }
 
-func (r *RepositoryStruct) Save(permission entity.Permission) (*entity.Permission, error) {
+func (r *RepositoryStruct) BatchCreate(permission []entity.Permission) ([]entity.Permission, error) {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		return tx.Save(&permission).Error
+		return tx.Clauses(clause.OnConflict{
+			Columns: []clause.Column{
+				{Name: "permission"},
+				{Name: "group_id"},
+			},
+			DoUpdates: clause.AssignmentColumns([]string{"updated_at"}),
+		}).Create(&permission).Error
+	})
+
+	if err != nil {
+		return make([]entity.Permission, 0), err
+	}
+
+	return permission, nil
+}
+
+func (r *RepositoryStruct) Create(permission entity.Permission) (*entity.Permission, error) {
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		return tx.Create(&permission).Error
 	})
 
 	if err != nil {

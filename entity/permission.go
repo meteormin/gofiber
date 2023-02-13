@@ -14,7 +14,7 @@ type Action struct {
 type Permission struct {
 	gorm.Model
 	Group      *Group   `json:"group" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	GroupId    uint     `json:"group_id"`
-	Permission string   `json:"permission" gorm:"column:permission;type:varchar(10);uniqueIndex"`
+	GroupId    uint     `json:"group_id" gorm:"column:group_id;index:perm_unique,unique"`
+	Permission string   `json:"permission" gorm:"column:permission;type:varchar(10);index:perm_unique,unique"`
 	Actions    []Action `json:"actions" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
