@@ -6,6 +6,7 @@ import (
 	fCsrf "github.com/gofiber/fiber/v2/middleware/csrf"
 	fLoggerMiddleware "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/miniyus/gofiber/app"
+	_ "github.com/miniyus/gofiber/config/dotenv"
 	"github.com/miniyus/gofiber/database"
 	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/permission"
