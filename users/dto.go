@@ -5,6 +5,18 @@ import (
 	"github.com/miniyus/gofiber/internal/datetime"
 )
 
+type CreateUser struct {
+	Username        string `json:"username" validate:"required"`
+	Password        string `json:"password" validate:"required"`
+	PasswordConfirm string `json:"password_confirm" validate:"required,eqfield=Password"`
+	Email           string `json:"email" validate:"required,email"`
+}
+
+type PatchUser struct {
+	Email *string `json:"email" validate:"email"`
+	Role  *string `json:"role" validate:"string"`
+}
+
 type UserResponse struct {
 	Id              uint    `json:"id"`
 	Username        string  `json:"username"`
@@ -16,9 +28,14 @@ type UserResponse struct {
 	UpdatedAt       string  `json:"updated_at"`
 }
 
-type PatchUser struct {
-	Email string `json:"email" validate:"email"`
-	Role  string `json:"role" validate:"string"`
+func ToUserEntity(user CreateUser) entity.User {
+	res := entity.User{
+		Username: user.Username,
+		Password: user.Password,
+		Email:    user.Email,
+	}
+
+	return res
 }
 
 func ToUserResponse(user *entity.User) UserResponse {

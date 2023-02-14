@@ -33,7 +33,7 @@ func HasPermission(parameter HasPermissionParameter, permissions ...Permission) 
 
 		repo := NewRepository(db)
 
-		get, err := repo.Get(*authUser.GroupId)
+		get, err := repo.GetByGroupId(*authUser.GroupId)
 		if err == nil {
 			permCollection = NewPermissionCollection()
 			utils.NewCollection(get).For(func(v entity.Permission, i int) {

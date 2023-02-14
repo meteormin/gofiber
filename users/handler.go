@@ -2,6 +2,10 @@ package users
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/miniyus/gofiber/api_error"
+	"github.com/miniyus/gofiber/auth"
+	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/utils"
 	"strconv"
 )
 
@@ -9,8 +13,8 @@ type Handler interface {
 	All(ctx *fiber.Ctx) error
 	Get(ctx *fiber.Ctx) error
 	Create(ctx *fiber.Ctx) error
-	Update(ctx *fiber.Ctx) error
-	Patch(ctx *fiber.Ctx) error
+	PatchForAdm(ctx *fiber.Ctx) error
+	PatchForMe(ctx *fiber.Ctx) error
 	Delete(ctx *fiber.Ctx) error
 }
 
@@ -51,17 +55,89 @@ func (h *HandlerStruct) Get(ctx *fiber.Ctx) error {
 }
 
 func (h *HandlerStruct) Create(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{})
+	var dto CreateUser
+
+	err := utils.HandleValidate(ctx, &dto)
+	if err != nil {
+		return err.Response()
+	}
+
+	create, err2 := h.service.Create(dto)
+	if err2 != nil {
+		return err2
+	}
+
+	return ctx.JSON(create)
 }
 
-func (h *HandlerStruct) Update(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{})
+func (h *HandlerStruct) PatchForAdm(ctx *fiber.Ctx) error {
+	params := ctx.AllParams()
+	pk, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		return api_error.NewValidationErrorResponse(ctx, map[string]string{
+			"id": "id는 정수형이여야 합니다.",
+		}).Response()
+	}
+
+	cu, err := auth.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	if cu.Role != string(entity.Admin) {
+		return fiber.ErrForbidden
+	}
+
+	var dto PatchUser
+	validateError := utils.HandleValidate(ctx, &dto)
+	if err != nil {
+		return validateError.Response()
+	}
+
+	update, err := h.service.Update(uint(pk), dto)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(update)
 }
 
-func (h *HandlerStruct) Patch(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{})
+func (h *HandlerStruct) PatchForMe(ctx *fiber.Ctx) error {
+	cu, err := auth.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	pk := cu.Id
+
+	var dto PatchUser
+	validateError := utils.HandleValidate(ctx, &dto)
+	if err != nil {
+		return validateError.Response()
+	}
+
+	update, err := h.service.Update(pk, dto)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(update)
 }
 
 func (h *HandlerStruct) Delete(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{})
+	cu, err := auth.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	pk := cu.Id
+
+	rs, err := h.service.Delete(pk)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(utils.StatusResponse{
+		Status: rs,
+	})
 }

@@ -12,8 +12,8 @@ func Register(handler Handler) app.SubRouter {
 		router.Get("/", handler.All).Name("api.users.all")
 		router.Get("/:id", handler.Get).Name("api.users.get")
 		router.Post("/", handler.Create).Name("api.users.create")
-		router.Put("/:id", handler.Update).Name("api.users.update")
-		router.Patch("/:id", handler.Patch).Name("api.users.patch")
+		router.Patch("/", handler.PatchForMe).Name("api.users.update")
+		router.Patch("/:id", handler.PatchForAdm).Name("api.users.patch")
 		router.Delete("/:id", handler.Delete).Name("api.users.delete")
 	}
 }
