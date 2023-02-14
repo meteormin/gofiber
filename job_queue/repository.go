@@ -7,6 +7,8 @@ import (
 )
 
 type Repository interface {
+	GetByEntity(history entity.JobHistory) ([]entity.JobHistory, error)
+	All(fn func(db *gorm.DB) (*gorm.DB, error)) ([]entity.JobHistory, error)
 	GetByUserId(userId uint) ([]entity.JobHistory, error)
 	Find(pk uint) (*entity.JobHistory, error)
 	FindByUuid(uuid string) (*entity.JobHistory, error)
@@ -20,6 +22,32 @@ type Repository interface {
 
 type RepositoryStruct struct {
 	db *gorm.DB
+}
+
+func (r *RepositoryStruct) All(fn func(db *gorm.DB) (*gorm.DB, error)) ([]entity.JobHistory, error) {
+	histories := make([]entity.JobHistory, 0)
+
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		tx, err := fn(tx)
+		if err != nil {
+			return err
+		}
+
+		return tx.Find(&histories).Error
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return histories, nil
+}
+
+func (r *RepositoryStruct) GetByEntity(history entity.JobHistory) ([]entity.JobHistory, error) {
+	histories := make([]entity.JobHistory, 0)
+	err := r.db.Where(&history).Find(&histories).Error
+
+	return histories, err
 }
 
 func (r *RepositoryStruct) Find(pk uint) (*entity.JobHistory, error) {

@@ -3,12 +3,11 @@ package utils
 import (
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type Page struct {
-	Page     int `json:"page"`
-	PageSize int `json:"page_size"`
+	Page     int `json:"page" query:"page"`
+	PageSize int `json:"page_size" query:"page_size"`
 }
 
 type Paginator[T interface{}] struct {
@@ -18,22 +17,13 @@ type Paginator[T interface{}] struct {
 }
 
 func GetPageFromCtx(c *fiber.Ctx) (Page, error) {
-	pageQuery := c.Query("page", "1")
-	pageSizeQuery := c.Query("page_size", "10")
-
-	page, err := strconv.Atoi(pageQuery)
+	var page Page
+	err := c.QueryParser(&page)
 	if err != nil {
-		return Page{1, 10}, err
+		return Page{Page: 1, PageSize: 10}, err
 	}
 
-	pageSize, err := strconv.Atoi(pageSizeQuery)
-	if err != nil {
-		return Page{1, 10}, err
-	}
-
-	return Page{
-		Page: page, PageSize: pageSize,
-	}, nil
+	return page, nil
 }
 
 func Paginate(pageInfo Page) func(db *gorm.DB) *gorm.DB {

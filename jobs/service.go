@@ -4,25 +4,83 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v9"
+	"github.com/miniyus/gofiber/job_queue"
 	"github.com/miniyus/gofiber/pkg/worker"
+	"gorm.io/gorm"
 )
 
 type Service interface {
 	GetJobs(workerName string) ([]worker.Job, error)
 	GetJob(workerName string, jobId string) (*worker.Job, error)
 	Status() *worker.StatusInfo
+	AllHistories(query HistoryQuery) ([]History, error)
+	GetHistories(workerName string, userId uint, query HistoryQuery) ([]History, error)
+	GetHistory(pk uint) (History, error)
 }
 
 type ServiceStruct struct {
 	redis      func() *redis.Client
 	dispatcher worker.Dispatcher
+	repo       job_queue.Repository
 }
 
-func NewService(redis func() *redis.Client, dispatcher worker.Dispatcher) Service {
+func NewService(redis func() *redis.Client, dispatcher worker.Dispatcher, repo job_queue.Repository) Service {
 	return &ServiceStruct{
 		redis:      redis,
 		dispatcher: dispatcher,
+		repo:       repo,
 	}
+}
+
+func (s *ServiceStruct) AllHistories(query HistoryQuery) ([]History, error) {
+	all, err := s.repo.All(func(db *gorm.DB) (*gorm.DB, error) {
+		ent := query.ToEntity()
+		tx := db.Where(&ent)
+		if query.HasError {
+			tx.Where("error is not null")
+		}
+
+		return tx, nil
+	})
+
+	if err != nil {
+		return make([]History, 0), err
+	}
+
+	histories := make([]History, 0)
+	for _, h := range all {
+		histories = append(histories, EntityToHistory(h))
+	}
+
+	return histories, err
+}
+
+func (s *ServiceStruct) GetHistories(workerName string, userId uint, query HistoryQuery) ([]History, error) {
+	all, err := s.repo.All(func(db *gorm.DB) (*gorm.DB, error) {
+		query.WorkerName = &workerName
+		query.UserId = &userId
+		tx := db.Where(query.ToEntity())
+		if query.HasError {
+			tx.Where("error is not null")
+		}
+		return tx, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	histories := make([]History, 0)
+	for _, h := range all {
+		histories = append(histories, EntityToHistory(h))
+	}
+
+	return histories, err
+}
+
+func (s *ServiceStruct) GetHistory(pk uint) (History, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (s *ServiceStruct) GetJobs(workerName string) ([]worker.Job, error) {
