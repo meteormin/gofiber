@@ -19,6 +19,7 @@ const (
 )
 
 var dispatcher worker.Dispatcher
+var repo Repository
 
 func New(workerDispatcher worker.Dispatcher, workers ...string) {
 	dispatcher = workerDispatcher
@@ -27,6 +28,10 @@ func New(workerDispatcher worker.Dispatcher, workers ...string) {
 
 func GetDispatcher() worker.Dispatcher {
 	return dispatcher
+}
+
+func GetRepository() Repository {
+	return repo
 }
 
 func convJobHistory(job *worker.Job, err error) entity.JobHistory {
@@ -64,7 +69,7 @@ func parseMeta(jh entity.JobHistory, m map[string]interface{}) entity.JobHistory
 	return jh
 }
 
-func createJobHistory(repo Repository, j *worker.Job) error {
+func createJobHistory(j *worker.Job) error {
 	log.Print("create job history")
 	if j == nil {
 		return errors.New("job is nil")
@@ -82,7 +87,7 @@ func createJobHistory(repo Repository, j *worker.Job) error {
 	return nil
 }
 
-func updateJobHistory(repo Repository, j *worker.Job, err error) error {
+func updateJobHistory(j *worker.Job, err error) error {
 	if j == nil {
 		return errors.New("job is nil")
 	}
@@ -114,19 +119,19 @@ func RecordHistory(db *gorm.DB) {
 		db = database.GetDB()
 	}
 
-	repo := NewRepository(db)
+	repo = NewRepository(db)
 
 	dispatcher.OnDispatch(func(j *worker.Job) error {
 		j.Meta = jobMeta
-		return createJobHistory(repo, j)
+		return createJobHistory(j)
 	})
 
 	dispatcher.BeforeJob(func(j *worker.Job) error {
-		return updateJobHistory(repo, j, nil)
+		return updateJobHistory(j, nil)
 	})
 
 	dispatcher.AfterJob(func(j *worker.Job, err error) error {
-		return updateJobHistory(repo, j, err)
+		return updateJobHistory(j, err)
 	})
 
 }
