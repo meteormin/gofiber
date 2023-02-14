@@ -133,9 +133,8 @@ func boot(a app.Application) {
 
 	create_admin.CreateAdmin(db, cfg)
 
-	job_queue.RecordHistory(dispatcher, db)
-
-	dispatcher.Run()
+	job_queue.New(dispatcher)
+	job_queue.RecordHistory(db)
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)

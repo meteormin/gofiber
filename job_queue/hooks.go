@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/go-redis/redis/v9"
-	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/pkg/worker"
@@ -19,6 +17,17 @@ type WriteableField string
 const (
 	UserId WriteableField = "UserId"
 )
+
+var dispatcher worker.Dispatcher
+
+func New(workerDispatcher worker.Dispatcher, workers ...string) {
+	dispatcher = workerDispatcher
+	dispatcher.Run(workers...)
+}
+
+func GetDispatcher() worker.Dispatcher {
+	return dispatcher
+}
 
 func convJobHistory(job *worker.Job, err error) entity.JobHistory {
 	jh := entity.JobHistory{}
@@ -55,22 +64,16 @@ func parseMeta(jh entity.JobHistory, m map[string]interface{}) entity.JobHistory
 	return jh
 }
 
-func createJobHistory(db *gorm.DB, j *worker.Job) error {
+func createJobHistory(repo Repository, j *worker.Job) error {
 	log.Print("create job history")
 	if j == nil {
 		return errors.New("job is nil")
 	}
 
-	if db == nil {
-		db = database.GetDB()
-	}
-
 	jh := convJobHistory(j, nil)
 	jh = parseMeta(jh, j.Meta)
 
-	err := db.Transaction(func(tx *gorm.DB) error {
-		return db.Create(&jh).Error
-	})
+	_, err := repo.Create(jh)
 
 	if err != nil {
 		return err
@@ -79,96 +82,80 @@ func createJobHistory(db *gorm.DB, j *worker.Job) error {
 	return nil
 }
 
-func updateJobHistory(db *gorm.DB, j *worker.Job, err error) error {
+func updateJobHistory(repo Repository, j *worker.Job, err error) error {
 	if j == nil {
 		return errors.New("job is nil")
+	}
+
+	jh := convJobHistory(j, err)
+
+	_, err = repo.UpdateByUuid(jh.UUID.String(), jh)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var jobMeta = make(map[string]interface{})
+
+func AddMetaOnDispatch(meta map[WriteableField]interface{}) {
+	for key, val := range meta {
+		jobMeta[string(key)] = val
+	}
+}
+
+func RecordHistory(db *gorm.DB) {
+	if dispatcher == nil {
+		panic("you need call New() method in job_queue package")
 	}
 
 	if db == nil {
 		db = database.GetDB()
 	}
 
-	jh := convJobHistory(j, err)
-
-	var find entity.JobHistory
-
-	tx := db.Where("uuid = ?", jh.UUID).First(&find)
-	if tx.Error != nil {
-		return tx.Error
-	}
-
-	if tx.RowsAffected == 0 {
-		return errors.New(fmt.Sprintf("can not find job(%s)", jh.JobId))
-	}
-
-	if find.JobId == jh.JobId {
-		jh.ID = find.ID
-		jh.CreatedAt = find.CreatedAt
-		jh.UserId = find.UserId
-		db.Save(&jh)
-	}
-
-	return errors.New(fmt.Sprintf("can not find job(%s) from db", jh.JobId))
-}
-
-func RecordHistory(dispatcher worker.Dispatcher, db *gorm.DB) {
-	jobMeta := make(map[string]interface{})
+	repo := NewRepository(db)
 
 	dispatcher.OnDispatch(func(j *worker.Job) error {
 		j.Meta = jobMeta
-		return createJobHistory(db, j)
+		return createJobHistory(repo, j)
 	})
 
 	dispatcher.BeforeJob(func(j *worker.Job) error {
-		return updateJobHistory(db, j, nil)
+		return updateJobHistory(repo, j, nil)
 	})
 
 	dispatcher.AfterJob(func(j *worker.Job, err error) error {
-		return updateJobHistory(db, j, err)
+		return updateJobHistory(repo, j, err)
 	})
 
 }
 
-func AddMetaOnDispatch(dispatcher worker.Dispatcher, db *gorm.DB, meta map[WriteableField]interface{}) {
-	jobMeta := make(map[string]interface{})
-
-	for key, val := range meta {
-		jobMeta[string(key)] = val
+func FindJob(jobId string, workerName ...string) (*worker.Job, error) {
+	name := worker.DefaultWorker
+	if len(workerName) != 0 {
+		name = workerName[0]
 	}
 
-	dispatcher.OnDispatch(func(j *worker.Job) error {
-		j.Meta = jobMeta
-		return createJobHistory(db, j)
-	})
-}
+	dispatcher.SelectWorker(name)
 
-func FindJobFromQueueWorker(jobDispatcher worker.Dispatcher) func(ctx *fiber.Ctx, jobId string, worker ...string) (*worker.Job, error) {
-	return func(ctx *fiber.Ctx, jobId string, jobWorker ...string) (*worker.Job, error) {
-		workerName := worker.DefaultWorker
+	redisClient := dispatcher.GetRedis()()
 
-		if len(jobWorker) != 0 {
-			workerName = jobWorker[0]
-		}
+	var convJob *worker.Job
+	value, err := redisClient.Get(context.Background(), jobId).Result()
+	if err == redis.Nil {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	} else {
 
-		jobDispatcher.SelectWorker(workerName)
-
-		redisClient := jobDispatcher.GetRedis()()
-
-		var convJob *worker.Job
-		value, err := redisClient.Get(context.Background(), jobId).Result()
-		if err == redis.Nil {
-			return nil, nil
-		} else if err != nil {
+		bytes := []byte(value)
+		err = json.Unmarshal(bytes, &convJob)
+		if err != nil {
 			return nil, err
-		} else {
-
-			bytes := []byte(value)
-			err = json.Unmarshal(bytes, &convJob)
-			if err != nil {
-				return nil, err
-			}
 		}
-
-		return convJob, nil
 	}
+
+	return convJob, nil
+
 }
