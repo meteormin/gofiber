@@ -43,7 +43,13 @@ func (r *RepositoryStruct) All(page utils.Page) ([]entity.Group, int64, error) {
 	count, err := r.Count(entity.Group{})
 
 	if count != 0 {
-		if err = r.db.Scopes(utils.Paginate(page)).Order("id desc").Find(&groups).Error; err != nil {
+		err = r.db.Model(&entity.Group{}).
+			Preload("Permissions.Actions").
+			Scopes(utils.Paginate(page)).
+			Order("id desc").
+			Find(&groups).Error
+
+		if err != nil {
 			return make([]entity.Group, 0), 0, err
 		}
 	} else {

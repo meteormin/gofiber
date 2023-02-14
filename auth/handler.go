@@ -119,7 +119,7 @@ func (h *HandlerStruct) Me(ctx *fiber.Ctx) error {
 	user, err := GetAuthUser(ctx)
 	if err != nil {
 		log.GetLogger().Error(user)
-		return fiber.NewError(500, "Can't Load Context AuthUser")
+		return err
 	}
 
 	return ctx.JSON(user)

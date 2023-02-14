@@ -7,6 +7,7 @@ import (
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/groups"
 	"github.com/miniyus/gofiber/jobs"
+	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	rsGen "github.com/miniyus/gofiber/pkg/rs256"
 	"github.com/miniyus/gofiber/pkg/worker"
@@ -56,10 +57,8 @@ func Api(apiRouter app.Router, a app.Application) {
 		),
 	).Name("api.auth")
 
-	authMiddleware := auth.Middleware(authMiddlewareParam)
-
 	// jobs 메타 데이터에 user_id 추가
-	apiRouter.Middleware(jobs.AddJobMeta(jDispatcher, db))
+	addJobMeta := jobs.AddJobMeta(jDispatcher, db)
 
 	apiRouter.Route(
 		jobs.Prefix,
@@ -69,19 +68,24 @@ func Api(apiRouter app.Router, a app.Application) {
 				jDispatcher,
 			),
 		),
-		authMiddleware,
+		auth.Middlewares(authMiddlewareParam, addJobMeta)...,
 	).Name("api.jobss")
+
+	hasPermission := permission.HasPermission(permission.HasPermissionParameter{
+		DefaultPerms: cfg.Permission,
+		DB:           db,
+	})
 
 	apiRouter.Route(
 		groups.Prefix,
 		groups.Register(groups.New(db)),
-		authMiddleware,
+		auth.Middlewares(authMiddlewareParam, hasPermission())...,
 	).Name("api.groups")
 
 	apiRouter.Route(
 		users.Prefix,
 		users.Register(users.New(db)),
-		authMiddleware,
+		auth.Middlewares(authMiddlewareParam, hasPermission())...,
 	).Name("api.users")
 
 }

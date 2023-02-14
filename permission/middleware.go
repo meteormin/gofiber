@@ -12,62 +12,68 @@ import (
 
 type HasPermissionParameter struct {
 	DB           *gorm.DB
-	DefaultPerms Collection
+	DefaultPerms []Config
 	FilterFunc   func(ctx *fiber.Ctx, groupId uint, p Permission) bool
 }
 
 // HasPermission
 // check has permissions middleware
-func HasPermission(parameter HasPermissionParameter, permissions ...Permission) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		pass := false
+func HasPermission(parameter HasPermissionParameter) func(permissions ...Permission) fiber.Handler {
+	db := parameter.DB
+	defaultPerms := NewPermissionCollection(
+		NewPermissionsFromConfig(parameter.DefaultPerms)...,
+	)
+	filter := parameter.FilterFunc
+	return func(permissions ...Permission) fiber.Handler {
+		return func(c *fiber.Ctx) error {
+			pass := false
 
-		var permCollection Collection
+			var permCollection Collection
 
-		db := parameter.DB
-		if db == nil {
-			db = database.GetDB()
-		}
+			if db == nil {
+				db = database.GetDB()
+			}
 
-		authUser, err := auth.GetAuthUser(c)
+			authUser, err := auth.GetAuthUser(c)
 
-		repo := NewRepository(db)
+			repo := NewRepository(db)
 
-		get, err := repo.GetByGroupId(*authUser.GroupId)
-		if err == nil {
-			permCollection = NewPermissionCollection()
-			utils.NewCollection(get).For(func(v entity.Permission, i int) {
-				permCollection.Add(EntityToPermission(v))
+			get, err := repo.GetByGroupId(*authUser.GroupId)
+			if err == nil {
+				permCollection = NewPermissionCollection()
+				utils.NewCollection(get).For(func(v entity.Permission, i int) {
+					permCollection.Add(EntityToPermission(v))
+				})
+			}
+
+			if permCollection == nil {
+				permCollection = defaultPerms
+			}
+
+			if len(permissions) != 0 {
+				permCollection.Concat(permissions)
+			}
+
+			userHasPerm := permCollection.Filter(func(p Permission, i int) bool {
+				if filter != nil {
+					return filter(c, *authUser.GroupId, p)
+				}
+
+				if authUser.GroupId != nil {
+					return *authUser.GroupId == p.GroupId
+				}
+
+				return false
 			})
-		}
 
-		if permCollection == nil {
-			permCollection = parameter.DefaultPerms
-		}
+			pass = checkPermissionFromCtx(userHasPerm.Items(), c)
 
-		if len(permissions) != 0 {
-			permCollection.Concat(permissions)
-		}
-
-		userHasPerm := permCollection.Filter(func(p Permission, i int) bool {
-			if parameter.FilterFunc != nil {
-				return parameter.FilterFunc(c, *authUser.GroupId, p)
+			if pass {
+				return c.Next()
 			}
 
-			if authUser.GroupId != nil {
-				return *authUser.GroupId == p.GroupId
-			}
-
-			return false
-		})
-
-		pass = checkPermissionFromCtx(userHasPerm.Items(), c)
-
-		if pass {
-			return c.Next()
+			return fiber.ErrForbidden
 		}
-
-		return fiber.ErrForbidden
 	}
 }
 
