@@ -164,7 +164,17 @@ func CreateDefaultPermissions(db *gorm.DB, cfgs []Config) {
 		entities = append(entities, ToPermissionEntity(perm))
 	})
 
-	_, err := repo.BatchCreate(entities)
+	all, err := repo.All()
+	if err != nil {
+		cLog.GetLogger().Error(err)
+		log.Print(err)
+	}
+
+	if len(all) != 0 {
+		return
+	}
+
+	_, err = repo.BatchCreate(entities)
 	if err != nil {
 		if err != nil {
 			cLog.GetLogger().Error(err)

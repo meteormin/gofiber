@@ -7,6 +7,7 @@ import (
 )
 
 type Repository interface {
+	All() ([]entity.Permission, error)
 	BatchCreate(permission []entity.Permission) ([]entity.Permission, error)
 	Create(permission entity.Permission) (*entity.Permission, error)
 	GetByGroupId(groupId uint) ([]entity.Permission, error)
@@ -22,6 +23,12 @@ func NewRepository(db *gorm.DB) Repository {
 	return &RepositoryStruct{
 		db: db,
 	}
+}
+
+func (r *RepositoryStruct) All() ([]entity.Permission, error) {
+	perms := make([]entity.Permission, 0)
+	err := r.db.Find(&perms).Error
+	return perms, err
 }
 
 func (r *RepositoryStruct) BatchCreate(permission []entity.Permission) ([]entity.Permission, error) {
