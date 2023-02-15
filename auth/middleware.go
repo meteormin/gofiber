@@ -5,13 +5,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/database"
-	mLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"log"
-	"strconv"
 	"time"
 )
 
@@ -70,157 +68,114 @@ func jwtError() fiber.ErrorHandler {
 
 // Middlewares auth middleware
 func Middlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
-	return mergeMiddlewares(parameter, fn...)
+	return mergeMiddlewares(parameter, fn...) // TODO: 미들웨어 추가가 좀 더 편하게 수정해야함
 }
 
 // mergeMiddlewares
 // 미들웨어 슬라이스 리턴
 // 인증 관련된 미들웨어 함수의 집합으로 이 함수에 등록된 순서대로 실행 가능
-func mergeMiddlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
-	// 순서 중요함
-	mws := []fiber.Handler{
-		jwtMiddleware(parameter.Cfg),
-		getUserFromJWT(),           // get user information from jwt
-		checkExpired(parameter.DB), // check expired jwt
-		accessLogMiddleware(parameter.Logger),
-	}
-
-	if len(fn) != 0 {
-		for _, f := range fn {
-			mws = append(mws, f)
-		}
-	}
-
-	return mws
-}
-
-// accessLogMiddleware
-// log 찍힐 때 user 정보 추가
-func accessLogMiddleware(logger ...*zap.SugaredLogger) fiber.Handler {
-	var zLogger *zap.SugaredLogger
-	if len(logger) != 0 {
-		zLogger = logger[0]
-	}
-
-	return func(c *fiber.Ctx) error {
-		var err error
-
-		if zLogger == nil {
-			zLogger = mLog.GetLogger()
-		}
-
-		start := time.Now()
-		err = c.Next()
-		elapsed := time.Since(start).Milliseconds()
-		cu, ctxErr := utils.GetContext[*User](c, utils.AuthUserKey)
-		userID := ""
-		if ctxErr != nil {
-			userID = "guest"
-		} else {
-			userID = strconv.Itoa(int(cu.Id))
-		}
-		req := c.Path()
-		method := c.Method()
-
-		errString := ""
-		if err != nil {
-			errString = fmt.Sprintf("| %s", err.Error())
-		}
-
-		zLogger.Info(fmt.Sprintf("user: %4s | IP: %15s | %6dms | %s | %s %s",
-			userID, c.IP(), elapsed, method, req, errString))
-
-		return err
-	}
-}
-
-// getUserFromJWT
-// get user information from jwt token
-func getUserFromJWT() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		jwtData, ok := c.Locals("user").(*jwt.Token)
+func mergeMiddlewares(parameter MiddlewaresParameter) fiber.Handler {
+	app.App().Middleware(func(fiber *fiber.App, app app.Application) {
+		fiber.Use(jwtMiddleware(parameter.Cfg))
+	})
+	return func(ctx *fiber.Ctx) error {
+		jwtToken, ok := ctx.Locals("user").(*jwt.Token)
 		if !ok {
-			log.Print("access guest")
-			return c.Next()
+			return fiber.ErrUnauthorized
 		}
 
-		claims := jwtData.Claims.(jwt.MapClaims)
-
-		userId := uint(claims["user_id"].(float64))
-
-		var groupId uint
-		if claims["group_id"] != nil {
-			groupId = uint(claims["group_id"].(float64))
-		}
-
-		role := claims["role"].(string)
-		username := claims["username"].(string)
-		email := claims["email"].(string)
-		createdAt := claims["created_at"].(string)
-
-		var expiresIn int64
-		if claims["expires_in"] != nil {
-			expiresIn = int64(claims["expires_in"].(float64))
-		}
-
-		layout := "2006-01-02T15:04:05Z07:00"
-		createdAtTime, err := time.Parse(layout, createdAt)
+		fromJWT, err := getUserFromJWT(jwtToken)
 		if err != nil {
 			return err
 		}
 
-		currentUser := &User{
-			Id:        userId,
-			GroupId:   &groupId,
-			Role:      role,
-			Username:  username,
-			Email:     email,
-			CreatedAt: createdAtTime.Format("2006-01-02 15:04:05"),
-			ExpiresIn: &expiresIn,
+		err = checkExpired(fromJWT, parameter.DB)
+		if err != nil {
+			return err
 		}
-
-		addContext := utils.AddContext(utils.AuthUserKey, currentUser)
-		return addContext(c)
+		logFormat := accessLogFormat{}
+		parameter.Logger.Info(logFormat.ToLogFormat())
 	}
+}
+
+type accessLogFormat struct {
+	UserId  uint
+	IP      string
+	Elapsed int64
+	Method  string
+	Request string
+	ErrMsg  string
+}
+
+func (alf accessLogFormat) ToLogFormat() string {
+	return fmt.Sprintf(
+		"user: %4d | IP: %15s | %6dms | %s | %s %s",
+		alf.UserId, alf.IP, alf.Elapsed, alf.Method, alf.Request, alf.ErrMsg,
+	)
+}
+
+// getUserFromJWT
+// get user information from jwt token
+func getUserFromJWT(jwtData *jwt.Token) (*User, error) {
+	claims := jwtData.Claims.(jwt.MapClaims)
+
+	userId := uint(claims["user_id"].(float64))
+
+	var groupId uint
+	if claims["group_id"] != nil {
+		groupId = uint(claims["group_id"].(float64))
+	}
+
+	role := claims["role"].(string)
+	username := claims["username"].(string)
+	email := claims["email"].(string)
+	createdAt := claims["created_at"].(string)
+
+	var expiresIn int64
+	if claims["expires_in"] != nil {
+		expiresIn = int64(claims["expires_in"].(float64))
+	}
+
+	layout := "2006-01-02T15:04:05Z07:00"
+	createdAtTime, err := time.Parse(layout, createdAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &User{
+		Id:        userId,
+		GroupId:   &groupId,
+		Role:      role,
+		Username:  username,
+		Email:     email,
+		CreatedAt: createdAtTime.Format("2006-01-02 15:04:05"),
+		ExpiresIn: &expiresIn,
+	}, nil
 }
 
 // checkExpired
 // jwt 만료 기간 체크 미들웨어
-func checkExpired(gormDB ...*gorm.DB) fiber.Handler {
+func checkExpired(user *User, gormDB ...*gorm.DB) error {
 	var db *gorm.DB
 	if len(gormDB) != 0 {
 		db = gormDB[0]
 	}
 
-	return func(c *fiber.Ctx) error {
-		user, err := utils.GetContext[*User](c, utils.AuthUserKey)
-		if err != nil {
-			log.Print(err)
-			return err
-		}
+	if db == nil {
+		db = database.GetDB()
+	}
 
-		if db == nil {
-			db = database.GetDB()
+	tokenRepository := NewRepository(db)
 
-			if err != nil {
-				return err
-			}
-		}
+	token, err := tokenRepository.FindByUserId(user.Id)
+	if err != nil {
+		statusCode := fiber.StatusUnauthorized
+		return fiber.NewError(statusCode, "Can't Find User From Database")
+	}
 
-		tokenRepository := NewRepository(db)
-
-		token, err := tokenRepository.FindByUserId(user.Id)
-		if err != nil {
-			statusCode := fiber.StatusUnauthorized
-			return fiber.NewError(statusCode, "Can't Find User From Database")
-		}
-
-		if token.ExpiresAt.Unix() < time.Now().Unix() {
-			statusCode := fiber.StatusUnauthorized
-			return fiber.NewError(statusCode, "JWT is expired")
-		}
-
-		return c.Next()
+	if token.ExpiresAt.Unix() < time.Now().Unix() {
+		statusCode := fiber.StatusUnauthorized
+		return fiber.NewError(statusCode, "JWT is expired")
 	}
 }
 

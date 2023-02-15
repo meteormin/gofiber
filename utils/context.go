@@ -10,6 +10,7 @@ type ContextKey string
 
 // AuthUserKey context constants
 const AuthUserKey ContextKey = "authUser"
+const StartTime ContextKey = "StartTIme"
 
 func AddContext(localsKey ContextKey, value interface{}) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {

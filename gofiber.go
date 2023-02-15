@@ -19,6 +19,7 @@ import (
 	"github.com/miniyus/gofiber/utils"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"time"
 )
 
 // New gofiber application
@@ -107,6 +108,10 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 	var cfg *config.Configs
 
 	application.Resolve(&cfg)
+	fiberApp.Use(func(ctx *fiber.Ctx) error {
+		ctx.Locals(utils.StartTime, time.Now())
+		return ctx.Next()
+	})
 
 	fiberApp.Use(flogger.New(cfg.Logger))
 	fiberApp.Use(recover.New(recover.Config{
@@ -114,6 +119,7 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 	}))
 	fiberApp.Use(cors.New(cfg.Cors))
 	fiberApp.Use(api_error.ErrorHandler(cfg.App.Env))
+
 }
 
 // boot
