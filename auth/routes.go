@@ -7,15 +7,15 @@ import (
 
 const Prefix = "/auth"
 
-func Register(handler Handler, parameter MiddlewaresParameter) app.SubRouter {
+func Register(handler Handler) app.SubRouter {
 	return func(router fiber.Router) {
 		router.Post("/register", handler.SignUp).Name("api.auth.register")
 		router.Post("/token", handler.SignIn).Name("api.auth.token")
 
-		router.Get("/me", Middlewares(parameter), handler.Me).Name("api.auth.me")
+		router.Get("/me", Middlewares(), handler.Me).Name("api.auth.me")
 
-		router.Patch("/password", Middlewares(parameter), handler.Me).Name("api.auth.password")
+		router.Patch("/password", Middlewares(), handler.Me).Name("api.auth.password")
 
-		router.Delete("/revoke", Middlewares(parameter), handler.Me).Name("api.auth.revoke")
+		router.Delete("/revoke", Middlewares(), handler.Me).Name("api.auth.revoke")
 	}
 }

@@ -27,13 +27,10 @@ type User struct {
 	ExpiresIn *int64 `json:"expires_in"`
 }
 
-type MiddlewaresParameter struct {
-	Cfg    jwtWare.Config
+type middlewaresParameter struct {
 	Logger *zap.SugaredLogger
 	DB     *gorm.DB
 }
-
-type mw func(ctx *fiber.Ctx) (*fiber.Ctx, error)
 
 // JwtMiddleware
 // jwt 유효성 체크 미들웨어
@@ -67,14 +64,19 @@ func jwtError() fiber.ErrorHandler {
 }
 
 // Middlewares auth middleware
-func Middlewares(parameter MiddlewaresParameter) fiber.Handler {
+func Middlewares() fiber.Handler {
+	parameter := middlewaresParameter{
+		DB:     database.GetDB(),
+		Logger: log.GetLogger(),
+	}
+
 	return mergeMiddlewares(parameter) // TODO: 미들웨어 추가가 좀 더 편하게 수정해야함
 }
 
 // mergeMiddlewares
 // 미들웨어 슬라이스 리턴
 // 인증 관련된 미들웨어 함수의 집합으로 이 함수에 등록된 순서대로 실행 가능
-func mergeMiddlewares(parameter MiddlewaresParameter) fiber.Handler {
+func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		jwtToken, ok := ctx.Locals("user").(*jwt.Token)
 		if !ok {
@@ -112,12 +114,7 @@ func mergeMiddlewares(parameter MiddlewaresParameter) fiber.Handler {
 			ErrMsg:  errMsg,
 		}
 
-		logger := parameter.Logger
-		if logger == nil {
-			logger = log.GetLogger()
-		}
-
-		logger.Info(logFormat.ToLogFormat())
+		parameter.Logger.Info(logFormat.ToLogFormat())
 
 		return err
 	}

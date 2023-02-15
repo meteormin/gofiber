@@ -42,15 +42,10 @@ func Api(apiRouter app.Router, a app.Application) {
 	privateKey := rsGen.PrivatePemDecode(path.Join(cfg.Path.DataPath, "secret/private.pem"))
 	tokenGenerator := jwt.NewGenerator(privateKey, privateKey.Public(), cfg.Auth.Exp)
 
-	authMiddlewareParam := auth.MiddlewaresParameter{
-		Cfg: cfg.Auth.Jwt,
-		DB:  db,
-	}
-
 	authHandler := auth.New(db, users.NewRepository(db), tokenGenerator)
 	apiRouter.Route(
 		auth.Prefix,
-		auth.Register(authHandler, authMiddlewareParam),
+		auth.Register(authHandler),
 	).Name("api.auth")
 
 	jobsHandler := jobs.New(
@@ -61,7 +56,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	apiRouter.Route(
 		jobs.Prefix,
 		jobs.Register(jobsHandler),
-		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), jobs.AddJobMeta(),
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(), jobs.AddJobMeta(),
 	).Name("api.jobs")
 
 	hasPermission := permission.HasPermission(permission.HasPermissionParameter{
@@ -73,14 +68,14 @@ func Api(apiRouter app.Router, a app.Application) {
 	apiRouter.Route(
 		groups.Prefix,
 		groups.Register(groupsHandler),
-		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), hasPermission(),
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(), hasPermission(),
 	).Name("api.groups")
 
 	usersHandler := users.New(db)
 	apiRouter.Route(
 		users.Prefix,
 		users.Register(usersHandler),
-		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), hasPermission(),
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(), hasPermission(),
 	).Name("api.users")
 
 }
