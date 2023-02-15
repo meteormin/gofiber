@@ -6,7 +6,6 @@ import (
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/internal/hash"
 	"github.com/miniyus/gofiber/pkg/jwt"
-	"github.com/miniyus/gofiber/users"
 	"time"
 )
 
@@ -20,11 +19,11 @@ type Service interface {
 
 type ServiceStruct struct {
 	repo           Repository
-	userRepo       users.Repository
+	userRepo       UserRepository
 	tokenGenerator jwt.Generator
 }
 
-func NewService(repo Repository, userRepo users.Repository, generator jwt.Generator) Service {
+func NewService(repo Repository, userRepo UserRepository, generator jwt.Generator) Service {
 	return &ServiceStruct{
 		repo:           repo,
 		userRepo:       userRepo,

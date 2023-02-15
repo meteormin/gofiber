@@ -203,6 +203,23 @@ definitions:
           $ref: '#/definitions/worker.StatusWorkerInfo'
         type: array
     type: object
+  jobs.History:
+    properties:
+      created_at:
+        type: string
+      error:
+        type: string
+      job_id:
+        type: string
+      status:
+        $ref: '#/definitions/worker.JobStatus'
+      user_id:
+        type: integer
+      uuid:
+        type: string
+      worker_name:
+        type: string
+    type: object
   permission.Method:
     enum:
     - GET
@@ -570,6 +587,85 @@ paths:
       summary: get group by name
       tags:
       - Groups
+  /api/worker/:worker/histories:
+    get:
+      consumes:
+      - application/json
+      description: get job histories
+      parameters:
+      - in: query
+        name: hasError
+        type: boolean
+      - in: query
+        name: jobId
+        type: string
+      - in: query
+        name: userId
+        type: integer
+      - in: query
+        name: uuid
+        type: string
+      - in: query
+        name: workerName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/jobs.History'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: get job histories
+      tags:
+      - Jobs
+  /api/worker/:worker/histories/:id:
+    get:
+      consumes:
+      - application/json
+      description: get job history
+      parameters:
+      - description: worker name
+        in: path
+        name: worker
+        required: true
+        type: string
+      - description: job history pk
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/jobs.History'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: get job history
+      tags:
+      - Jobs
   /api/worker/{worker}/jobs:
     get:
       consumes:
@@ -635,6 +731,33 @@ paths:
       security:
       - BearerAuth: []
       summary: get job
+      tags:
+      - Jobs
+  /api/worker/histories:
+    get:
+      consumes:
+      - application/json
+      description: get all job histories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/jobs.History'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: get all job histories
       tags:
       - Jobs
   /api/worker/status:

@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/pkg/worker"
+	"time"
 )
 
 type GetJobs struct {
@@ -25,6 +26,7 @@ type History struct {
 	JobId      string           `json:"job_id"`
 	Status     worker.JobStatus `json:"status"`
 	Error      *string          `json:"error"`
+	CreatedAt  time.Time        `json:"created_at"`
 }
 
 func EntityToHistory(history entity.JobHistory) History {
@@ -35,6 +37,7 @@ func EntityToHistory(history entity.JobHistory) History {
 		JobId:      history.JobId,
 		Status:     history.Status,
 		Error:      history.Error,
+		CreatedAt:  history.CreatedAt,
 	}
 }
 

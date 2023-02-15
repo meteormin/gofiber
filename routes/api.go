@@ -6,6 +6,7 @@ import (
 	configure "github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/groups"
+	"github.com/miniyus/gofiber/job_queue"
 	"github.com/miniyus/gofiber/jobs"
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
@@ -46,45 +47,39 @@ func Api(apiRouter app.Router, a app.Application) {
 		DB:  db,
 	}
 
+	authHandler := auth.New(db, users.NewRepository(db), tokenGenerator)
 	apiRouter.Route(
 		auth.Prefix,
-		auth.Register(
-			auth.New(
-				db,
-				tokenGenerator,
-			),
-			authMiddlewareParam,
-		),
+		auth.Register(authHandler, authMiddlewareParam),
 	).Name("api.auth")
 
-	// jobs 메타 데이터에 user_id 추가
-	addJobMeta := jobs.AddJobMeta(jDispatcher, db)
-
+	jobsHandler := jobs.New(
+		utils.RedisClientMaker(cfg.RedisConfig),
+		jDispatcher,
+		job_queue.NewRepository(db),
+	)
 	apiRouter.Route(
 		jobs.Prefix,
-		jobs.Register(
-			jobs.New(
-				utils.RedisClientMaker(cfg.RedisConfig),
-				jDispatcher,
-			),
-		),
-		auth.Middlewares(authMiddlewareParam, addJobMeta)...,
-	).Name("api.jobss")
+		jobs.Register(jobsHandler),
+		auth.Middlewares(authMiddlewareParam, jobs.AddJobMeta())...,
+	).Name("api.jobs")
 
 	hasPermission := permission.HasPermission(permission.HasPermissionParameter{
 		DefaultPerms: cfg.Permission,
 		DB:           db,
 	})
 
+	groupsHandler := groups.New(db)
 	apiRouter.Route(
 		groups.Prefix,
-		groups.Register(groups.New(db)),
+		groups.Register(groupsHandler),
 		auth.Middlewares(authMiddlewareParam, hasPermission())...,
 	).Name("api.groups")
 
+	usersHandler := users.New(db)
 	apiRouter.Route(
 		users.Prefix,
-		users.Register(users.New(db)),
+		users.Register(usersHandler),
 		auth.Middlewares(authMiddlewareParam, hasPermission())...,
 	).Name("api.users")
 

@@ -24,8 +24,8 @@ func NewHandler(service Service) Handler {
 }
 
 // AllHistories
-// @Summary get job histories
-// @Description get job histories
+// @Summary get all job histories
+// @Description get all job histories
 // @Tags Jobs
 // @Success 200 {object} []History
 // @Failure 403 {object} api_error.ErrorResponse
@@ -43,6 +43,7 @@ func (h *HandlerStruct) AllHistories(ctx *fiber.Ctx) error {
 // @Summary get job histories
 // @Description get job histories
 // @Tags Jobs
+// @Param history query HistoryQuery true "query"
 // @Success 200 {object} []History
 // @Failure 403 {object} api_error.ErrorResponse
 // @Failure 404 {object} api_error.ErrorResponse
@@ -56,8 +57,10 @@ func (h *HandlerStruct) GetHistories(ctx *fiber.Ctx) error {
 }
 
 // GetHistory
-// @Summary get job historu
-// @Description get job historu
+// @Summary get job history
+// @Description get job history
+// @Param worker path string true "worker name"
+// @Param id path int true "job history pk"
 // @Tags Jobs
 // @Success 200 {object} History
 // @Failure 403 {object} api_error.ErrorResponse

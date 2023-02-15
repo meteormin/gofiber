@@ -1,14 +1,22 @@
 package auth
 
 import (
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/pkg/jwt"
-	"github.com/miniyus/gofiber/users"
 	"gorm.io/gorm"
 )
 
-func New(db *gorm.DB, generator jwt.Generator) Handler {
+type UserRepository interface {
+	Find(pk uint) (*entity.User, error)
+	FindByUsername(username string) (*entity.User, error)
+	FindByEntity(user entity.User) (*entity.User, error)
+	Create(user entity.User) (*entity.User, error)
+	Update(pk uint, user entity.User) (*entity.User, error)
+}
+
+func New(db *gorm.DB, userRepository UserRepository, generator jwt.Generator) Handler {
 	repo := NewRepository(db)
-	service := NewService(repo, users.NewRepository(db), generator)
+	service := NewService(repo, userRepository, generator)
 	handler := NewHandler(service)
 
 	return handler
