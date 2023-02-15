@@ -61,7 +61,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	apiRouter.Route(
 		jobs.Prefix,
 		jobs.Register(jobsHandler),
-		auth.Middlewares(authMiddlewareParam, jobs.AddJobMeta())...,
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), jobs.AddJobMeta(),
 	).Name("api.jobs")
 
 	hasPermission := permission.HasPermission(permission.HasPermissionParameter{
@@ -73,14 +73,14 @@ func Api(apiRouter app.Router, a app.Application) {
 	apiRouter.Route(
 		groups.Prefix,
 		groups.Register(groupsHandler),
-		auth.Middlewares(authMiddlewareParam, hasPermission())...,
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), hasPermission(),
 	).Name("api.groups")
 
 	usersHandler := users.New(db)
 	apiRouter.Route(
 		users.Prefix,
 		users.Register(usersHandler),
-		auth.Middlewares(authMiddlewareParam, hasPermission())...,
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(authMiddlewareParam), hasPermission(),
 	).Name("api.users")
 
 }

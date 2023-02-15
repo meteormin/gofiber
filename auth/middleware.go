@@ -5,8 +5,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jwtWare "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -35,9 +35,9 @@ type MiddlewaresParameter struct {
 
 type mw func(ctx *fiber.Ctx) (*fiber.Ctx, error)
 
-// jwtMiddleware
+// JwtMiddleware
 // jwt 유효성 체크 미들웨어
-func jwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
+func JwtMiddleware(jwtConfig jwtWare.Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		middleware := newJwtMiddleware(jwtConfig)
 
@@ -67,17 +67,14 @@ func jwtError() fiber.ErrorHandler {
 }
 
 // Middlewares auth middleware
-func Middlewares(parameter MiddlewaresParameter, fn ...fiber.Handler) []fiber.Handler {
-	return mergeMiddlewares(parameter, fn...) // TODO: 미들웨어 추가가 좀 더 편하게 수정해야함
+func Middlewares(parameter MiddlewaresParameter) fiber.Handler {
+	return mergeMiddlewares(parameter) // TODO: 미들웨어 추가가 좀 더 편하게 수정해야함
 }
 
 // mergeMiddlewares
 // 미들웨어 슬라이스 리턴
 // 인증 관련된 미들웨어 함수의 집합으로 이 함수에 등록된 순서대로 실행 가능
 func mergeMiddlewares(parameter MiddlewaresParameter) fiber.Handler {
-	app.App().Middleware(func(fiber *fiber.App, app app.Application) {
-		fiber.Use(jwtMiddleware(parameter.Cfg))
-	})
 	return func(ctx *fiber.Ctx) error {
 		jwtToken, ok := ctx.Locals("user").(*jwt.Token)
 		if !ok {
@@ -93,8 +90,36 @@ func mergeMiddlewares(parameter MiddlewaresParameter) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		logFormat := accessLogFormat{}
-		parameter.Logger.Info(logFormat.ToLogFormat())
+
+		addContext := utils.AddContext(utils.AuthUserKey, fromJWT)
+
+		err = addContext(ctx)
+		elapsed, err := utils.GetContext[time.Time](ctx, utils.StartTime)
+		if err != nil {
+			return err
+		}
+
+		errMsg := ""
+		if err != nil {
+			errMsg = err.Error()
+		}
+
+		logFormat := accessLogFormat{
+			UserId:  fromJWT.Id,
+			IP:      ctx.IP(),
+			Elapsed: time.Since(elapsed).Milliseconds(),
+			Method:  ctx.Method(),
+			ErrMsg:  errMsg,
+		}
+
+		logger := parameter.Logger
+		if logger == nil {
+			logger = log.GetLogger()
+		}
+
+		logger.Info(logFormat.ToLogFormat())
+
+		return err
 	}
 }
 
@@ -177,6 +202,8 @@ func checkExpired(user *User, gormDB ...*gorm.DB) error {
 		statusCode := fiber.StatusUnauthorized
 		return fiber.NewError(statusCode, "JWT is expired")
 	}
+
+	return nil
 }
 
 func GetAuthUser(c *fiber.Ctx) (*User, error) {
