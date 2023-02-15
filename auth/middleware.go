@@ -80,7 +80,8 @@ func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		jwtToken, ok := ctx.Locals("user").(*jwt.Token)
 		if !ok {
-			return fiber.ErrUnauthorized
+			statusCode := fiber.StatusUnauthorized
+			return fiber.NewError(statusCode, "Can't Find jwt token")
 		}
 
 		fromJWT, err := getUserFromJWT(jwtToken)

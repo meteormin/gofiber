@@ -45,7 +45,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	authHandler := auth.New(db, users.NewRepository(db), tokenGenerator)
 	apiRouter.Route(
 		auth.Prefix,
-		auth.Register(authHandler),
+		auth.Register(authHandler, cfg.Auth.Jwt),
 	).Name("api.auth")
 
 	jobsHandler := jobs.New(
