@@ -20,4 +20,5 @@ type User struct {
 	Role            UserRole   `gorm:"column:role;type:varchar(10)" json:"role"`
 	EmailVerifiedAt *time.Time `gorm:"column:email_verified_at" json:"email_verified_at"`
 	Group           Group
+	hooks
 }

@@ -15,4 +15,5 @@ type JobHistory struct {
 	Status     worker.JobStatus `json:"status" gorm:"column:status;type:varchar(10)"`
 	Error      *string          `json:"error" gorm:"column:error;type:varchar(255)"`
 	User       User             `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	hooks
 }
