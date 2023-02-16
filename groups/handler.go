@@ -31,7 +31,7 @@ func NewHandler(service Service) Handler {
 // @Summary create group
 // @Description create group
 // @Tags Groups
-// @Param request body CreateGroup ture "creat group"
+// @Param request body CreateGroup ture "create group"
 // @Success 201 {object} ResponseGroup
 // @Failure 400 {object} api_error.ValidationErrorResponse
 // @Failure 403 {object} api_error.ErrorResponse
@@ -62,14 +62,14 @@ func (h *HandlerStruct) Create(ctx *fiber.Ctx) error {
 // @Summary update group
 // @Description update group
 // @Tags Groups
-// @param id path int true "group pk"
-// @Param request body UpdateGroup ture "creat group"
+// @Param id path int true "group pk"
+// @Param request body UpdateGroup ture "update group"
 // @Success 200 {object} ResponseGroup
 // @Failure 400 {object} api_error.ValidationErrorResponse
 // @Failure 403 {object} api_error.ErrorResponse
 // @Accept json
 // @Produce json
-// @Router /api/groups [put]
+// @Router /api/groups/{id} [put]
 // @Security BearerAuth
 func (h *HandlerStruct) Update(ctx *fiber.Ctx) error {
 	param := ctx.Params("id")
@@ -94,6 +94,19 @@ func (h *HandlerStruct) Update(ctx *fiber.Ctx) error {
 	return ctx.JSON(result)
 }
 
+// Patch
+// @Summary patch group
+// @Description patch group by group id
+// @Tags Groups
+// @Param id path int true "group pk"
+// @Param request body UpdateGroup ture "update group"
+// @Success 200 {object} ResponseGroup
+// @Failure 400 {object} api_error.ValidationErrorResponse
+// @Failure 403 {object} api_error.ErrorResponse
+// @Accept json
+// @Produce json
+// @Router /api/groups/{id} [patch]
+// @Security BearerAuth
 func (h *HandlerStruct) Patch(ctx *fiber.Ctx) error {
 	param := ctx.Params("id")
 	pk, err := strconv.Atoi(param)

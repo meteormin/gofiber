@@ -83,7 +83,7 @@ func (s *ServiceStruct) Delete(pk uint) (bool, error) {
 func (s *ServiceStruct) All(page utils.Page) (utils.Paginator[ResponseGroup], error) {
 	res := make([]ResponseGroup, 0)
 
-	entities, count, err := s.repo.All(page)
+	entities, count, err := s.repo.AllWithPage(page)
 
 	paginator := utils.Paginator[ResponseGroup]{
 		TotalCount: count,

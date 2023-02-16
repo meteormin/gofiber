@@ -8,6 +8,7 @@ type GenericRepository[T interface{}] interface {
 	Create(ent T) (*T, error)
 	Update(pk uint, ent T) (*T, error)
 	Find(pk uint) (*T, error)
+	FindByEntity(ent T) (*T, error)
 	FindByAttribute(attr string, value interface{}) (*T, error)
 	Get(fn func(tx *gorm.DB) (*gorm.DB, error)) ([]T, error)
 	GetByEntity(ent T) ([]T, error)
@@ -74,6 +75,15 @@ func (g *genericRepository[T]) Find(pk uint) (*T, error) {
 	}
 
 	return &model, err
+}
+
+func (g *genericRepository[T]) FindByEntity(ent T) (*T, error) {
+	model := g.getModel()
+	if err := g.db.Where(&ent).First(&model).Error; err != nil {
+		return nil, err
+	}
+
+	return &model, nil
 }
 
 func (g *genericRepository[T]) FindByAttribute(attr string, value interface{}) (*T, error) {

@@ -70,7 +70,7 @@ func Middlewares() fiber.Handler {
 		Logger: log.GetLogger(),
 	}
 
-	return mergeMiddlewares(parameter) // TODO: 미들웨어 추가가 좀 더 편하게 수정해야함
+	return mergeMiddlewares(parameter)
 }
 
 // mergeMiddlewares
@@ -115,7 +115,7 @@ func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 			ErrMsg:  errMsg,
 		}
 
-		parameter.Logger.Info(logFormat.ToLogFormat())
+		parameter.Logger.Info(logFormat.toLogFormat())
 
 		return err
 	}
@@ -130,7 +130,7 @@ type accessLogFormat struct {
 	ErrMsg  string
 }
 
-func (alf accessLogFormat) ToLogFormat() string {
+func (alf accessLogFormat) toLogFormat() string {
 	return fmt.Sprintf(
 		"user: %4d | IP: %15s | %6dms | %s | %s %s",
 		alf.UserId, alf.IP, alf.Elapsed, alf.Method, alf.Request, alf.ErrMsg,

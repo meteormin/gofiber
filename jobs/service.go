@@ -33,7 +33,7 @@ func NewService(redis func() *redis.Client, dispatcher worker.Dispatcher, repo j
 }
 
 func (s *ServiceStruct) AllHistories(query HistoryQuery) ([]History, error) {
-	all, err := s.repo.All(func(db *gorm.DB) (*gorm.DB, error) {
+	all, err := s.repo.Get(func(db *gorm.DB) (*gorm.DB, error) {
 		ent := query.ToEntity()
 		tx := db.Where(&ent)
 		if query.HasError {
@@ -56,7 +56,7 @@ func (s *ServiceStruct) AllHistories(query HistoryQuery) ([]History, error) {
 }
 
 func (s *ServiceStruct) GetHistories(workerName string, userId uint, query HistoryQuery) ([]History, error) {
-	all, err := s.repo.All(func(db *gorm.DB) (*gorm.DB, error) {
+	all, err := s.repo.Get(func(db *gorm.DB) (*gorm.DB, error) {
 		query.WorkerName = &workerName
 		query.UserId = &userId
 		tx := db.Where(query.ToEntity())

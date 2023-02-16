@@ -447,7 +447,7 @@ paths:
       - application/json
       description: create group
       parameters:
-      - description: creat group
+      - description: create group
         in: body
         name: request
         schema:
@@ -470,41 +470,6 @@ paths:
       security:
       - BearerAuth: []
       summary: create group
-      tags:
-      - Groups
-    put:
-      consumes:
-      - application/json
-      description: update group
-      parameters:
-      - description: group pk
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: creat group
-        in: body
-        name: request
-        schema:
-          $ref: '#/definitions/groups.UpdateGroup'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/groups.ResponseGroup'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/api_error.ValidationErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: update group
       tags:
       - Groups
   /api/groups/{id}:
@@ -558,6 +523,76 @@ paths:
       security:
       - BearerAuth: []
       summary: get group by pk
+      tags:
+      - Groups
+    patch:
+      consumes:
+      - application/json
+      description: patch group by group id
+      parameters:
+      - description: group pk
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update group
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/groups.UpdateGroup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/groups.ResponseGroup'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api_error.ValidationErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: patch group
+      tags:
+      - Groups
+    put:
+      consumes:
+      - application/json
+      description: update group
+      parameters:
+      - description: group pk
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update group
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/groups.UpdateGroup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/groups.ResponseGroup'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api_error.ValidationErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api_error.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: update group
       tags:
       - Groups
   /api/groups/name/{name}:
