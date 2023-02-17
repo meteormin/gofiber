@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/pkg/IOContainer"
+	"github.com/miniyus/gofiber/pkg/iocontainer"
 	"log"
 	"reflect"
 	"strconv"
