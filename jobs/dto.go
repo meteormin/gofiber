@@ -50,7 +50,7 @@ type HistoryQuery struct {
 	HasError   bool              `query:"has_error"`
 }
 
-func (hq HistoryQuery) ToEntity() entity.JobHistory {
+func (hq *HistoryQuery) ToEntity() entity.JobHistory {
 	ent := entity.JobHistory{}
 
 	if hq.JobId != nil {

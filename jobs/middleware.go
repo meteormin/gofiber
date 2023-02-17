@@ -3,20 +3,20 @@ package jobs
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/auth"
-	"github.com/miniyus/gofiber/job_queue"
+	"github.com/miniyus/gofiber/jobqueue"
 )
 
 func AddJobMeta() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		meta := make(map[job_queue.WriteableField]interface{})
+		meta := make(map[jobqueue.WriteableField]interface{})
 		user, err := auth.GetAuthUser(ctx)
 		if err != nil {
 			return err
 		}
 
-		meta[job_queue.UserId] = user.Id
+		meta[jobqueue.UserId] = user.Id
 
-		job_queue.AddMetaOnDispatch(meta)
+		jobqueue.AddMetaOnDispatch(meta)
 
 		return ctx.Next()
 	}

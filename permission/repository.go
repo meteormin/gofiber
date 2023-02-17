@@ -2,24 +2,24 @@ package permission
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/pkg/gormrepo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type Repository interface {
-	utils.GenericRepository[entity.Permission]
+	gormrepo.GenericRepository[entity.Permission]
 	BatchCreate(permission []entity.Permission) ([]entity.Permission, error)
 	GetByGroupId(groupId uint) ([]entity.Permission, error)
 }
 
 type RepositoryStruct struct {
-	utils.GenericRepository[entity.Permission]
+	gormrepo.GenericRepository[entity.Permission]
 }
 
 func NewRepository(db *gorm.DB) Repository {
 	return &RepositoryStruct{
-		utils.NewGenericRepository(db, entity.Permission{}),
+		gormrepo.NewGenericRepository(db, entity.Permission{}),
 	}
 }
 

@@ -89,7 +89,7 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -129,7 +129,7 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -163,7 +163,7 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -203,7 +203,7 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -253,7 +253,7 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -295,13 +295,13 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ValidationErrorResponse"
+                            "$ref": "#/definitions/apierrors.ValidationErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -344,7 +344,7 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -387,7 +387,7 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -436,13 +436,13 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ValidationErrorResponse"
+                            "$ref": "#/definitions/apierrors.ValidationErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -483,7 +483,7 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -532,19 +532,129 @@ const docTemplategofiber = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ValidationErrorResponse"
+                            "$ref": "#/definitions/apierrors.ValidationErrorResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/worker/:worker/histories": {
+        "/api/worker/histories": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "get all job histories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "get all job histories",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "hasError",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "jobId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "userId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "uuid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "workerName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/jobs.History"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/worker/status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "jobs status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "jobs status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/jobs.GetStatus"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/worker/{worker}/histories": {
             "get": {
                 "security": [
                     {
@@ -602,19 +712,19 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/worker/:worker/histories/:id": {
+        "/api/worker/{worker}/histories/{id}": {
             "get": {
                 "security": [
                     {
@@ -658,96 +768,13 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/worker/histories": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "get all job histories",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Jobs"
-                ],
-                "summary": "get all job histories",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/jobs.History"
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/worker/status": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "jobs status",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Jobs"
-                ],
-                "summary": "jobs status",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/jobs.GetStatus"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -790,13 +817,13 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -846,13 +873,13 @@ const docTemplategofiber = `{
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/api_error.ErrorResponse"
+                            "$ref": "#/definitions/apierrors.ErrorResponse"
                         }
                     }
                 }
@@ -883,7 +910,7 @@ const docTemplategofiber = `{
         }
     },
     "definitions": {
-        "api_error.ErrorResponse": {
+        "apierrors.ErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -897,7 +924,7 @@ const docTemplategofiber = `{
                 }
             }
         },
-        "api_error.ValidationErrorResponse": {
+        "apierrors.ValidationErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {

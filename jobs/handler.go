@@ -2,6 +2,8 @@ package jobs
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/miniyus/gofiber/auth"
+	"strconv"
 )
 
 type Handler interface {
@@ -27,16 +29,28 @@ func NewHandler(service Service) Handler {
 // @Summary get all job histories
 // @Description get all job histories
 // @Tags Jobs
+// @Param history query HistoryQuery true "query"
 // @Success 200 {object} []History
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/worker/histories [get]
 // @Security BearerAuth
 func (h *HandlerStruct) AllHistories(ctx *fiber.Ctx) error {
-	//TODO implement me
-	panic("implement me")
+	hq := HistoryQuery{}
+
+	err := ctx.QueryParser(&hq)
+	if err != nil {
+		return err
+	}
+
+	histories, err := h.service.AllHistories(hq)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(histories)
 }
 
 // GetHistories
@@ -45,15 +59,33 @@ func (h *HandlerStruct) AllHistories(ctx *fiber.Ctx) error {
 // @Tags Jobs
 // @Param history query HistoryQuery true "query"
 // @Success 200 {object} []History
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
-// @Router /api/worker/:worker/histories [get]
+// @Router /api/worker/{worker}/histories [get]
 // @Security BearerAuth
 func (h *HandlerStruct) GetHistories(ctx *fiber.Ctx) error {
-	//TODO implement me
-	panic("implement me")
+	hq := HistoryQuery{}
+	params := ctx.AllParams()
+
+	err := ctx.QueryParser(&hq)
+	if err != nil {
+		return err
+	}
+
+	workerName := params["worker"]
+	user, err := auth.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	histories, err := h.service.GetHistories(workerName, user.Id, hq)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(histories)
 }
 
 // GetHistory
@@ -63,15 +95,24 @@ func (h *HandlerStruct) GetHistories(ctx *fiber.Ctx) error {
 // @Param id path int true "job history pk"
 // @Tags Jobs
 // @Success 200 {object} History
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
-// @Router /api/worker/:worker/histories/:id [get]
+// @Router /api/worker/{worker}/histories/{id} [get]
 // @Security BearerAuth
 func (h *HandlerStruct) GetHistory(ctx *fiber.Ctx) error {
-	//TODO implement me
-	panic("implement me")
+	params := ctx.AllParams()
+	pk, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		return err
+	}
+
+	history, err := h.service.GetHistory(uint(pk))
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(history)
 }
 
 // Status
@@ -79,8 +120,8 @@ func (h *HandlerStruct) GetHistory(ctx *fiber.Ctx) error {
 // @Description jobs status
 // @Tags Jobs
 // @Success 200 {object} GetStatus
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/worker/status [get]
@@ -95,8 +136,8 @@ func (h *HandlerStruct) Status(ctx *fiber.Ctx) error {
 // @Tags Jobs
 // @Param worker path string true "worker name"
 // @Success 200 {object} GetJobs
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/worker/{worker}/jobs [get]
@@ -121,8 +162,8 @@ func (h *HandlerStruct) GetJobs(ctx *fiber.Ctx) error {
 // @Param worker path string true "worker name"
 // @Param job path string true "job id"
 // @Success 200 {object} GetJob
-// @Failure 403 {object} api_error.ErrorResponse
-// @Failure 404 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
+// @Failure 404 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/worker/{worker}/jobs/{job} [get]

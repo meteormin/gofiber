@@ -1,14 +1,14 @@
-package job_queue
+package jobqueue
 
 import (
 	Uuid "github.com/google/uuid"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/pkg/gormrepo"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	utils.GenericRepository[entity.JobHistory]
+	gormrepo.GenericRepository[entity.JobHistory]
 	GetByUserId(userId uint) ([]entity.JobHistory, error)
 	FindByUuid(uuid string) (*entity.JobHistory, error)
 	UpdateByUuid(uuid string, history entity.JobHistory) (*entity.JobHistory, error)
@@ -18,7 +18,7 @@ type Repository interface {
 }
 
 type RepositoryStruct struct {
-	utils.GenericRepository[entity.JobHistory]
+	gormrepo.GenericRepository[entity.JobHistory]
 }
 
 func (r *RepositoryStruct) GetByUserId(userId uint) ([]entity.JobHistory, error) {
@@ -89,6 +89,6 @@ func (r *RepositoryStruct) DeleteByUuid(uuid string) (int64, error) {
 
 func NewRepository(db *gorm.DB) Repository {
 	return &RepositoryStruct{
-		utils.NewGenericRepository(db, entity.JobHistory{}),
+		gormrepo.NewGenericRepository(db, entity.JobHistory{}),
 	}
 }

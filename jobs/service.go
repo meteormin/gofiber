@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v9"
-	"github.com/miniyus/gofiber/job_queue"
+	"github.com/miniyus/gofiber/jobqueue"
 	"github.com/miniyus/gofiber/pkg/worker"
 	"gorm.io/gorm"
 )
@@ -15,16 +15,16 @@ type Service interface {
 	Status() *worker.StatusInfo
 	AllHistories(query HistoryQuery) ([]History, error)
 	GetHistories(workerName string, userId uint, query HistoryQuery) ([]History, error)
-	GetHistory(pk uint) (History, error)
+	GetHistory(pk uint) (*History, error)
 }
 
 type ServiceStruct struct {
 	redis      func() *redis.Client
 	dispatcher worker.Dispatcher
-	repo       job_queue.Repository
+	repo       jobqueue.Repository
 }
 
-func NewService(redis func() *redis.Client, dispatcher worker.Dispatcher, repo job_queue.Repository) Service {
+func NewService(redis func() *redis.Client, dispatcher worker.Dispatcher, repo jobqueue.Repository) Service {
 	return &ServiceStruct{
 		redis:      redis,
 		dispatcher: dispatcher,
@@ -78,9 +78,15 @@ func (s *ServiceStruct) GetHistories(workerName string, userId uint, query Histo
 	return histories, err
 }
 
-func (s *ServiceStruct) GetHistory(pk uint) (History, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *ServiceStruct) GetHistory(pk uint) (*History, error) {
+	find, err := s.repo.Find(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	his := EntityToHistory(*find)
+
+	return &his, nil
 }
 
 func (s *ServiceStruct) GetJobs(workerName string) ([]worker.Job, error) {

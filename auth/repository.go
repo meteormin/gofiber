@@ -2,14 +2,14 @@ package auth
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/pkg/gormrepo"
 	"gorm.io/gorm"
 )
 
 // Repository
 // JWT 관련 토큰 Repository
 type Repository interface {
-	utils.GenericRepository[entity.AccessToken]
+	gormrepo.GenericRepository[entity.AccessToken]
 	FindByToken(token string) (*entity.AccessToken, error)
 	FindByUserId(userId uint) (*entity.AccessToken, error)
 	Delete(pk uint) (bool, error)
@@ -18,13 +18,13 @@ type Repository interface {
 // RepositoryStruct
 // Repository 인터페이스 구현 구조체
 type RepositoryStruct struct {
-	utils.GenericRepository[entity.AccessToken]
+	gormrepo.GenericRepository[entity.AccessToken]
 }
 
 // NewRepository
 // Repository 생성 함수
 func NewRepository(db *gorm.DB) Repository {
-	return &RepositoryStruct{utils.NewGenericRepository(db, entity.AccessToken{})}
+	return &RepositoryStruct{gormrepo.NewGenericRepository(db, entity.AccessToken{})}
 }
 
 // FindByToken

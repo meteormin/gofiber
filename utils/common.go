@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/go-redis/redis/v9"
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/api_error"
+	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/internal/base64"
 	"github.com/miniyus/gofiber/internal/datetime"
 	"github.com/miniyus/gofiber/pkg/validation"
@@ -32,10 +32,10 @@ func RedisClientMaker(options *redis.Options) func() *redis.Client {
 	}
 }
 
-func HandleValidate(c *fiber.Ctx, data interface{}) *api_error.ValidationErrorResponse {
+func HandleValidate(c *fiber.Ctx, data interface{}) *apierrors.ValidationErrorResponse {
 	err := c.BodyParser(data)
 	if err != nil {
-		errRes := api_error.NewValidationErrorResponse(c, map[string]string{
+		errRes := apierrors.NewValidationErrorResponse(c, map[string]string{
 			"parse_error": err.Error(),
 		})
 		return errRes
@@ -43,7 +43,7 @@ func HandleValidate(c *fiber.Ctx, data interface{}) *api_error.ValidationErrorRe
 
 	failed := validation.Validate(data)
 	if failed != nil {
-		errRes := api_error.NewValidationErrorResponse(c, failed)
+		errRes := apierrors.NewValidationErrorResponse(c, failed)
 		return errRes
 	}
 

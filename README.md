@@ -234,7 +234,7 @@ func Api(router app.Router, a app.Application) {
 ```
 
 ### 기타 기능
-- api_error: 기본 error 핸들러, 에러 응답 관련 기능
+- apierrors: 기본 error 핸들러, 에러 응답 관련 기능
 - auth: jwt 토큰 기반의 인증 기능
   - 회원가입, 로그인, 로그아웃, 패스워드 변경등의 기본 API 구현
 - create_admin: 초기 최고 관리자 생성을 위한 패키지

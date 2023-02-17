@@ -39,7 +39,7 @@ type RouterGroup func(router Router, app Application)
 type MiddlewareRegister func(fiber *fiber.App, app Application)
 
 type Application interface {
-	IOContainer.Container
+	iocontainer.Container
 	IsProduction() bool
 	Config() Config
 	Middleware(fn MiddlewareRegister)
@@ -57,7 +57,7 @@ func App() Application {
 }
 
 type app struct {
-	IOContainer.Container
+	iocontainer.Container
 	fiber      *fiber.App
 	config     Config
 	router     []Router
@@ -80,7 +80,7 @@ func New(cfgs ...Config) Application {
 	}
 
 	a = &app{
-		Container: IOContainer.NewContainer(),
+		Container: iocontainer.NewContainer(),
 		config:    cfg,
 		fiber:     fiber.New(fiberConfig),
 		isRun:     false,

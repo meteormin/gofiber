@@ -2,7 +2,7 @@ package users
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/api_error"
+	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/utils"
@@ -74,7 +74,7 @@ func (h *HandlerStruct) PatchForAdm(ctx *fiber.Ctx) error {
 	params := ctx.AllParams()
 	pk, err := strconv.ParseUint(params["id"], 10, 64)
 	if err != nil {
-		return api_error.NewValidationErrorResponse(ctx, map[string]string{
+		return apierrors.NewValidationErrorResponse(ctx, map[string]string{
 			"id": "id는 정수형이여야 합니다.",
 		}).Response()
 	}

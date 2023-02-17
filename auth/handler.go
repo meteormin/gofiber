@@ -3,7 +3,7 @@ package auth
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/miniyus/gofiber/api_error"
+	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/utils"
 )
@@ -26,7 +26,7 @@ func NewHandler(service Service) Handler {
 	}
 }
 
-func validateSignUp(ctx *fiber.Ctx, signUp *SignUp) (bool, *api_error.ValidationErrorResponse) {
+func validateSignUp(ctx *fiber.Ctx, signUp *SignUp) (bool, *apierrors.ValidationErrorResponse) {
 	errRes := utils.HandleValidate(ctx, signUp)
 	if errRes != nil {
 		return false, errRes
@@ -40,7 +40,7 @@ func validateSignUp(ctx *fiber.Ctx, signUp *SignUp) (bool, *api_error.Validation
 // @Description sign up
 // @Tags Auth
 // @Success 201 {object} SignUpResponse
-// @Failure 400 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Param request body SignUp true "sign up body"
@@ -64,7 +64,7 @@ func (h *HandlerStruct) SignUp(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(result)
 }
 
-func validateSignIn(ctx *fiber.Ctx, in *SignIn) (bool, *api_error.ValidationErrorResponse) {
+func validateSignIn(ctx *fiber.Ctx, in *SignIn) (bool, *apierrors.ValidationErrorResponse) {
 	errRes := utils.HandleValidate(ctx, in)
 	if errRes != nil {
 		return false, errRes
@@ -78,7 +78,7 @@ func validateSignIn(ctx *fiber.Ctx, in *SignIn) (bool, *api_error.ValidationErro
 // @Description login
 // @Tags Auth
 // @Success 200 {object} TokenInfo
-// @Failure 400 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Param request body SignIn true "login  body"
@@ -131,7 +131,7 @@ func (h *HandlerStruct) Me(ctx *fiber.Ctx) error {
 // @Tags Auth
 // @Param request body ResetPasswordStruct true "reset password body"
 // @Success 200 {object} auth.User
-// @Failure 400 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/auth/password [patch]
@@ -156,7 +156,7 @@ func (h *HandlerStruct) ResetPassword(ctx *fiber.Ctx) error {
 
 	rs, err := h.service.ResetPassword(user.Id, dto)
 	if err != nil {
-		errRes := api_error.NewFromError(ctx, err)
+		errRes := apierrors.NewFromError(ctx, err)
 		return errRes.Response()
 	}
 
@@ -168,7 +168,7 @@ func (h *HandlerStruct) ResetPassword(ctx *fiber.Ctx) error {
 // @description revoke current jwt token
 // @Tags Auth
 // @Success 200 {object} utils.StatusResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/auth/revoke [delete]

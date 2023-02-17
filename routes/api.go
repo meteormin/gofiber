@@ -6,7 +6,7 @@ import (
 	configure "github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/groups"
-	"github.com/miniyus/gofiber/job_queue"
+	"github.com/miniyus/gofiber/jobqueue"
 	"github.com/miniyus/gofiber/jobs"
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
@@ -51,7 +51,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	jobsHandler := jobs.New(
 		utils.RedisClientMaker(cfg.RedisConfig),
 		jDispatcher,
-		job_queue.NewRepository(db),
+		jobqueue.NewRepository(db),
 	)
 	apiRouter.Route(
 		jobs.Prefix,

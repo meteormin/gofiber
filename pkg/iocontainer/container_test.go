@@ -1,4 +1,4 @@
-package IOContainer_test
+package iocontainer_test
 
 import (
 	"github.com/miniyus/gofiber/pkg/IOContainer"
@@ -10,7 +10,7 @@ type AnyType struct {
 	Name string
 }
 
-var con = IOContainer.NewContainer()
+var con = iocontainer.NewContainer()
 
 func TestContainerStruct_Bind(t *testing.T) {
 	var testData AnyType

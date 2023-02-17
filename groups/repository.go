@@ -2,12 +2,13 @@ package groups
 
 import (
 	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/pkg/gormrepo"
 	"github.com/miniyus/gofiber/utils"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	utils.GenericRepository[entity.Group]
+	gormrepo.GenericRepository[entity.Group]
 	Count(group entity.Group) (int64, error)
 	AllWithPage(page utils.Page) ([]entity.Group, int64, error)
 	Create(group entity.Group) (*entity.Group, error)
@@ -18,11 +19,11 @@ type Repository interface {
 }
 
 type RepositoryStruct struct {
-	utils.GenericRepository[entity.Group]
+	gormrepo.GenericRepository[entity.Group]
 }
 
 func NewRepository(db *gorm.DB) Repository {
-	return &RepositoryStruct{utils.NewGenericRepository(db, entity.Group{})}
+	return &RepositoryStruct{gormrepo.NewGenericRepository(db, entity.Group{})}
 }
 
 func (r *RepositoryStruct) Count(group entity.Group) (int64, error) {

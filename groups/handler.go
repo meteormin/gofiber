@@ -2,7 +2,7 @@ package groups
 
 import (
 	"github.com/gofiber/fiber/v2"
-	_ "github.com/miniyus/gofiber/api_error"
+	_ "github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/utils"
 	"strconv"
 )
@@ -33,8 +33,8 @@ func NewHandler(service Service) Handler {
 // @Tags Groups
 // @Param request body CreateGroup ture "create group"
 // @Success 201 {object} ResponseGroup
-// @Failure 400 {object} api_error.ValidationErrorResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ValidationErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups [post]
@@ -65,8 +65,8 @@ func (h *HandlerStruct) Create(ctx *fiber.Ctx) error {
 // @Param id path int true "group pk"
 // @Param request body UpdateGroup ture "update group"
 // @Success 200 {object} ResponseGroup
-// @Failure 400 {object} api_error.ValidationErrorResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ValidationErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups/{id} [put]
@@ -101,8 +101,8 @@ func (h *HandlerStruct) Update(ctx *fiber.Ctx) error {
 // @Param id path int true "group pk"
 // @Param request body UpdateGroup ture "update group"
 // @Success 200 {object} ResponseGroup
-// @Failure 400 {object} api_error.ValidationErrorResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 400 {object} apierrors.ValidationErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups/{id} [patch]
@@ -137,7 +137,7 @@ func (h *HandlerStruct) Patch(ctx *fiber.Ctx) error {
 // @param page query int true "page number"
 // @param page_size query int true "page size"
 // @Success 200 {object} ListResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups [get]
@@ -167,7 +167,7 @@ func (h *HandlerStruct) All(ctx *fiber.Ctx) error {
 // @Tags Groups
 // @param id path int true "pk"
 // @Success 200 {object} ResponseGroup
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups/{id} [get]
@@ -193,7 +193,7 @@ func (h *HandlerStruct) Find(ctx *fiber.Ctx) error {
 // @Tags Groups
 // @param name path string true "name"
 // @Success 200 {object} ResponseGroup
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups/name/{name} [get]
@@ -215,7 +215,7 @@ func (h *HandlerStruct) FindByName(ctx *fiber.Ctx) error {
 // @Tags Groups
 // @param name path int true "name"
 // @Success 204 {bool} utils.StatusResponse
-// @Failure 403 {object} api_error.ErrorResponse
+// @Failure 403 {object} apierrors.ErrorResponse
 // @Accept json
 // @Produce json
 // @Router /api/groups/{id} [delete]

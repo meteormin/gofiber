@@ -5,12 +5,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	flogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/miniyus/gofiber/api_error"
+	"github.com/miniyus/gofiber/admin"
+	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/config"
-	"github.com/miniyus/gofiber/create_admin"
 	"github.com/miniyus/gofiber/database"
-	"github.com/miniyus/gofiber/job_queue"
+	"github.com/miniyus/gofiber/jobqueue"
 	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/validation"
@@ -33,7 +33,7 @@ func New(configs ...config.Configs) app.Application {
 	}
 
 	appConfig := cfg.App
-	appConfig.FiberConfig.ErrorHandler = api_error.OverrideDefaultErrorHandler(appConfig.Env)
+	appConfig.FiberConfig.ErrorHandler = apierrors.OverrideDefaultErrorHandler(appConfig.Env)
 
 	a := app.New(appConfig)
 
@@ -118,7 +118,7 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 		EnableStackTrace: !application.IsProduction(),
 	}))
 	fiberApp.Use(cors.New(cfg.Cors))
-	fiberApp.Use(api_error.ErrorHandler(cfg.App.Env))
+	fiberApp.Use(apierrors.ErrorHandler(cfg.App.Env))
 
 }
 
@@ -137,10 +137,10 @@ func boot(a app.Application) {
 	var zLogger *zap.SugaredLogger
 	a.Resolve(&zLogger)
 
-	create_admin.CreateAdmin(db, cfg)
+	admin.CreateAdmin(db, cfg)
 
-	job_queue.New(dispatcher)
-	job_queue.RecordHistory(db)
+	jobqueue.New(dispatcher)
+	jobqueue.RecordHistory(db)
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)

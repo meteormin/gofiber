@@ -7,7 +7,12 @@ type hooks struct {
 	creating
 	updating
 	deleting
+	querying
 	modify
+}
+
+func (h *hooks) Hooks() *hooks {
+	return h
 }
 
 type saving struct {
@@ -22,7 +27,7 @@ func (s *saving) BeforeSave(tx *gorm.DB) (err error) {
 	return s.beforeSave(tx)
 }
 
-func (s *saving) SetBeforeSave(beforeSave func(tx *gorm.DB) (err error)) {
+func (s *saving) HandleBeforeSave(beforeSave func(tx *gorm.DB) (err error)) {
 	s.beforeSave = beforeSave
 }
 
@@ -33,7 +38,7 @@ func (s *saving) AfterSave(tx *gorm.DB) (err error) {
 	return s.afterSave(tx)
 }
 
-func (s *saving) SetAfterSave(afterSave func(tx *gorm.DB) (err error)) {
+func (s *saving) HandleAfterSave(afterSave func(tx *gorm.DB) (err error)) {
 	s.afterSave = afterSave
 }
 
@@ -49,7 +54,7 @@ func (c *creating) BeforeCreate(tx *gorm.DB) (err error) {
 	return c.beforeCreate(tx)
 }
 
-func (c *creating) SetBeforeCreate(beforeCreate func(tx *gorm.DB) (err error)) {
+func (c *creating) HandleBeforeCreate(beforeCreate func(tx *gorm.DB) (err error)) {
 	c.beforeCreate = beforeCreate
 }
 
@@ -60,7 +65,7 @@ func (c *creating) AfterCreate(tx *gorm.DB) (err error) {
 	return c.afterCreate(tx)
 }
 
-func (c *creating) SetAfterCreate(afterCreate func(tx *gorm.DB) (err error)) {
+func (c *creating) HandleAfterCreate(afterCreate func(tx *gorm.DB) (err error)) {
 	c.afterCreate = afterCreate
 }
 
@@ -76,7 +81,7 @@ func (u *updating) BeforeUpdate(tx *gorm.DB) (err error) {
 	return u.beforeUpdate(tx)
 }
 
-func (u *updating) SetBeforeUpdate(beforeUpdate func(tx *gorm.DB) (err error)) {
+func (u *updating) HandleBeforeUpdate(beforeUpdate func(tx *gorm.DB) (err error)) {
 	u.beforeUpdate = beforeUpdate
 }
 
@@ -87,7 +92,7 @@ func (u *updating) AfterUpdate(tx *gorm.DB) (err error) {
 	return u.afterUpdate(tx)
 }
 
-func (u *updating) SetAfterUpdate(afterUpdate func(tx *gorm.DB) (err error)) {
+func (u *updating) HandleAfterUpdate(afterUpdate func(tx *gorm.DB) (err error)) {
 	u.afterUpdate = afterUpdate
 }
 
@@ -103,7 +108,7 @@ func (d *deleting) BeforeDelete(tx *gorm.DB) (err error) {
 	return d.beforeDelete(tx)
 }
 
-func (d *deleting) SetBeforeDelete(beforeDelete func(tx *gorm.DB) (err error)) {
+func (d *deleting) HandleBeforeDelete(beforeDelete func(tx *gorm.DB) (err error)) {
 	d.beforeDelete = beforeDelete
 }
 
@@ -114,8 +119,23 @@ func (d *deleting) AfterDelete(tx *gorm.DB) (err error) {
 	return d.afterDelete(tx)
 }
 
-func (d *deleting) SetAfterDelete(afterDelete func(tx *gorm.DB) (err error)) {
+func (d *deleting) HandleAfterDelete(afterDelete func(tx *gorm.DB) (err error)) {
 	d.afterDelete = afterDelete
+}
+
+type querying struct {
+	afterFind func(tx *gorm.DB) (err error)
+}
+
+func (q *querying) AfterFind(tx *gorm.DB) (err error) {
+	if q.afterFind == nil {
+		return nil
+	}
+	return q.afterFind(tx)
+}
+
+func (q *querying) HandleAfterFind(afterFind func(tx *gorm.DB) (err error)) {
+	q.afterFind = afterFind
 }
 
 type modify struct {
@@ -129,6 +149,6 @@ func (m *modify) Before(tx *gorm.DB) error {
 	return m.before(tx)
 }
 
-func (m *modify) SetBefore(before func(tx *gorm.DB) error) {
+func (m *modify) HandleBefore(before func(tx *gorm.DB) error) {
 	m.before = before
 }

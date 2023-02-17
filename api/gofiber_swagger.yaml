@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  api_error.ErrorResponse:
+  apierrors.ErrorResponse:
     properties:
       code:
         type: integer
@@ -9,7 +9,7 @@ definitions:
       status:
         type: string
     type: object
-  api_error.ValidationErrorResponse:
+  apierrors.ValidationErrorResponse:
     properties:
       code:
         type: integer
@@ -331,7 +331,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: reset password
@@ -359,7 +359,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       summary: Sign up
       tags:
       - Auth
@@ -378,7 +378,7 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: revoke token
@@ -406,7 +406,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       summary: login
       tags:
       - Auth
@@ -436,7 +436,7 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get all groups
@@ -462,11 +462,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ValidationErrorResponse'
+            $ref: '#/definitions/apierrors.ValidationErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: create group
@@ -493,7 +493,7 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: delete group
@@ -519,7 +519,7 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get group by pk
@@ -550,11 +550,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ValidationErrorResponse'
+            $ref: '#/definitions/apierrors.ValidationErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: patch group
@@ -585,11 +585,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api_error.ValidationErrorResponse'
+            $ref: '#/definitions/apierrors.ValidationErrorResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: update group
@@ -616,13 +616,13 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get group by name
       tags:
       - Groups
-  /api/worker/:worker/histories:
+  /api/worker/{worker}/histories:
     get:
       consumes:
       - application/json
@@ -655,17 +655,17 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get job histories
       tags:
       - Jobs
-  /api/worker/:worker/histories/:id:
+  /api/worker/{worker}/histories/{id}:
     get:
       consumes:
       - application/json
@@ -691,11 +691,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get job history
@@ -722,11 +722,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get jobs
@@ -758,11 +758,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get job
@@ -773,6 +773,22 @@ paths:
       consumes:
       - application/json
       description: get all job histories
+      parameters:
+      - in: query
+        name: hasError
+        type: boolean
+      - in: query
+        name: jobId
+        type: string
+      - in: query
+        name: userId
+        type: integer
+      - in: query
+        name: uuid
+        type: string
+      - in: query
+        name: workerName
+        type: string
       produces:
       - application/json
       responses:
@@ -785,11 +801,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: get all job histories
@@ -810,11 +826,11 @@ paths:
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/api_error.ErrorResponse'
+            $ref: '#/definitions/apierrors.ErrorResponse'
       security:
       - BearerAuth: []
       summary: jobs status

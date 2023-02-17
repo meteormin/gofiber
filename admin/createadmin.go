@@ -1,4 +1,4 @@
-package create_admin
+package admin
 
 import (
 	"github.com/miniyus/gofiber/config"
