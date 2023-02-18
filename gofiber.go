@@ -15,7 +15,6 @@ import (
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/validation"
 	"github.com/miniyus/gofiber/pkg/worker"
-	"github.com/miniyus/gofiber/routes"
 	"github.com/miniyus/gofiber/utils"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -43,9 +42,6 @@ func New(configs ...config.Configs) app.Application {
 	a.Middleware(middleware)
 	// register boot
 	a.Register(boot)
-
-	a.Route(routes.ApiPrefix, routes.Api, "api")
-	a.Route("/", routes.External, "external")
 
 	return a
 }
