@@ -15,16 +15,9 @@ type RepositoryStruct struct {
 	gormrepo.GenericRepository[entity.User]
 }
 
-func NewRepository(db *gorm.DB, ent ...entity.User) Repository {
-	var u entity.User
-	if len(ent) == 0 {
-		u = entity.User{}
-	} else {
-		u = ent[0]
-	}
-
+func NewRepository(db *gorm.DB) Repository {
 	return &RepositoryStruct{
-		gormrepo.NewGenericRepository[entity.User](db, u),
+		gormrepo.NewGenericRepository[entity.User](db, entity.User{}),
 	}
 }
 
