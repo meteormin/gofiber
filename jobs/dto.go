@@ -29,7 +29,7 @@ type History struct {
 	CreatedAt  time.Time        `json:"created_at"`
 }
 
-func EntityToHistory(history entity.JobHistory) History {
+func (h History) FromEntity(history entity.JobHistory) History {
 	return History{
 		UserId:     history.UserId,
 		UUID:       history.UUID,

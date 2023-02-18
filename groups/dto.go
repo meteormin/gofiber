@@ -42,12 +42,8 @@ type ListResponse struct {
 	Data []ResponseGroup `json:"data"`
 }
 
-func ToResponse(ent *entity.Group) *ResponseGroup {
-	if ent == nil {
-		return nil
-	}
-
-	res := &ResponseGroup{
+func (r ResponseGroup) FromEntity(ent entity.Group) ResponseGroup {
+	res := ResponseGroup{
 		Name:    ent.Name,
 		Id:      ent.ID,
 		Actions: make([]ResponseAction, 0),

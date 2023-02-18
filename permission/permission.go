@@ -112,7 +112,7 @@ func (p *CollectionStruct) Get(name string) (*Permission, error) {
 	return &filtered.Items()[0], nil
 }
 
-func ToPermissionEntity(perm Permission) entity.Permission {
+func (perm Permission) ToEntity() entity.Permission {
 	var ent entity.Permission
 	ent.Permission = perm.Name
 	ent.GroupId = perm.GroupId
@@ -128,7 +128,7 @@ func ToPermissionEntity(perm Permission) entity.Permission {
 	return ent
 }
 
-func EntityToPermission(permission entity.Permission) Permission {
+func (perm Permission) FromEntity(permission entity.Permission) Permission {
 	actions := make([]Action, 0)
 	utils.NewCollection(permission.Actions).For(func(v entity.Action, i int) {
 		filtered := utils.NewCollection(permission.Actions).Filter(func(a entity.Action, j int) bool {
@@ -161,7 +161,7 @@ func CreateDefaultPermissions(db *gorm.DB, cfgs []Config) {
 	var entities []entity.Permission
 
 	permCollection.For(func(perm Permission, i int) {
-		entities = append(entities, ToPermissionEntity(perm))
+		entities = append(entities, perm.ToEntity())
 	})
 
 	all, err := repo.All()

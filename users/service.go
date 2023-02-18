@@ -21,12 +21,14 @@ func NewService(repo Repository) Service {
 }
 
 func (s *ServiceStruct) Create(user CreateUser) (*UserResponse, error) {
-	ent := ToUserEntity(user)
+	ent := user.ToEntity()
 	create, err := s.repo.Create(ent)
 	if err != nil {
 		return nil, err
 	}
-	userRes := ToUserResponse(create)
+
+	var ur UserResponse
+	userRes := ur.FromEntity(*create)
 
 	return &userRes, nil
 }
@@ -40,8 +42,9 @@ func (s *ServiceStruct) All() ([]UserResponse, error) {
 		return userRes, err
 	}
 
+	var ur UserResponse
 	for _, ent := range entities {
-		userRes = append(userRes, ToUserResponse(&ent))
+		userRes = append(userRes, ur.FromEntity(ent))
 	}
 
 	return userRes, nil
@@ -53,7 +56,8 @@ func (s *ServiceStruct) Get(pk uint) (*UserResponse, error) {
 		return nil, err
 	}
 
-	userRes := ToUserResponse(user)
+	var ur UserResponse
+	userRes := ur.FromEntity(*user)
 
 	return &userRes, nil
 }
@@ -74,7 +78,8 @@ func (s *ServiceStruct) Update(pk uint, user PatchUser) (*UserResponse, error) {
 		return nil, err
 	}
 
-	userRes := ToUserResponse(rsUser)
+	var ur UserResponse
+	userRes := ur.FromEntity(*rsUser)
 
 	return &userRes, nil
 }

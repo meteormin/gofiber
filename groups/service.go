@@ -47,7 +47,9 @@ func (s *ServiceStruct) Create(group *CreateGroup) (*ResponseGroup, error) {
 		return nil, err
 	}
 
-	return ToResponse(create), err
+	var resGroup ResponseGroup
+	res := resGroup.FromEntity(*create)
+	return &res, err
 }
 
 func (s *ServiceStruct) Update(groupId uint, group *UpdateGroup) (*ResponseGroup, error) {
@@ -73,7 +75,11 @@ func (s *ServiceStruct) Update(groupId uint, group *UpdateGroup) (*ResponseGroup
 		return nil, err
 	}
 
-	return ToResponse(update), err
+	var resGroup ResponseGroup
+
+	res := resGroup.FromEntity(*update)
+
+	return &res, err
 }
 
 func (s *ServiceStruct) Delete(pk uint) (bool, error) {
@@ -95,11 +101,10 @@ func (s *ServiceStruct) All(page utils.Page) (utils.Paginator[ResponseGroup], er
 		return paginator, err
 	}
 
+	var resG ResponseGroup
 	for _, ent := range entities {
-		resGroup := ToResponse(&ent)
-		if resGroup != nil {
-			res = append(res, *resGroup)
-		}
+		resGroup := resG.FromEntity(ent)
+		res = append(res, resGroup)
 	}
 
 	paginator.Data = res
@@ -117,7 +122,9 @@ func (s *ServiceStruct) Find(pk uint) (*ResponseGroup, error) {
 		return nil, fiber.ErrNotFound
 	}
 
-	return ToResponse(ent), nil
+	var resGroup ResponseGroup
+	res := resGroup.FromEntity(*ent)
+	return &res, nil
 }
 
 func (s *ServiceStruct) FindByName(groupName string) (*ResponseGroup, error) {
@@ -130,5 +137,7 @@ func (s *ServiceStruct) FindByName(groupName string) (*ResponseGroup, error) {
 		return nil, fiber.ErrNotFound
 	}
 
-	return ToResponse(ent), nil
+	var resGroup ResponseGroup
+	res := resGroup.FromEntity(*ent)
+	return &res, nil
 }

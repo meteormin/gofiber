@@ -28,17 +28,17 @@ type UserResponse struct {
 	UpdatedAt       string  `json:"updated_at"`
 }
 
-func ToUserEntity(user CreateUser) entity.User {
+func (cr CreateUser) ToEntity() entity.User {
 	res := entity.User{
-		Username: user.Username,
-		Password: user.Password,
-		Email:    user.Email,
+		Username: cr.Username,
+		Password: cr.Password,
+		Email:    cr.Email,
 	}
 
 	return res
 }
 
-func ToUserResponse(user *entity.User) UserResponse {
+func (ur UserResponse) FromEntity(user entity.User) UserResponse {
 	createdAt := datetime.TimeIn(user.CreatedAt, "Asia/Seoul")
 	updatedAt := datetime.TimeIn(user.UpdatedAt, "Asia/Seoul")
 

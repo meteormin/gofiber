@@ -48,8 +48,9 @@ func (s *ServiceStruct) AllHistories(query HistoryQuery) ([]History, error) {
 	}
 
 	histories := make([]History, 0)
+	var history History
 	for _, h := range all {
-		histories = append(histories, EntityToHistory(h))
+		histories = append(histories, history.FromEntity(h))
 	}
 
 	return histories, err
@@ -71,8 +72,9 @@ func (s *ServiceStruct) GetHistories(workerName string, userId uint, query Histo
 	}
 
 	histories := make([]History, 0)
+	var history History
 	for _, h := range all {
-		histories = append(histories, EntityToHistory(h))
+		histories = append(histories, history.FromEntity(h))
 	}
 
 	return histories, err
@@ -84,9 +86,10 @@ func (s *ServiceStruct) GetHistory(pk uint) (*History, error) {
 		return nil, err
 	}
 
-	his := EntityToHistory(*find)
+	var history History
+	h := history.FromEntity(*find)
 
-	return &his, nil
+	return &h, nil
 }
 
 func (s *ServiceStruct) GetJobs(workerName string) ([]worker.Job, error) {

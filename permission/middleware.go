@@ -41,8 +41,9 @@ func HasPermission(parameter HasPermissionParameter) func(permissions ...Permiss
 			get, err := repo.GetByGroupId(*authUser.GroupId)
 			if err == nil {
 				permCollection = NewPermissionCollection()
+				var perm Permission
 				utils.NewCollection(get).For(func(v entity.Permission, i int) {
-					permCollection.Add(EntityToPermission(v))
+					permCollection.Add(perm.FromEntity(v))
 				})
 			}
 
