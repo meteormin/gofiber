@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/miniyus/gofiber/pkg/gormhooks"
 	"gorm.io/gorm"
 	"time"
 )
@@ -20,5 +21,8 @@ type User struct {
 	Role            UserRole   `gorm:"column:role;type:varchar(10)" json:"role"`
 	EmailVerifiedAt *time.Time `gorm:"column:email_verified_at" json:"email_verified_at"`
 	Group           Group
-	hooks
+}
+
+func (u *User) AfterFind(tx *gorm.DB) (err error) {
+	return gormhooks.GetHooks(u).AfterFind(tx)
 }

@@ -11,5 +11,4 @@ type AccessToken struct {
 	User      User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 	Token     string    `gorm:"column:token;type:text;uniqueIndex;not null"`
 	ExpiresAt time.Time `gorm:"column:expires_at;not null;index"`
-	hooks
 }
