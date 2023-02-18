@@ -84,12 +84,12 @@ func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 			return fiber.NewError(statusCode, "Can't Find jwt token")
 		}
 
-		fromJWT, err := getUserFromJWT(jwtToken)
+		err := checkExpired(jwtToken.Raw, parameter.DB)
 		if err != nil {
 			return err
 		}
 
-		err = checkExpired(fromJWT, parameter.DB)
+		fromJWT, err := getUserFromJWT(jwtToken)
 		if err != nil {
 			return err
 		}
@@ -178,7 +178,7 @@ func getUserFromJWT(jwtData *jwt.Token) (*User, error) {
 
 // checkExpired
 // jwt 만료 기간 체크 미들웨어
-func checkExpired(user *User, gormDB ...*gorm.DB) error {
+func checkExpired(token string, gormDB ...*gorm.DB) error {
 	var db *gorm.DB
 	if len(gormDB) != 0 {
 		db = gormDB[0]
@@ -190,13 +190,13 @@ func checkExpired(user *User, gormDB ...*gorm.DB) error {
 
 	tokenRepository := NewRepository(db)
 
-	token, err := tokenRepository.FindByUserId(user.Id)
+	accessToken, err := tokenRepository.FindByToken(token)
 	if err != nil {
 		statusCode := fiber.StatusUnauthorized
 		return fiber.NewError(statusCode, "Can't Find User From Database")
 	}
 
-	if token.ExpiresAt.Unix() < time.Now().Unix() {
+	if accessToken.ExpiresAt.Unix() < time.Now().Unix() {
 		statusCode := fiber.StatusUnauthorized
 		return fiber.NewError(statusCode, "JWT is expired")
 	}
