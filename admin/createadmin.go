@@ -63,7 +63,7 @@ func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 		return
 	}
 
-	entPerms = append(entPerms, permission.ToPermissionEntity(*get))
+	entPerms = append(entPerms, get.ToEntity())
 
 	group := &entity.Group{
 		Name:        "Admin",
