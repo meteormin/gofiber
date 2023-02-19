@@ -14,42 +14,46 @@ type AccessToken struct {
 	ExpiresAt time.Time `gorm:"column:expires_at;not null;index"`
 }
 
+func (at *AccessToken) Hooks() *gormhooks.Hooks[*AccessToken] {
+	return gormhooks.GetHooks(at)
+}
+
 func (at *AccessToken) BeforeSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).BeforeSave(tx)
+	return at.Hooks().BeforeSave(tx)
 }
 
 func (at *AccessToken) AfterSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).AfterSave(tx)
+	return at.Hooks().AfterSave(tx)
 }
 
 func (at *AccessToken) BeforeCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).BeforeCreate(tx)
+	return at.Hooks().BeforeCreate(tx)
 }
 
 func (at *AccessToken) AfterCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).AfterCreate(tx)
+	return at.Hooks().AfterCreate(tx)
 }
 
 func (at *AccessToken) BeforeUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).BeforeUpdate(tx)
+	return at.Hooks().BeforeUpdate(tx)
 }
 
 func (at *AccessToken) AfterUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).AfterUpdate(tx)
+	return at.Hooks().AfterUpdate(tx)
 }
 
 func (at *AccessToken) BeforeDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).BeforeDelete(tx)
+	return at.Hooks().BeforeDelete(tx)
 }
 
 func (at *AccessToken) AfterDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).AfterDelete(tx)
+	return at.Hooks().AfterDelete(tx)
 }
 
 func (at *AccessToken) AfterFind(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).AfterFind(tx)
+	return at.Hooks().AfterFind(tx)
 }
 
 func (at *AccessToken) Before(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(at).Before(tx)
+	return at.Hooks().Before(tx)
 }

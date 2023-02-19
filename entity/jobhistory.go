@@ -18,42 +18,46 @@ type JobHistory struct {
 	User       User             `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
+func (jh *JobHistory) Hooks() *gormhooks.Hooks[*JobHistory] {
+	return gormhooks.GetHooks(jh)
+}
+
 func (jh *JobHistory) BeforeSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).BeforeSave(tx)
+	return jh.Hooks().BeforeSave(tx)
 }
 
 func (jh *JobHistory) AfterSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).AfterSave(tx)
+	return jh.Hooks().AfterSave(tx)
 }
 
 func (jh *JobHistory) BeforeCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).BeforeCreate(tx)
+	return jh.Hooks().BeforeCreate(tx)
 }
 
 func (jh *JobHistory) AfterCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).AfterCreate(tx)
+	return jh.Hooks().AfterCreate(tx)
 }
 
 func (jh *JobHistory) BeforeUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).BeforeUpdate(tx)
+	return jh.Hooks().BeforeUpdate(tx)
 }
 
 func (jh *JobHistory) AfterUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).AfterUpdate(tx)
+	return jh.Hooks().AfterUpdate(tx)
 }
 
 func (jh *JobHistory) BeforeDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).BeforeDelete(tx)
+	return jh.Hooks().BeforeDelete(tx)
 }
 
 func (jh *JobHistory) AfterDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).AfterDelete(tx)
+	return jh.Hooks().AfterDelete(tx)
 }
 
 func (jh *JobHistory) AfterFind(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).AfterFind(tx)
+	return jh.Hooks().AfterFind(tx)
 }
 
 func (jh *JobHistory) Before(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(jh).Before(tx)
+	return jh.Hooks().Before(tx)
 }

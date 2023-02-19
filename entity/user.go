@@ -23,42 +23,46 @@ type User struct {
 	Group           Group
 }
 
+func (u *User) Hooks() *gormhooks.Hooks[*User] {
+	return gormhooks.GetHooks(u)
+}
+
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).BeforeSave(tx)
+	return u.Hooks().BeforeSave(tx)
 }
 
 func (u *User) AfterSave(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).AfterSave(tx)
+	return u.Hooks().AfterSave(tx)
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).BeforeCreate(tx)
+	return u.Hooks().BeforeCreate(tx)
 }
 
 func (u *User) AfterCreate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).AfterCreate(tx)
+	return u.Hooks().AfterCreate(tx)
 }
 
 func (u *User) BeforeUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).BeforeUpdate(tx)
+	return u.Hooks().BeforeUpdate(tx)
 }
 
 func (u *User) AfterUpdate(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).AfterUpdate(tx)
+	return u.Hooks().AfterUpdate(tx)
 }
 
 func (u *User) BeforeDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).BeforeDelete(tx)
+	return u.Hooks().BeforeDelete(tx)
 }
 
 func (u *User) AfterDelete(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).AfterDelete(tx)
+	return u.Hooks().AfterDelete(tx)
 }
 
 func (u *User) AfterFind(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).AfterFind(tx)
+	return u.Hooks().AfterFind(tx)
 }
 
 func (u *User) Before(tx *gorm.DB) (err error) {
-	return gormhooks.GetHooks(u).Before(tx)
+	return u.Hooks().Before(tx)
 }
