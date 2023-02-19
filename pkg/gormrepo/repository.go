@@ -6,7 +6,7 @@ type GenericRepository[T interface{}] interface {
 	DB() *gorm.DB
 	All() ([]T, error)
 	Create(ent T) (*T, error)
-	Update(pk uint, ent T) (*T, error)
+	Save(ent T) (*T, error)
 	Find(pk uint) (*T, error)
 	FindByEntity(ent T) (*T, error)
 	FindByAttribute(attr string, value interface{}) (*T, error)
@@ -49,14 +49,8 @@ func (g *genericRepository[T]) Create(ent T) (*T, error) {
 	return &ent, nil
 }
 
-func (g *genericRepository[T]) Update(pk uint, ent T) (*T, error) {
-	model := g.getModel()
+func (g *genericRepository[T]) Save(ent T) (*T, error) {
 	err := g.db.Transaction(func(tx *gorm.DB) error {
-		err := tx.First(model, pk).Error
-		if err != nil {
-			return err
-		}
-
 		return tx.Save(&ent).Error
 	})
 
