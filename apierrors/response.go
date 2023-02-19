@@ -75,3 +75,15 @@ func (er *ErrorResponse) Response() error {
 
 	return er.ctx.Status(er.Code).JSON(er)
 }
+
+func (ver *ValidationErrorResponse) Response() error {
+	if ver.Code == 0 {
+		ver.Code = fiber.StatusInternalServerError
+	}
+
+	if ver.Message == "" {
+		ver.Message = fUtils.StatusMessage(ver.Code)
+	}
+
+	return ver.ctx.Status(ver.Code).JSON(ver)
+}
