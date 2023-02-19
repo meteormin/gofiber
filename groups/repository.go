@@ -70,3 +70,14 @@ func (r *RepositoryStruct) FindByName(groupName string) (*entity.Group, error) {
 
 	return group, nil
 }
+
+func (r *RepositoryStruct) Update(pk uint, ent entity.Group) (*entity.Group, error) {
+	find, err := r.Find(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	ent.ID = find.ID
+
+	return r.Save(ent)
+}
