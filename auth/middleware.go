@@ -112,6 +112,7 @@ func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 			IP:      ctx.IP(),
 			Elapsed: time.Since(elapsed).Milliseconds(),
 			Method:  ctx.Method(),
+			Request: ctx.Path(),
 			ErrMsg:  errMsg,
 		}
 
