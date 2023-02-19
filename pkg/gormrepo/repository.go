@@ -54,8 +54,9 @@ func (g *genericRepository[T]) Update(pk uint, ent T) (*T, error) {
 	err := g.db.Transaction(func(tx *gorm.DB) error {
 		err := tx.First(model, pk).Error
 		if err != nil {
-
+			return err
 		}
+
 		return tx.Save(&ent).Error
 	})
 
