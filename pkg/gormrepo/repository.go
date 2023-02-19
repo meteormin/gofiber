@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type GenericRepository[T interface{}] interface {
 	DB() *gorm.DB
+	Debug() GenericRepository[T]
 	All() ([]T, error)
 	Create(ent T) (*T, error)
 	Save(ent T) (*T, error)
@@ -19,9 +20,19 @@ type GenericRepository[T interface{}] interface {
 type genericRepository[T interface{}] struct {
 	model T
 	db    *gorm.DB
+	debug bool
+}
+
+func (g *genericRepository[T]) Debug() GenericRepository[T] {
+	g.debug = true
+	return g
 }
 
 func (g *genericRepository[T]) DB() *gorm.DB {
+	if g.debug {
+		return g.DB().Debug()
+	}
+
 	return g.db
 }
 
@@ -32,13 +43,13 @@ func (g *genericRepository[T]) getModel() T {
 func (g *genericRepository[T]) All() ([]T, error) {
 	models := make([]T, 0)
 
-	err := g.db.Find(&models).Error
+	err := g.DB().Find(&models).Error
 
 	return models, err
 }
 
 func (g *genericRepository[T]) Create(ent T) (*T, error) {
-	err := g.db.Transaction(func(tx *gorm.DB) error {
+	err := g.DB().Transaction(func(tx *gorm.DB) error {
 		return tx.Create(&ent).Error
 	})
 
@@ -50,7 +61,7 @@ func (g *genericRepository[T]) Create(ent T) (*T, error) {
 }
 
 func (g *genericRepository[T]) Save(ent T) (*T, error) {
-	err := g.db.Transaction(func(tx *gorm.DB) error {
+	err := g.DB().Transaction(func(tx *gorm.DB) error {
 		return tx.Save(&ent).Error
 	})
 
@@ -63,7 +74,7 @@ func (g *genericRepository[T]) Save(ent T) (*T, error) {
 
 func (g *genericRepository[T]) Find(pk uint) (*T, error) {
 	model := g.getModel()
-	err := g.db.First(&model, pk).Error
+	err := g.DB().First(&model, pk).Error
 
 	if err != nil {
 		return nil, err
@@ -74,7 +85,7 @@ func (g *genericRepository[T]) Find(pk uint) (*T, error) {
 
 func (g *genericRepository[T]) FindByEntity(ent T) (*T, error) {
 	model := g.getModel()
-	if err := g.db.Where(&ent).First(&model).Error; err != nil {
+	if err := g.DB().Where(&ent).First(&model).Error; err != nil {
 		return nil, err
 	}
 
@@ -83,7 +94,7 @@ func (g *genericRepository[T]) FindByEntity(ent T) (*T, error) {
 
 func (g *genericRepository[T]) FindByAttribute(attr string, value interface{}) (*T, error) {
 	model := g.getModel()
-	err := g.db.Where(map[string]interface{}{attr: value}).First(&model).Error
+	err := g.DB().Where(map[string]interface{}{attr: value}).First(&model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +104,7 @@ func (g *genericRepository[T]) FindByAttribute(attr string, value interface{}) (
 
 func (g *genericRepository[T]) Get(fn func(tx *gorm.DB) (*gorm.DB, error)) ([]T, error) {
 	models := make([]T, 0)
-	err := g.db.Transaction(func(tx *gorm.DB) error {
+	err := g.DB().Transaction(func(tx *gorm.DB) error {
 		tx, err := fn(tx)
 		if err != nil {
 			return err
@@ -106,26 +117,26 @@ func (g *genericRepository[T]) Get(fn func(tx *gorm.DB) (*gorm.DB, error)) ([]T,
 
 func (g *genericRepository[T]) GetByEntity(ent T) ([]T, error) {
 	models := make([]T, 0)
-	err := g.db.Where(&ent).Find(&models).Error
+	err := g.DB().Where(&ent).Find(&models).Error
 
 	return models, err
 }
 
 func (g *genericRepository[T]) GetByAttributes(attrs map[string]interface{}) ([]T, error) {
 	models := make([]T, 0)
-	err := g.db.Where(attrs).Find(&models).Error
+	err := g.DB().Where(attrs).Find(&models).Error
 
 	return models, err
 }
 
 func (g *genericRepository[T]) Delete(pk uint) (bool, error) {
 	model := g.getModel()
-	err := g.db.First(&model, pk).Error
+	err := g.DB().First(&model, pk).Error
 	if err != nil {
 		return false, err
 	}
 
-	err = g.db.Delete(&model).Error
+	err = g.DB().Delete(&model).Error
 	if err != nil {
 		return false, err
 	}
@@ -137,5 +148,6 @@ func NewGenericRepository[T interface{}](db *gorm.DB, model T) GenericRepository
 	return &genericRepository[T]{
 		model: model,
 		db:    db,
+		debug: false,
 	}
 }
