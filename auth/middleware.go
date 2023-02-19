@@ -97,9 +97,9 @@ func mergeMiddlewares(parameter middlewaresParameter) fiber.Handler {
 		addContext := utils.AddContext(utils.AuthUserKey, fromJWT)
 
 		err = addContext(ctx)
-		elapsed, err := utils.GetContext[time.Time](ctx, utils.StartTime)
-		if err != nil {
-			return err
+		elapsed, ctxErr := utils.GetContext[time.Time](ctx, utils.StartTime)
+		if ctxErr != nil {
+			return ctxErr
 		}
 
 		errMsg := ""
