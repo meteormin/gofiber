@@ -102,14 +102,6 @@ func updateJobHistory(j *worker.Job, err error) error {
 	return nil
 }
 
-var jobMeta = make(map[string]interface{})
-
-func AddMetaOnDispatch(meta map[WriteableField]interface{}) {
-	for key, val := range meta {
-		jobMeta[string(key)] = val
-	}
-}
-
 func RecordHistory(db *gorm.DB) {
 	if dispatcher == nil {
 		panic("you need call New() method in job_queue package")
@@ -122,7 +114,7 @@ func RecordHistory(db *gorm.DB) {
 	repo = NewRepository(db)
 
 	dispatcher.OnDispatch(func(j *worker.Job) error {
-		j.Meta = jobMeta
+		j.Meta = make(map[string]interface{})
 		return createJobHistory(j)
 	})
 

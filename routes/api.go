@@ -56,7 +56,7 @@ func Api(apiRouter app.Router, a app.Application) {
 	apiRouter.Route(
 		jobs.Prefix,
 		jobs.Register(jobsHandler),
-		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(), jobs.AddJobMeta(),
+		auth.JwtMiddleware(cfg.Auth.Jwt), auth.Middlewares(),
 	).Name("api.jobs")
 
 	hasPermission := permission.HasPermission(permission.HasPermissionParameter{
