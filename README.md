@@ -261,9 +261,6 @@ func Api(router app.Router, a app.Application) {
 - rs256
   - rs256 encode and decode 
   - [test코드 참조](./tests/rs256_test/rs256_test.go)
-- slice
-  - slice 배열 편의 함수  
-  - [test코드 참조](./pkg/slice/slice_test.go)
 - validation
   - 커스텀 유효성 검사 및 번역 
   - [test코드 참조](./pkg/validation/validator_test.go)
