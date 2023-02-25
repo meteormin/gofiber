@@ -11,9 +11,9 @@ import (
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/jwt"
 	rsGen "github.com/miniyus/gofiber/pkg/rs256"
-	"github.com/miniyus/gofiber/pkg/worker"
 	"github.com/miniyus/gofiber/users"
 	"github.com/miniyus/gofiber/utils"
+	worker "github.com/miniyus/goworker"
 	"gorm.io/gorm"
 	"path"
 )

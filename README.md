@@ -90,7 +90,7 @@ import (
   "github.com/miniyus/gofiber/database"
   cLog "github.com/miniyus/gofiber/log"
   "github.com/miniyus/gofiber/permission"
-  "github.com/miniyus/gofiber/pkg/worker"
+  worker "github.com/miniyus/goworker"
 )
 
 func main() {

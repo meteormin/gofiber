@@ -95,6 +95,47 @@ definitions:
       username:
         type: string
     type: object
+  goworker.Job:
+    properties:
+      created_at:
+        type: string
+      job_id:
+        type: string
+      meta:
+        additionalProperties: true
+        type: object
+      status:
+        $ref: '#/definitions/goworker.JobStatus'
+      updated_at:
+        type: string
+      uuid:
+        type: string
+      worker_name:
+        type: string
+    type: object
+  goworker.JobStatus:
+    enum:
+    - success
+    - fail
+    - wait
+    - progress
+    type: string
+    x-enum-varnames:
+    - SUCCESS
+    - FAIL
+    - WAIT
+    - PROGRESS
+  goworker.StatusWorkerInfo:
+    properties:
+      is_running:
+        type: boolean
+      job_count:
+        type: integer
+      max_job_count:
+        type: integer
+      name:
+        type: string
+    type: object
   groups.CreateAction:
     properties:
       method:
@@ -179,7 +220,7 @@ definitions:
         additionalProperties: true
         type: object
       status:
-        $ref: '#/definitions/worker.JobStatus'
+        $ref: '#/definitions/goworker.JobStatus'
       updated_at:
         type: string
       uuid:
@@ -191,7 +232,7 @@ definitions:
     properties:
       jobs:
         items:
-          $ref: '#/definitions/worker.Job'
+          $ref: '#/definitions/goworker.Job'
         type: array
     type: object
   jobs.GetStatus:
@@ -200,7 +241,7 @@ definitions:
         type: integer
       workers:
         items:
-          $ref: '#/definitions/worker.StatusWorkerInfo'
+          $ref: '#/definitions/goworker.StatusWorkerInfo'
         type: array
     type: object
   jobs.History:
@@ -212,7 +253,7 @@ definitions:
       job_id:
         type: string
       status:
-        $ref: '#/definitions/worker.JobStatus'
+        $ref: '#/definitions/goworker.JobStatus'
       user_id:
         type: integer
       uuid:
@@ -238,47 +279,6 @@ definitions:
     properties:
       status:
         type: boolean
-    type: object
-  worker.Job:
-    properties:
-      created_at:
-        type: string
-      job_id:
-        type: string
-      meta:
-        additionalProperties: true
-        type: object
-      status:
-        $ref: '#/definitions/worker.JobStatus'
-      updated_at:
-        type: string
-      uuid:
-        type: string
-      worker_name:
-        type: string
-    type: object
-  worker.JobStatus:
-    enum:
-    - success
-    - fail
-    - wait
-    - progress
-    type: string
-    x-enum-varnames:
-    - SUCCESS
-    - FAIL
-    - WAIT
-    - PROGRESS
-  worker.StatusWorkerInfo:
-    properties:
-      is_running:
-        type: boolean
-      job_count:
-        type: integer
-      max_job_count:
-        type: integer
-      name:
-        type: string
     type: object
 host: localhost:9090
 info:

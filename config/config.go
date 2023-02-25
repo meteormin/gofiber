@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/go-redis/redis/v9"
 	fCors "github.com/gofiber/fiber/v2/middleware/cors"
 	fCsrf "github.com/gofiber/fiber/v2/middleware/csrf"
 	fLoggerMiddleware "github.com/gofiber/fiber/v2/middleware/logger"
@@ -10,7 +9,8 @@ import (
 	"github.com/miniyus/gofiber/database"
 	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/permission"
-	"github.com/miniyus/gofiber/pkg/worker"
+	worker "github.com/miniyus/goworker"
+	"github.com/redis/go-redis/v9"
 )
 
 type Configs struct {

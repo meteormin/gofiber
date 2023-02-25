@@ -2,8 +2,8 @@ package groups
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/gormrepo"
 	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gorm-extension/gormrepo"
 	"gorm.io/gorm"
 )
 
@@ -11,11 +11,7 @@ type Repository interface {
 	gormrepo.GenericRepository[entity.Group]
 	Count(group entity.Group) (int64, error)
 	AllWithPage(page utils.Page) ([]entity.Group, int64, error)
-	Create(group entity.Group) (*entity.Group, error)
-	Update(pk uint, group entity.Group) (*entity.Group, error)
-	Find(pk uint) (*entity.Group, error)
 	FindByName(groupName string) (*entity.Group, error)
-	Delete(pk uint) (bool, error)
 }
 
 type RepositoryStruct struct {
@@ -69,15 +65,4 @@ func (r *RepositoryStruct) FindByName(groupName string) (*entity.Group, error) {
 	}
 
 	return group, nil
-}
-
-func (r *RepositoryStruct) Update(pk uint, ent entity.Group) (*entity.Group, error) {
-	find, err := r.Find(pk)
-	if err != nil {
-		return nil, err
-	}
-
-	ent.ID = find.ID
-
-	return r.Save(ent)
 }

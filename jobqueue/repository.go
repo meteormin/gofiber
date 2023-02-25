@@ -3,7 +3,7 @@ package jobqueue
 import (
 	Uuid "github.com/google/uuid"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/gormrepo"
+	"github.com/miniyus/gorm-extension/gormrepo"
 	"gorm.io/gorm"
 )
 

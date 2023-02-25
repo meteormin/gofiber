@@ -5,7 +5,7 @@ import (
 	"github.com/miniyus/gofiber/auth"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gollection"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -42,7 +42,7 @@ func HasPermission(parameter HasPermissionParameter) func(permissions ...Permiss
 			if err == nil {
 				permCollection = NewPermissionCollection()
 				var perm Permission
-				utils.NewCollection(get).For(func(v entity.Permission, i int) {
+				gollection.NewCollection(get).For(func(v entity.Permission, i int) {
 					permCollection.Add(perm.FromEntity(v))
 				})
 			}
@@ -84,8 +84,8 @@ func checkPermissionFromCtx(hasPerm []Permission, c *fiber.Ctx) bool {
 	}
 
 	pass := false
-	utils.NewCollection(hasPerm).For(func(perm Permission, i int) {
-		utils.NewCollection(perm.Actions).For(func(action Action, j int) {
+	gollection.NewCollection(hasPerm).For(func(perm Permission, i int) {
+		gollection.NewCollection(perm.Actions).For(func(action Action, j int) {
 			routePath := c.Path()
 			if strings.Contains(routePath, action.Resource) {
 				method := c.Method()
@@ -93,7 +93,7 @@ func checkPermissionFromCtx(hasPerm []Permission, c *fiber.Ctx) bool {
 					method = "GET"
 				}
 
-				filtered := utils.NewCollection(action.Methods).Filter(func(v Method, i int) bool {
+				filtered := gollection.NewCollection(action.Methods).Filter(func(v Method, i int) bool {
 					return strings.ToUpper(string(v)) == strings.ToUpper(method)
 				})
 

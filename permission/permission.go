@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/miniyus/gofiber/entity"
 	cLog "github.com/miniyus/gofiber/log"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gollection"
 	"gorm.io/gorm"
 	"log"
 )
@@ -53,14 +53,14 @@ type includeUser struct {
 }
 
 type Collection interface {
-	utils.Collection[Permission]
+	gollection.Collection[Permission]
 	All() []Permission
 	RemoveByName(name string) bool
 	Get(name string) (*Permission, error)
 }
 
 type CollectionStruct struct {
-	*utils.BaseCollection[Permission]
+	*gollection.BaseCollection[Permission]
 	items []Permission
 }
 
@@ -70,7 +70,7 @@ func NewPermissionCollection(perms ...Permission) Collection {
 		perms = defaultPerms
 	}
 
-	base := utils.NewCollection(perms).(*utils.BaseCollection[Permission])
+	base := gollection.NewCollection(perms).(*gollection.BaseCollection[Permission])
 
 	return &CollectionStruct{BaseCollection: base}
 }
@@ -95,7 +95,10 @@ func (p *CollectionStruct) RemoveByName(name string) bool {
 		}
 	}
 
-	p.Remove(rmIndex)
+	err := p.Remove(rmIndex)
+	if err != nil {
+		return false
+	}
 
 	return true
 }
@@ -130,8 +133,8 @@ func (perm Permission) ToEntity() entity.Permission {
 
 func (perm Permission) FromEntity(permission entity.Permission) Permission {
 	actions := make([]Action, 0)
-	utils.NewCollection(permission.Actions).For(func(v entity.Action, i int) {
-		filtered := utils.NewCollection(permission.Actions).Filter(func(a entity.Action, j int) bool {
+	gollection.NewCollection(permission.Actions).For(func(v entity.Action, i int) {
+		filtered := gollection.NewCollection(permission.Actions).Filter(func(a entity.Action, j int) bool {
 			return a.PermissionId == v.PermissionId && a.Resource == v.Resource
 		})
 

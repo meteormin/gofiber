@@ -1054,6 +1054,65 @@ const docTemplategofiber = `{
                 }
             }
         },
+        "goworker.Job": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "job_id": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "status": {
+                    "$ref": "#/definitions/goworker.JobStatus"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "worker_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "goworker.JobStatus": {
+            "type": "string",
+            "enum": [
+                "success",
+                "fail",
+                "wait",
+                "progress"
+            ],
+            "x-enum-varnames": [
+                "SUCCESS",
+                "FAIL",
+                "WAIT",
+                "PROGRESS"
+            ]
+        },
+        "goworker.StatusWorkerInfo": {
+            "type": "object",
+            "properties": {
+                "is_running": {
+                    "type": "boolean"
+                },
+                "job_count": {
+                    "type": "integer"
+                },
+                "max_job_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "groups.CreateAction": {
             "type": "object",
             "required": [
@@ -1181,7 +1240,7 @@ const docTemplategofiber = `{
                     "additionalProperties": true
                 },
                 "status": {
-                    "$ref": "#/definitions/worker.JobStatus"
+                    "$ref": "#/definitions/goworker.JobStatus"
                 },
                 "updated_at": {
                     "type": "string"
@@ -1200,7 +1259,7 @@ const docTemplategofiber = `{
                 "jobs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/worker.Job"
+                        "$ref": "#/definitions/goworker.Job"
                     }
                 }
             }
@@ -1214,7 +1273,7 @@ const docTemplategofiber = `{
                 "workers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/worker.StatusWorkerInfo"
+                        "$ref": "#/definitions/goworker.StatusWorkerInfo"
                     }
                 }
             }
@@ -1232,7 +1291,7 @@ const docTemplategofiber = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/worker.JobStatus"
+                    "$ref": "#/definitions/goworker.JobStatus"
                 },
                 "user_id": {
                     "type": "integer"
@@ -1267,65 +1326,6 @@ const docTemplategofiber = `{
             "properties": {
                 "status": {
                     "type": "boolean"
-                }
-            }
-        },
-        "worker.Job": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "job_id": {
-                    "type": "string"
-                },
-                "meta": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "status": {
-                    "$ref": "#/definitions/worker.JobStatus"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
-                },
-                "worker_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "worker.JobStatus": {
-            "type": "string",
-            "enum": [
-                "success",
-                "fail",
-                "wait",
-                "progress"
-            ],
-            "x-enum-varnames": [
-                "SUCCESS",
-                "FAIL",
-                "WAIT",
-                "PROGRESS"
-            ]
-        },
-        "worker.StatusWorkerInfo": {
-            "type": "object",
-            "properties": {
-                "is_running": {
-                    "type": "boolean"
-                },
-                "job_count": {
-                    "type": "integer"
-                },
-                "max_job_count": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
                 }
             }
         }

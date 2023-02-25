@@ -2,13 +2,12 @@ package users
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/gormrepo"
+	"github.com/miniyus/gorm-extension/gormrepo"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	gormrepo.GenericRepository[entity.User]
-	Update(pk uint, ent entity.User) (*entity.User, error)
 	FindByUsername(username string) (*entity.User, error)
 }
 
@@ -24,15 +23,4 @@ func NewRepository(db *gorm.DB) Repository {
 
 func (repo *RepositoryStruct) FindByUsername(username string) (*entity.User, error) {
 	return repo.FindByEntity(entity.User{Username: username})
-}
-
-func (repo *RepositoryStruct) Update(pk uint, ent entity.User) (*entity.User, error) {
-	find, err := repo.Find(pk)
-	if err != nil {
-		return nil, err
-	}
-
-	ent.ID = find.ID
-
-	return repo.Save(ent)
 }

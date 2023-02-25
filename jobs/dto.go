@@ -3,7 +3,7 @@ package jobs
 import (
 	"github.com/google/uuid"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/worker"
+	worker "github.com/miniyus/goworker"
 	"time"
 )
 

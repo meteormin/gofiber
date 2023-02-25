@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/miniyus/gofiber/pkg/gormhooks"
+	"github.com/miniyus/gorm-extension/gormhooks"
 	"gorm.io/gorm"
 	"time"
 )

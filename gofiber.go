@@ -10,12 +10,15 @@ import (
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/config"
 	"github.com/miniyus/gofiber/database"
+	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/jobqueue"
 	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/validation"
-	"github.com/miniyus/gofiber/pkg/worker"
 	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gollection"
+	"github.com/miniyus/gorm-extension/gormhooks"
+	worker "github.com/miniyus/goworker"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"time"
@@ -75,7 +78,7 @@ func bind(configs *config.Configs) app.Register {
 		opts := configs.JobQueueConfig
 		opts.Redis = utils.RedisClientMaker(configs.RedisConfig)
 
-		opts.WorkerOptions = utils.NewCollection(opts.WorkerOptions).Map(func(v worker.Option, i int) worker.Option {
+		opts.WorkerOptions = gollection.NewCollection(opts.WorkerOptions).Map(func(v worker.Option, i int) worker.Option {
 			wLoggerCfg, ok := configs.CustomLogger["default_worker"]
 			if ok {
 				v.Logger = cLog.New(wLoggerCfg)
@@ -142,4 +145,12 @@ func boot(a app.Application) {
 	validation.RegisterTranslation(cfg.Validation.Translations)
 
 	permission.CreateDefaultPermissions(db, cfg.Permission)
+
+	gormhooks.Register(
+		&entity.AccessToken{},
+		&entity.Group{},
+		&entity.JobHistory{},
+		&entity.Permission{},
+		&entity.User{},
+	)
 }

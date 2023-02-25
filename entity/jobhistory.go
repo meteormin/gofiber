@@ -2,8 +2,8 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"github.com/miniyus/gofiber/pkg/gormhooks"
-	"github.com/miniyus/gofiber/pkg/worker"
+	"github.com/miniyus/gorm-extension/gormhooks"
+	worker "github.com/miniyus/goworker"
 	"gorm.io/gorm"
 )
 

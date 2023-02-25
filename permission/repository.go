@@ -2,7 +2,7 @@ package permission
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/gormrepo"
+	"github.com/miniyus/gorm-extension/gormrepo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis/v9"
 	"github.com/miniyus/gofiber/database"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/pkg/worker"
+	worker "github.com/miniyus/goworker"
 	"gorm.io/gorm"
 	"log"
 )

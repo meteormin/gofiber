@@ -1,12 +1,12 @@
 package utils
 
 import (
-	"github.com/go-redis/redis/v9"
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/internal/base64"
 	"github.com/miniyus/gofiber/internal/datetime"
 	"github.com/miniyus/gofiber/pkg/validation"
+	"github.com/redis/go-redis/v9"
 	"time"
 )
 
