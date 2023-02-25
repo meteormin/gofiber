@@ -2,8 +2,8 @@ package groups
 
 import (
 	"github.com/miniyus/gofiber/entity"
+	"github.com/miniyus/gofiber/pagination"
 	"github.com/miniyus/gofiber/permission"
-	"github.com/miniyus/gofiber/utils"
 )
 
 type CreateAction struct {
@@ -38,7 +38,7 @@ type ResponseGroup struct {
 }
 
 type ListResponse struct {
-	utils.Paginator[ResponseGroup]
+	pagination.Paginator[ResponseGroup]
 	Data []ResponseGroup `json:"data"`
 }
 

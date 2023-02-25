@@ -1,4 +1,4 @@
-package utils
+package pagination
 
 import (
 	"github.com/gofiber/fiber/v2"

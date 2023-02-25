@@ -3,6 +3,7 @@ package groups
 import (
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/miniyus/gofiber/apierrors"
+	"github.com/miniyus/gofiber/pagination"
 	"github.com/miniyus/gofiber/utils"
 	"strconv"
 )
@@ -143,7 +144,7 @@ func (h *HandlerStruct) Patch(ctx *fiber.Ctx) error {
 // @Router /api/groups [get]
 // @Security BearerAuth
 func (h *HandlerStruct) All(ctx *fiber.Ctx) error {
-	page, err := utils.GetPageFromCtx(ctx)
+	page, err := pagination.GetPageFromCtx(ctx)
 
 	result, err := h.service.All(page)
 	if err != nil {
@@ -151,7 +152,7 @@ func (h *HandlerStruct) All(ctx *fiber.Ctx) error {
 	}
 
 	res := ListResponse{
-		Paginator: utils.Paginator[ResponseGroup]{
+		Paginator: pagination.Paginator[ResponseGroup]{
 			TotalCount: result.TotalCount,
 			Page:       result.Page,
 		},

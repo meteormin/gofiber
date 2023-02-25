@@ -3,14 +3,14 @@ package groups
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/pagination"
 )
 
 type Service interface {
 	Create(group *CreateGroup) (*ResponseGroup, error)
 	Update(groupId uint, group *UpdateGroup) (*ResponseGroup, error)
 	Delete(pk uint) (bool, error)
-	All(page utils.Page) (utils.Paginator[ResponseGroup], error)
+	All(page pagination.Page) (pagination.Paginator[ResponseGroup], error)
 	Find(pk uint) (*ResponseGroup, error)
 	FindByName(groupName string) (*ResponseGroup, error)
 }
@@ -86,12 +86,12 @@ func (s *ServiceStruct) Delete(pk uint) (bool, error) {
 	return s.repo.Delete(pk)
 }
 
-func (s *ServiceStruct) All(page utils.Page) (utils.Paginator[ResponseGroup], error) {
+func (s *ServiceStruct) All(page pagination.Page) (pagination.Paginator[ResponseGroup], error) {
 	res := make([]ResponseGroup, 0)
 
 	entities, count, err := s.repo.AllWithPage(page)
 
-	paginator := utils.Paginator[ResponseGroup]{
+	paginator := pagination.Paginator[ResponseGroup]{
 		TotalCount: count,
 		Page:       page,
 		Data:       res,

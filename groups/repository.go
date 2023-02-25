@@ -2,7 +2,7 @@ package groups
 
 import (
 	"github.com/miniyus/gofiber/entity"
-	"github.com/miniyus/gofiber/utils"
+	"github.com/miniyus/gofiber/pagination"
 	"github.com/miniyus/gorm-extension/gormrepo"
 	"gorm.io/gorm"
 )
@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	gormrepo.GenericRepository[entity.Group]
 	Count(group entity.Group) (int64, error)
-	AllWithPage(page utils.Page) ([]entity.Group, int64, error)
+	AllWithPage(page pagination.Page) ([]entity.Group, int64, error)
 	FindByName(groupName string) (*entity.Group, error)
 }
 
@@ -35,7 +35,7 @@ func (r *RepositoryStruct) Count(group entity.Group) (int64, error) {
 	return count, err
 }
 
-func (r *RepositoryStruct) AllWithPage(page utils.Page) ([]entity.Group, int64, error) {
+func (r *RepositoryStruct) AllWithPage(page pagination.Page) ([]entity.Group, int64, error) {
 	var groups []entity.Group
 
 	count, err := r.Count(entity.Group{})
@@ -43,7 +43,7 @@ func (r *RepositoryStruct) AllWithPage(page utils.Page) ([]entity.Group, int64, 
 	if count != 0 {
 		err = r.DB().Model(&entity.Group{}).
 			Preload("Permissions.Actions").
-			Scopes(utils.Paginate(page)).
+			Scopes(pagination.Paginate(page)).
 			Order("id desc").
 			Find(&groups).Error
 
