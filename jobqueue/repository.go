@@ -26,12 +26,12 @@ func (r *RepositoryStruct) GetByUserId(userId uint) ([]entity.JobHistory, error)
 }
 
 func (r *RepositoryStruct) FindByUuid(uuid string) (*entity.JobHistory, error) {
-	fromString, err := Uuid.FromBytes([]byte(uuid))
+	fromString, err := Uuid.Parse(uuid)
 	if err != nil {
 		return nil, err
 	}
 
-	return repo.FindByEntity(entity.JobHistory{UUID: fromString})
+	return r.FindByEntity(entity.JobHistory{UUID: fromString})
 }
 
 func (r *RepositoryStruct) UpdateByUuid(uuid string, history entity.JobHistory) (*entity.JobHistory, error) {
