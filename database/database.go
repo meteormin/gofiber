@@ -6,7 +6,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	gormLogger "gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
@@ -23,7 +22,7 @@ type Config struct {
 	TimeZone    string
 	SSLMode     bool
 	AutoMigrate []interface{}
-	Logger      gormLogger.Config
+	Logger      logger.Config
 	MaxIdleConn int
 	MaxOpenConn int
 	MaxLifeTime time.Duration

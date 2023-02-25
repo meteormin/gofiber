@@ -193,6 +193,12 @@ github.com/miniyus/gorm-extension v1.0.0 h1:2KB8kKOyaLrk4LBHUqMR3nj5DXNLEBIoAp3j
 github.com/miniyus/gorm-extension v1.0.0/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
 github.com/miniyus/gorm-extension v1.0.1 h1:9u16JMXlyP5YqM8bSwWWd56bXvN6bo276gHZXiKXWq0=
 github.com/miniyus/gorm-extension v1.0.1/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
+github.com/miniyus/gorm-extension v1.0.2 h1:/znSlqYLhyZjYnzZN0fpYTYXMpERcndK2DnazBen6v4=
+github.com/miniyus/gorm-extension v1.0.2/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
+github.com/miniyus/gorm-extension v1.0.3 h1:+WVsp7jAEibu8LuYmL3GaosCm0N+vV7afYdabNGkbgs=
+github.com/miniyus/gorm-extension v1.0.3/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
+github.com/miniyus/gorm-extension v1.0.4 h1:QpVxOFEqSX6uLeK6O8GC2inTZKYyPst9zCEhGupMb8o=
+github.com/miniyus/gorm-extension v1.0.4/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
 github.com/miniyus/goworker v1.0.0 h1:A9yqjzak08POVcXeSBdZqK6KQZM+y05zyS16jZ386Jk=
 github.com/miniyus/goworker v1.0.0/go.mod h1:2ltRgqs5IoxHBqKF2U57YpiyDNecf5sogcvBjOTo8Bg=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
