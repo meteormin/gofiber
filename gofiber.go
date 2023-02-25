@@ -146,11 +146,9 @@ func boot(a app.Application) {
 
 	permission.CreateDefaultPermissions(db, cfg.Permission)
 
-	gormhooks.Register(
-		&entity.AccessToken{},
-		&entity.Group{},
-		&entity.JobHistory{},
-		&entity.Permission{},
-		&entity.User{},
-	)
+	gormhooks.Register(&entity.AccessToken{})
+	gormhooks.Register(&entity.Group{})
+	gormhooks.Register(&entity.JobHistory{})
+	gormhooks.Register(&entity.Permission{})
+	gormhooks.Register(&entity.User{})
 }
