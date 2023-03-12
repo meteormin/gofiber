@@ -119,6 +119,8 @@ github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/
 github.com/mattn/go-runewidth v0.0.14/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/miniyus/gollection v1.0.0/go.mod h1:3FlPgGHgpBzcPGPfzsVeMI6+sGVBnF7Ns/f9YHtrOmc=
 github.com/miniyus/gorm-extension v1.0.6/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
+github.com/miniyus/gorm-extension v1.0.7 h1:EPUXNz55a3KcICrFEw31EVpBiNqPsk04hCrgHwsogQ4=
+github.com/miniyus/gorm-extension v1.0.7/go.mod h1:5hVhOHC59WutyAj2y717XTp1aV5lxs5/enXnv9tD5v8=
 github.com/miniyus/goworker v1.0.0/go.mod h1:2ltRgqs5IoxHBqKF2U57YpiyDNecf5sogcvBjOTo8Bg=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
@@ -284,4 +286,5 @@ gorm.io/driver/postgres v1.4.8/go.mod h1:O9MruWGNLUBUWVYfWuBClpf3HeGjOoybY0SNmCs
 gorm.io/gorm v1.23.8/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
 gorm.io/gorm v1.24.2/go.mod h1:DVrVomtaYTbqs7gB/x2uVvqnXzv0nqjB396B8cG4dBA=
 gorm.io/gorm v1.24.5/go.mod h1:DVrVomtaYTbqs7gB/x2uVvqnXzv0nqjB396B8cG4dBA=
+gorm.io/gorm v1.24.6/go.mod h1:L4uxeKpfBml98NYqVqwAdmV1a2nBtAec/cf3fpucW/k=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
