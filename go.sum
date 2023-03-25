@@ -178,6 +178,8 @@ github.com/miniyus/gorm-extension v1.0.7 h1:EPUXNz55a3KcICrFEw31EVpBiNqPsk04hCrg
 github.com/miniyus/gorm-extension v1.0.7/go.mod h1:5hVhOHC59WutyAj2y717XTp1aV5lxs5/enXnv9tD5v8=
 github.com/miniyus/gorm-extension v1.1.0 h1:EB8N0+VsPo7hx1QeNVZoaENnDcg+Ta7SvSGK4saud/U=
 github.com/miniyus/gorm-extension v1.1.0/go.mod h1:Hl8LYUYdT+ilGrfxN7Dd6PjUHQDPsIjQuHDfJRZ11q0=
+github.com/miniyus/gorm-extension v1.1.1 h1:RCDLYjnGZuhSUC3nv/VZ0GDkMR7CxlMtqip1khSszJ8=
+github.com/miniyus/gorm-extension v1.1.1/go.mod h1:Hl8LYUYdT+ilGrfxN7Dd6PjUHQDPsIjQuHDfJRZ11q0=
 github.com/miniyus/goworker v1.0.0 h1:A9yqjzak08POVcXeSBdZqK6KQZM+y05zyS16jZ386Jk=
 github.com/miniyus/goworker v1.0.0/go.mod h1:2ltRgqs5IoxHBqKF2U57YpiyDNecf5sogcvBjOTo8Bg=
 github.com/miniyus/goworker v1.1.0 h1:n12qVN37QqQlaBs3lfuWEDAaLnkg1Pr5C+5V8GkiDbA=
