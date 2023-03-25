@@ -58,7 +58,7 @@ func CreateAdmin(db *gorm.DB, configs *config.Configs) {
 
 	entPerms := make([]entity.Permission, 0)
 
-	get, err := permissions.Get(string(entity.Admin))
+	get, err := permissions.GetByName(string(entity.Admin))
 	if err != nil {
 		return
 	}

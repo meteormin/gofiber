@@ -55,8 +55,8 @@ type includeUser struct {
 type Collection interface {
 	gollection.Collection[Permission]
 	All() []Permission
+	GetByName(name string) (*Permission, error)
 	RemoveByName(name string) bool
-	Get(name string) (*Permission, error)
 }
 
 type CollectionStruct struct {
@@ -103,7 +103,7 @@ func (p *CollectionStruct) RemoveByName(name string) bool {
 	return true
 }
 
-func (p *CollectionStruct) Get(name string) (*Permission, error) {
+func (p *CollectionStruct) GetByName(name string) (*Permission, error) {
 	filtered := p.Filter(func(v Permission, i int) bool {
 		return v.Name == name
 	})
