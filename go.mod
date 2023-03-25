@@ -13,9 +13,9 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
-	github.com/miniyus/gollection v1.0.0
-	github.com/miniyus/gorm-extension v1.0.7
-	github.com/miniyus/goworker v1.0.0
+	github.com/miniyus/gollection v1.1.0
+	github.com/miniyus/gorm-extension v1.1.0
+	github.com/miniyus/goworker v1.1.0
 	github.com/redis/go-redis/v9 v9.0.2
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.7.0
