@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine as build
+FROM golang:1.20-alpine as build
 
 RUN apk --no-cache add tzdata && \
 	cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
