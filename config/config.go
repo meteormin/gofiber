@@ -8,7 +8,6 @@ import (
 	_ "github.com/miniyus/gofiber/config/dotenv"
 	"github.com/miniyus/gofiber/database"
 	cLog "github.com/miniyus/gofiber/log"
-	"github.com/miniyus/gofiber/permission"
 	worker "github.com/miniyus/goworker"
 	"github.com/redis/go-redis/v9"
 )
@@ -22,8 +21,6 @@ type Configs struct {
 	Auth           Auth
 	Cors           fCors.Config
 	Csrf           fCsrf.Config
-	Permission     []permission.Config
-	CreateAdmin    CreateAdminConfig
 	RedisConfig    *redis.Options
 	JobQueueConfig worker.DispatcherOption
 	Validation     Validation
@@ -41,8 +38,6 @@ func init() {
 		Auth:           auth(),
 		Cors:           cors(),
 		Csrf:           csrf(),
-		Permission:     permissionConfig(),
-		CreateAdmin:    createAdminConfig(),
 		RedisConfig:    redisConfig(),
 		JobQueueConfig: jobQueueConfig(),
 		Validation:     validationConfig(),

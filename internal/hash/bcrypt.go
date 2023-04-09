@@ -2,19 +2,19 @@ package hash
 
 import "golang.org/x/crypto/bcrypt"
 
-var Bcrypt bcryptWrapper
+var Bcrypt BcryptWrapper
 
-type bcryptWrapper struct {
+type BcryptWrapper struct {
 	cost int
 }
 
 func init() {
-	Bcrypt = bcryptWrapper{
+	Bcrypt = BcryptWrapper{
 		cost: 14,
 	}
 }
 
-func (b bcryptWrapper) HashPassword(password string) (string, error) {
+func (b BcryptWrapper) HashPassword(password string) (string, error) {
 	fromPassword, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
 		return "", err
@@ -23,7 +23,7 @@ func (b bcryptWrapper) HashPassword(password string) (string, error) {
 	return string(fromPassword), err
 }
 
-func (b bcryptWrapper) HashCheck(hashPass string, password string) bool {
+func (b BcryptWrapper) HashCheck(hashPass string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashPass), []byte(password))
 	return err == nil
 }

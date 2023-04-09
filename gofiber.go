@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	flogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/miniyus/gofiber/admin"
 	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/config"
@@ -13,7 +12,6 @@ import (
 	"github.com/miniyus/gofiber/entity"
 	"github.com/miniyus/gofiber/jobqueue"
 	cLog "github.com/miniyus/gofiber/log"
-	"github.com/miniyus/gofiber/permission"
 	"github.com/miniyus/gofiber/pkg/validation"
 	"github.com/miniyus/gofiber/utils"
 	"github.com/miniyus/gollection"
@@ -136,19 +134,11 @@ func boot(a app.Application) {
 	var zLogger *zap.SugaredLogger
 	a.Resolve(&zLogger)
 
-	admin.CreateAdmin(db, cfg)
-
 	jobqueue.New(dispatcher)
 	jobqueue.RecordHistory(db)
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)
 
-	permission.CreateDefaultPermissions(db, cfg.Permission)
-
-	gormhooks.Register(&entity.AccessToken{})
-	gormhooks.Register(&entity.Group{})
 	gormhooks.Register(&entity.JobHistory{})
-	gormhooks.Register(&entity.Permission{})
-	gormhooks.Register(&entity.User{})
 }

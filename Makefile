@@ -4,7 +4,6 @@ start:
 
 .PHONY: build
 build:
-	swag init --instanceName "gofiber" --parseDependency --parseInternal -g cmd/gofiber/main.go --output api
 	go build -o build/gofiber ./cmd/gofiber/main.go
 
 .PHONY: migrate

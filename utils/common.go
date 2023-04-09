@@ -5,6 +5,7 @@ import (
 	"github.com/miniyus/gofiber/apierrors"
 	"github.com/miniyus/gofiber/internal/base64"
 	"github.com/miniyus/gofiber/internal/datetime"
+	"github.com/miniyus/gofiber/internal/hash"
 	"github.com/miniyus/gofiber/pkg/validation"
 	"github.com/redis/go-redis/v9"
 	"time"
@@ -56,4 +57,8 @@ func Base64UrlEncode(data string) string {
 
 func Base64UrlDecode(data string) (string, error) {
 	return base64.UrlDecode(data)
+}
+
+func Hash() hash.BcryptWrapper {
+	return hash.Bcrypt
 }
