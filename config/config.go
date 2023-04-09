@@ -1,8 +1,6 @@
 package config
 
 import (
-	fCors "github.com/gofiber/fiber/v2/middleware/cors"
-	fCsrf "github.com/gofiber/fiber/v2/middleware/csrf"
 	fLoggerMiddleware "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/miniyus/gofiber/app"
 	_ "github.com/miniyus/gofiber/config/dotenv"
@@ -19,8 +17,6 @@ type Configs struct {
 	Database       map[string]database.Config
 	Path           Path
 	Auth           Auth
-	Cors           fCors.Config
-	Csrf           fCsrf.Config
 	RedisConfig    *redis.Options
 	JobQueueConfig worker.DispatcherOption
 	Validation     Validation
@@ -36,8 +32,6 @@ func init() {
 		Database:       databaseConfig(),
 		Path:           getPath(),
 		Auth:           auth(),
-		Cors:           cors(),
-		Csrf:           csrf(),
 		RedisConfig:    redisConfig(),
 		JobQueueConfig: jobQueueConfig(),
 		Validation:     validationConfig(),

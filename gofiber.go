@@ -2,7 +2,6 @@ package gofiber
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	flogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/miniyus/gofiber/apierrors"
@@ -114,7 +113,6 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 	fiberApp.Use(recover.New(recover.Config{
 		EnableStackTrace: !application.IsProduction(),
 	}))
-	fiberApp.Use(cors.New(cfg.Cors))
 	fiberApp.Use(apierrors.ErrorHandler(cfg.App.Env))
 
 }
@@ -136,9 +134,8 @@ func boot(a app.Application) {
 
 	jobqueue.New(dispatcher)
 	jobqueue.RecordHistory(db)
+	gormhooks.Register(&entity.JobHistory{})
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)
-
-	gormhooks.Register(&entity.JobHistory{})
 }
