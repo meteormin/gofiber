@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/miniyus/gofiber/auth"
 	"strconv"
 )
 
@@ -16,12 +15,16 @@ type Handler interface {
 }
 
 type HandlerStruct struct {
-	service Service
+	service       Service
+	getAuthUserId GetAuthUserId
 }
 
-func NewHandler(service Service) Handler {
+type GetAuthUserId func(ctx *fiber.Ctx) (uint, error)
+
+func NewHandler(service Service, getAuthUser GetAuthUserId) Handler {
 	return &HandlerStruct{
-		service: service,
+		service:       service,
+		getAuthUserId: getAuthUser,
 	}
 }
 
@@ -75,12 +78,12 @@ func (h *HandlerStruct) GetHistories(ctx *fiber.Ctx) error {
 	}
 
 	workerName := params["worker"]
-	user, err := auth.GetAuthUser(ctx)
+	userId, err := h.getAuthUserId(ctx)
 	if err != nil {
 		return err
 	}
 
-	histories, err := h.service.GetHistories(workerName, user.Id, hq)
+	histories, err := h.service.GetHistories(workerName, userId, hq)
 	if err != nil {
 		return err
 	}
