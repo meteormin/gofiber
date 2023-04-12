@@ -16,7 +16,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/miniyus/gollection v1.1.0
 	github.com/miniyus/gorm-extension v1.1.1
-	github.com/miniyus/goworker v1.1.10
+	github.com/miniyus/goworker v1.1.11
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/swaggo/swag v1.8.11
 	go.uber.org/zap v1.24.0
