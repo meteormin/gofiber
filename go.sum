@@ -198,6 +198,8 @@ github.com/miniyus/goworker v1.1.5 h1:mi0XIquZJ36depEM8hqHoJMc0Hvbjtkx3sz18gQ/cS
 github.com/miniyus/goworker v1.1.5/go.mod h1:zjRbK+pP5u8Enb0OHnmy1YeJ8r0sKq4jFODDq1izTPo=
 github.com/miniyus/goworker v1.1.6 h1:88g8iJvLCaDEWdg+2Wq/TBuDPiF4aPNgUkj6EhDnvpQ=
 github.com/miniyus/goworker v1.1.6/go.mod h1:zjRbK+pP5u8Enb0OHnmy1YeJ8r0sKq4jFODDq1izTPo=
+github.com/miniyus/goworker v1.1.7 h1:UUWs3p7tHFbb3NUIP1bs6Gb+VkIlH8pdPtg/g5rakXU=
+github.com/miniyus/goworker v1.1.7/go.mod h1:zjRbK+pP5u8Enb0OHnmy1YeJ8r0sKq4jFODDq1izTPo=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/philhofer/fwd v1.1.1/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
 github.com/philhofer/fwd v1.1.2 h1:bnDivRJ1EWPjUIRXV5KfORO897HTbpFAQddBdE8t7Gw=
