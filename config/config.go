@@ -2,6 +2,7 @@ package config
 
 import (
 	fLoggerMiddleware "github.com/gofiber/fiber/v2/middleware/logger"
+	fRecover "github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/miniyus/gofiber/app"
 	_ "github.com/miniyus/gofiber/config/dotenv"
 	"github.com/miniyus/gofiber/database"
@@ -13,6 +14,7 @@ import (
 type Configs struct {
 	App            app.Config
 	Logger         fLoggerMiddleware.Config
+	Recover        fRecover.Config
 	CustomLogger   map[string]cLog.Config
 	Database       map[string]database.Config
 	Path           Path
@@ -28,6 +30,7 @@ func init() {
 	cfg = &Configs{
 		App:            appConfig(),
 		Logger:         flogger(),
+		Recover:        recoverConfig(),
 		CustomLogger:   loggerConfig(),
 		Database:       databaseConfig(),
 		Path:           getPath(),

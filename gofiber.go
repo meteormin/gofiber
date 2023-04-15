@@ -110,11 +110,9 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 	})
 
 	fiberApp.Use(flogger.New(cfg.Logger))
-	fiberApp.Use(recover.New(recover.Config{
-		EnableStackTrace: !application.IsProduction(),
-	}))
+	cfg.Recover.EnableStackTrace = !application.IsProduction()
+	fiberApp.Use(recover.New(cfg.Recover))
 	fiberApp.Use(apierrors.ErrorHandler(cfg.App.Env))
-
 }
 
 // boot
