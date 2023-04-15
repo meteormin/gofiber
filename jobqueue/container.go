@@ -24,8 +24,6 @@ type JobContainer struct {
 
 type WorkerOption struct {
 	MaxJobCount int
-	BeforeJob   func(j *goworker.Job) error
-	AfterJob    func(j *goworker.Job, err error) error
 	Delay       time.Duration
 	Logger      goworker.Logger
 }
