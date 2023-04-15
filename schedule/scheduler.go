@@ -142,7 +142,9 @@ func (w *Worker) Run() {
 			log.Printf("[%s] Stop", logTag)
 			w.logger.Infof("[%s] Stop", logTag)
 			return
+		default:
 		}
+		time.Sleep(time.Second)
 	}
 }
 
