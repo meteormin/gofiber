@@ -40,8 +40,6 @@ func NewContainer(workerOption WorkerOption) Container {
 		worker: goworker.Option{
 			Name:        containerWorker,
 			MaxJobCount: workerOption.MaxJobCount,
-			BeforeJob:   workerOption.BeforeJob,
-			AfterJob:    workerOption.AfterJob,
 			Delay:       workerOption.Delay,
 			Logger:      workerOption.Logger,
 		},
