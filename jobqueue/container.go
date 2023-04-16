@@ -14,6 +14,7 @@ type Container interface {
 	RemoveJob(jobId string)
 	Dispatch(jobId string) error
 	SyncDispatch(jobId string) (*goworker.Job, error)
+	Status() goworker.StatusWorkerInfo
 }
 
 type JobContainer struct {
