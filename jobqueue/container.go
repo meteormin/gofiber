@@ -92,3 +92,15 @@ func (jc *JobContainer) SyncDispatch(jobId string) (*goworker.Job, error) {
 
 	return <-jc.syncChan, nil
 }
+
+func (jc *JobContainer) Status() goworker.StatusWorkerInfo {
+	status := dispatcher.Status()
+	var containerStats goworker.StatusWorkerInfo
+	for _, worker := range status.Workers {
+		if worker.Name == jc.worker.Name {
+			containerStats = worker
+		}
+	}
+
+	return containerStats
+}
