@@ -9,6 +9,7 @@ import (
 )
 
 var logTag = "schedulerWorker"
+var worker *Worker
 
 type Worker struct {
 	tagsUnique bool
@@ -45,15 +46,20 @@ func (js JobStats) Marshal() (string, error) {
 	return string(marshal), nil
 }
 
+func GetWorker() *Worker {
+	return worker
+}
+
 func NewWorker(cfg WorkerConfig) *Worker {
-	scheduler := gocron.NewScheduler(cfg.Location)
-	return &Worker{
+	worker = &Worker{
 		tagsUnique: cfg.TagsUnique,
 		jobs:       make(map[string]*gocron.Job, 0),
-		scheduler:  scheduler,
+		scheduler:  gocron.NewScheduler(cfg.Location),
 		quitChan:   make(chan bool),
 		logger:     cfg.Logger,
 	}
+
+	return worker
 }
 
 func (w *Worker) Jobs() map[string]*gocron.Job {
@@ -130,6 +136,10 @@ func (w *Worker) Run() {
 	}
 
 	w.jobs["stats"] = do
+
+	if w.tagsUnique {
+		w.scheduler.TagsUnique()
+	}
 
 	w.scheduler.StartAsync()
 
