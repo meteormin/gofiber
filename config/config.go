@@ -18,7 +18,6 @@ type Configs struct {
 	CustomLogger   map[string]cLog.Config
 	Database       map[string]database.Config
 	Path           Path
-	Auth           Auth
 	RedisConfig    *redis.Options
 	JobQueueConfig worker.DispatcherOption
 	Validation     Validation
@@ -34,7 +33,6 @@ func init() {
 		CustomLogger:   loggerConfig(),
 		Database:       databaseConfig(),
 		Path:           getPath(),
-		Auth:           auth(),
 		RedisConfig:    redisConfig(),
 		JobQueueConfig: jobQueueConfig(),
 		Validation:     validationConfig(),
