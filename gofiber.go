@@ -67,7 +67,6 @@ func bind(configs *config.Configs) app.Register {
 		})
 
 		var zLogger *zap.SugaredLogger
-		// like singleton
 		a.Bind(&zLogger, func() *zap.SugaredLogger {
 			return cLog.New(configs.CustomLogger["default"])
 		})
