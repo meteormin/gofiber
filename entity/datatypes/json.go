@@ -1,4 +1,4 @@
-package data_types
+package datatypes
 
 import (
 	"context"
