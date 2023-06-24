@@ -15,7 +15,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/miniyus/gollection v1.1.0
-	github.com/miniyus/gorm-extension v1.1.1
+	github.com/miniyus/gorm-extension v1.1.12
 	github.com/miniyus/goworker v1.1.20
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/swaggo/swag v1.8.11
