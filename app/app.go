@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/pkg/iocontainer"
+	"github.com/miniyus/gollection"
 	"log"
 	"reflect"
 	"strconv"
@@ -34,6 +35,8 @@ var defaultConfig = Config{
 
 type Register func(app Application)
 
+type Boot func(app Application)
+
 type RouterGroup func(router Router, app Application)
 
 type MiddlewareRegister func(fiber *fiber.App, app Application)
@@ -44,10 +47,11 @@ type Application interface {
 	Config() Config
 	Middleware(fn MiddlewareRegister)
 	Route(prefix string, fn RouterGroup, name ...string)
-	GetRouters() []Router
+	GetRouters() gollection.Collection[Router]
 	Status()
 	Run()
 	Register(fn Register)
+	Boot(fn Boot)
 }
 
 var a Application
@@ -60,8 +64,9 @@ type app struct {
 	iocontainer.Container
 	fiber      *fiber.App
 	config     Config
-	router     []Router
-	middleware []fiber.Handler
+	routers    gollection.Collection[Router]
+	registered gollection.Collection[Register]
+	boots      gollection.Collection[Boot]
 	isRun      bool
 }
 
@@ -80,10 +85,13 @@ func New(cfgs ...Config) Application {
 	}
 
 	a = &app{
-		Container: iocontainer.NewContainer(),
-		config:    cfg,
-		fiber:     fiber.New(fiberConfig),
-		isRun:     false,
+		Container:  iocontainer.NewContainer(),
+		config:     cfg,
+		fiber:      fiber.New(fiberConfig),
+		isRun:      false,
+		routers:    gollection.NewCollection(make([]Router, 0)),
+		registered: gollection.NewCollection(make([]Register, 0)),
+		boots:      gollection.NewCollection(make([]Boot, 0)),
 	}
 
 	return a
@@ -94,7 +102,11 @@ func (a *app) Config() Config {
 }
 
 func (a *app) Register(fn Register) {
-	fn(a)
+	a.registered.Add(fn)
+}
+
+func (a *app) Boot(fn Boot) {
+	a.boots.Add(fn)
 }
 
 // Middleware
@@ -104,7 +116,6 @@ func (a *app) Middleware(fn MiddlewareRegister) {
 		if _, ok := this.(*app); ok {
 			fn(this.(*app).fiber, this)
 		}
-
 	})
 }
 
@@ -115,14 +126,13 @@ func (a *app) Route(prefix string, fn RouterGroup, name ...string) {
 		if _, ok := this.(*app); ok {
 			r := NewRouter(this.(*app).fiber, prefix, name...)
 			fn(r, a)
-
-			this.(*app).router = append(this.(*app).router, r)
+			this.(*app).routers.Add(r)
 		}
 	})
 }
 
-func (a *app) GetRouters() []Router {
-	return a.router
+func (a *app) GetRouters() gollection.Collection[Router] {
+	return a.routers
 }
 
 // Status
@@ -153,12 +163,23 @@ func (a *app) Status() {
 
 }
 
+func (a *app) bootstrap() {
+	a.registered.For(func(v Register, i int) {
+		v(a)
+	})
+	a.boots.For(func(v Boot, i int) {
+		v(a)
+	})
+}
+
 // Run
 // run fiber application
 func (a *app) Run() {
 	if a.isRun {
 		return
 	}
+
+	a.bootstrap()
 
 	port := a.config.Port
 	err := a.fiber.Listen(":" + strconv.Itoa(port))
