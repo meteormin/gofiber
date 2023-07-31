@@ -3,10 +3,13 @@ package database
 import (
 	"fmt"
 	"github.com/miniyus/gofiber/database/migrations"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"net/url"
 	"os"
 	"time"
 )
@@ -38,37 +41,42 @@ func GetDB(name ...string) *gorm.DB {
 	return connections[name[0]]
 }
 
-func switchDriver(driver string) func(dsn string) gorm.Dialector {
-	switch driver {
-	case "postgres":
-		return postgres.Open
-	case "pgsql":
-		return postgres.Open
+func switchDriver(cfg Config) gorm.Dialector {
+	switch cfg.Driver {
+	case "postgres", "pgsql":
+		var sslMode string = "disable"
+		if cfg.SSLMode {
+			sslMode = "enable"
+		}
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+			cfg.Host, cfg.Username, cfg.Password, cfg.Dbname, cfg.Port, sslMode, cfg.TimeZone,
+		)
+		return postgres.Open(dsn)
+	case "mysql":
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true&loc=%s",
+			cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Dbname, url.QueryEscape(cfg.TimeZone),
+		)
+		return mysql.Open(dsn)
+	case "sqlite", "":
+		dsn := fmt.Sprintf("%s.db", cfg.Dbname)
+		return sqlite.Open(dsn)
 	default:
-		return postgres.Open
+		dsn := fmt.Sprintf("%s.db", cfg.Dbname)
+		return sqlite.Open(dsn)
 	}
 }
 
 // New
 // gorm.DB 객체 생성 함수
 func New(cfg Config) *gorm.DB {
-	var sslMode string = "disable"
-	if cfg.SSLMode {
-		sslMode = "enable"
-	}
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		cfg.Host, cfg.Username, cfg.Password, cfg.Dbname, cfg.Port, sslMode, cfg.TimeZone,
-	)
-
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		cfg.Logger,
 	)
 
-	driver := switchDriver(cfg.Driver)
+	driver := switchDriver(cfg)
 
-	db, err := gorm.Open(driver(dsn), &gorm.Config{
+	db, err := gorm.Open(driver, &gorm.Config{
 		Logger: newLogger,
 	})
 
