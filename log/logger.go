@@ -14,15 +14,22 @@ const Default string = "default"
 var gLoggers = make(map[string]*zap.Logger)
 
 func GetLogger(loggerName ...string) *zap.SugaredLogger {
+	var logger *zap.SugaredLogger
 	if gLoggers == nil {
 		return New()
 	}
 
 	if len(loggerName) == 0 {
-		return gLoggers[Default].Named(Default).Sugar()
+		logger = gLoggers[Default].Named(Default).Sugar()
+	} else {
+		logger = gLoggers[loggerName[0]].Named(loggerName[0]).Sugar()
 	}
 
-	return gLoggers[loggerName[0]].Named(loggerName[0]).Sugar()
+	if logger == nil {
+		logger = New()
+	}
+
+	return logger
 }
 
 func New(config ...Config) *zap.SugaredLogger {
