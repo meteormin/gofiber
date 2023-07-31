@@ -20,9 +20,13 @@ func GetLogger(loggerName ...string) *zap.SugaredLogger {
 	}
 
 	if len(loggerName) == 0 {
-		logger = gLoggers[Default].Named(Default).Sugar()
+		if gLoggers[Default] != nil {
+			logger = gLoggers[Default].Named(Default).Sugar()
+		}
 	} else {
-		logger = gLoggers[loggerName[0]].Named(loggerName[0]).Sugar()
+		if gLoggers[loggerName[0]] != nil {
+			logger = gLoggers[loggerName[0]].Named(Default).Sugar()
+		}
 	}
 
 	if logger == nil {
