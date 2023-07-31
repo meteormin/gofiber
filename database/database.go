@@ -58,14 +58,14 @@ func switchDriver(cfg Config) gorm.Dialector {
 		)
 		return mysql.Open(dsn)
 	case "sqlite", "":
-		dsn := ":memory"
+		dsn := ":memory:"
 		if cfg.Dbname != "" {
 			dsn = fmt.Sprintf("%s.db", cfg.Dbname)
 		}
 
 		return sqlite.Open(dsn)
 	default:
-		return sqlite.Open(":memory")
+		return sqlite.Open(":memory:")
 	}
 }
 
