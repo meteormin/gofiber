@@ -5,6 +5,8 @@ import (
 	"log"
 )
 
+var IsLoaded = false
+
 // init
 // load dotenv
 func init() {
@@ -12,6 +14,8 @@ func init() {
 
 	if err != nil {
 		log.Println(err)
-		log.Fatalf("failed dotenv load")
+		log.Println("failed dotenv load")
 	}
+
+	IsLoaded = true
 }

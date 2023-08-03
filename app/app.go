@@ -13,9 +13,11 @@ import (
 type Env string
 
 const (
-	PRD   Env = "production"
-	DEV   Env = "development"
-	LOCAL Env = "local"
+	PROD    Env = "production"
+	DEV     Env = "development"
+	LOCAL   Env = "local"
+	TEST    Env = "test"
+	STAGING Env = "staging"
 )
 
 type Config struct {
@@ -46,6 +48,11 @@ type Application interface {
 	iocontainer.Container
 	Fiber() *fiber.App
 	IsProduction() bool
+	IsDevelopment() bool
+	IsStaging() bool
+	IsLocal() bool
+	IsTest() bool
+	IsEnv(env string) bool
 	Config() Config
 	Middleware(fn MiddlewareRegister)
 	Route(prefix string, fn RouterGroup, name ...string)
@@ -144,7 +151,7 @@ func (a *app) GetRouters() gollection.Collection[Router] {
 // 컨테이너가 가지고 있는 정보 콘솔 로그로 보여준다.
 func (a *app) Status() {
 	if a.IsProduction() {
-		log.Printf("'AppEnv' is %s", PRD)
+		log.Printf("'AppEnv' is %s", PROD)
 		return
 	}
 
@@ -199,7 +206,27 @@ func (a *app) Fiber() *fiber.App {
 }
 
 func (a *app) IsProduction() bool {
-	return a.config.Env == PRD
+	return a.config.Env == PROD
+}
+
+func (a *app) IsDevelopment() bool {
+	return a.config.Env == DEV
+}
+
+func (a *app) IsStaging() bool {
+	return a.config.Env == STAGING
+}
+
+func (a *app) IsLocal() bool {
+	return a.config.Env == LOCAL
+}
+
+func (a *app) IsTest() bool {
+	return a.config.Env == TEST
+}
+
+func (a *app) IsEnv(env string) bool {
+	return string(a.config.Env) == env
 }
 
 func (a *app) Instances() map[reflect.Type]interface{} {
