@@ -18,7 +18,7 @@ func OverrideDefaultErrorHandler(appEnv app.Env) fiber.ErrorHandler {
 		logger := log.GetLogger()
 
 		logger.Errorln(err)
-		if appEnv != app.PRD {
+		if appEnv != app.PROD {
 			debug.PrintStack()
 		}
 
