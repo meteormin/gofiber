@@ -38,7 +38,7 @@ func ErrorHandler(appEnv app.Env) fiber.Handler {
 		logger := log.GetLogger()
 
 		logger.Errorln(err)
-		if appEnv != app.PRD {
+		if appEnv != app.PROD {
 			debug.PrintStack()
 		}
 
