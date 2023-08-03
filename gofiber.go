@@ -12,6 +12,7 @@ import (
 	"github.com/miniyus/gofiber/jobqueue"
 	cLog "github.com/miniyus/gofiber/log"
 	"github.com/miniyus/gofiber/pkg/validation"
+	"github.com/miniyus/gofiber/schedule"
 	"github.com/miniyus/gofiber/utils"
 	"github.com/miniyus/gollection"
 	"github.com/miniyus/gorm-extension/gormhooks"
@@ -40,8 +41,8 @@ func New(configs ...config.Configs) app.Application {
 	a.Register(bind(&cfg))
 	// register middlewares
 	a.Middleware(middleware)
-	// register boot
-	a.Register(boot)
+	// boot
+	a.Boot(boot)
 
 	return a
 }
@@ -135,4 +136,28 @@ func boot(a app.Application) {
 
 	validation.RegisterValidation(cfg.Validation.Validations)
 	validation.RegisterTranslation(cfg.Validation.Translations)
+}
+
+func App() app.Application {
+	return app.App()
+}
+
+func DB(name ...string) *gorm.DB {
+	return database.GetDB(name...)
+}
+
+func Config() config.Configs {
+	return config.GetConfigs()
+}
+
+func Queue() jobqueue.Container {
+	return jobqueue.GetContainer()
+}
+
+func Log(name ...string) *zap.SugaredLogger {
+	return cLog.GetLogger(name...)
+}
+
+func Schedule() *schedule.Worker {
+	return schedule.GetWorker()
 }
