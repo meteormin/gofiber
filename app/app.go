@@ -5,6 +5,7 @@ import (
 	"github.com/miniyus/gofiber/pkg/iocontainer"
 	"github.com/miniyus/gollection"
 	"log"
+	"net/http"
 	"reflect"
 	"strconv"
 )
@@ -43,6 +44,7 @@ type MiddlewareRegister func(fiber *fiber.App, app Application)
 
 type Application interface {
 	iocontainer.Container
+	Fiber() *fiber.App
 	IsProduction() bool
 	Config() Config
 	Middleware(fn MiddlewareRegister)
@@ -52,6 +54,7 @@ type Application interface {
 	Run()
 	Register(fn Register)
 	Boot(fn Boot)
+	Test(req *http.Request, msTimeout ...int) (*http.Response, error)
 }
 
 var a Application
@@ -191,6 +194,10 @@ func (a *app) Run() {
 	a.isRun = true
 }
 
+func (a *app) Fiber() *fiber.App {
+	return a.fiber
+}
+
 func (a *app) IsProduction() bool {
 	return a.config.Env == PRD
 }
@@ -209,4 +216,8 @@ func (a *app) Resolve(resolver interface{}) interface{} {
 
 func (a *app) Singleton(instance interface{}) {
 	a.Container.Singleton(instance)
+}
+
+func (a *app) Test(req *http.Request, msTimeout ...int) (*http.Response, error) {
+	return a.fiber.Test(req, msTimeout...)
 }
