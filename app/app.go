@@ -173,7 +173,7 @@ func (a *app) Status() {
 
 }
 
-func (a *app) bootstrap() {
+func (a *app) Bootstrap() {
 	a.registered.For(func(v Register, i int) {
 		v(a)
 	})
@@ -189,7 +189,7 @@ func (a *app) Run() {
 		return
 	}
 
-	a.bootstrap()
+	a.Bootstrap()
 
 	port := a.config.Port
 	err := a.fiber.Listen(":" + strconv.Itoa(port))
