@@ -64,7 +64,7 @@ func Validate(data interface{}) map[string]string {
 	fields := map[string]string{}
 	errs := validate.Struct(data)
 
-	if errs != nil && !errors.Is(errs, &validator.InvalidValidationError{}) {
+	if errs != nil || !errors.Is(errs, &validator.InvalidValidationError{}) {
 		for _, err := range errs.(validator.ValidationErrors) {
 			if err != nil {
 				if transErr == nil && trans != nil {
