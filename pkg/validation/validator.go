@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"errors"
 	"github.com/go-playground/locales"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
@@ -63,7 +64,7 @@ func Validate(data interface{}) map[string]string {
 	fields := map[string]string{}
 	errs := validate.Struct(data)
 
-	if errs != nil {
+	if errs != nil && !errors.Is(errs, &validator.InvalidValidationError{}) {
 		for _, err := range errs.(validator.ValidationErrors) {
 			if err != nil {
 				if transErr == nil && trans != nil {
@@ -75,6 +76,9 @@ func Validate(data interface{}) map[string]string {
 		}
 
 		return fields
+	} else {
+		errMsg := errs.Error()
+		fields["InvalidValidationError"] = errMsg
 	}
 
 	return nil
