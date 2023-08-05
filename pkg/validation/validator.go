@@ -64,22 +64,25 @@ func Validate(data interface{}) map[string]string {
 	fields := map[string]string{}
 	errs := validate.Struct(data)
 
-	if errs != nil || !errors.Is(errs, &validator.InvalidValidationError{}) {
-		for _, err := range errs.(validator.ValidationErrors) {
-			if err != nil {
-				if transErr == nil && trans != nil {
-					fields[err.Field()] = err.Translate(trans)
-				} else {
-					fields[err.Field()] = err.Error()
-				}
-			}
-		}
-
-		return fields
-	} else {
-		errMsg := errs.Error()
-		fields["InvalidValidationError"] = errMsg
+	if errs == nil {
+		return nil
 	}
 
-	return nil
+	var invalidValidationError *validator.InvalidValidationError
+	if errors.As(errs, &invalidValidationError) {
+		errMsg := errs.Error()
+		fields["InvalidValidationError"] = errMsg
+		return fields
+	}
+
+	for _, err := range errs.(validator.ValidationErrors) {
+		if err != nil {
+			if transErr == nil && trans != nil {
+				fields[err.Field()] = err.Translate(trans)
+			} else {
+				fields[err.Field()] = err.Error()
+			}
+		}
+	}
+	return fields
 }

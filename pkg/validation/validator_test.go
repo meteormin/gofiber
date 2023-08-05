@@ -1,12 +1,9 @@
 package validation_test
 
 import (
-	"fmt"
 	"github.com/go-playground/assert/v2"
-	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/miniyus/gofiber/pkg/validation"
 	"log"
 	"testing"
@@ -82,26 +79,4 @@ func TestValidate(t *testing.T) {
 
 	t.Log(validated)
 	assert.Equal(t, validated, testValidated)
-}
-
-func TestValidationTranslate(t *testing.T) {
-	data := TestData{
-		Id: "test",
-	}
-	locale := en.New()
-	uni := ut.New(locale, locale)
-	trans, _ := uni.GetTranslator("en")
-	val := validator.New()
-	err := enTranslations.RegisterDefaultTranslations(val, trans)
-	if err != nil {
-		t.Error(err)
-	}
-
-	err = val.Struct(data)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-
-		fmt.Println(errs.Translate(trans))
-	}
-
 }
