@@ -61,6 +61,7 @@ type Application interface {
 	Run()
 	Register(fn Register)
 	Boot(fn Boot)
+	Bootstrap()
 	Test(req *http.Request, msTimeout ...int) (*http.Response, error)
 }
 
