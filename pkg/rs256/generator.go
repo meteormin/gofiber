@@ -13,6 +13,7 @@ import (
 	"path"
 )
 
+// Generate generate and save RSA 256 key files
 func Generate(savePath string, bitSize int) {
 	reader := rand.Reader
 
@@ -28,6 +29,7 @@ func Generate(savePath string, bitSize int) {
 	savePublicPEMKey(path.Join(savePath, "public.pem"), publicKey)
 }
 
+// saveGobKey save gob key(*.key file)
 func saveGobKey(fileName string, key interface{}) {
 	outFile, err := os.Create(fileName)
 	checkError(err)
@@ -43,6 +45,7 @@ func saveGobKey(fileName string, key interface{}) {
 	checkError(err)
 }
 
+// savePEMKey save private pem key(*.pem)
 func savePEMKey(fileName string, key *rsa.PrivateKey) {
 	outFile, err := os.Create(fileName)
 	checkError(err)
@@ -62,6 +65,7 @@ func savePEMKey(fileName string, key *rsa.PrivateKey) {
 	checkError(err)
 }
 
+// savePublicPEMKey save public pem key(*.pem)
 func savePublicPEMKey(fileName string, pubKey rsa.PublicKey) {
 	asn1Bytes, err := asn1.Marshal(pubKey)
 	checkError(err)
@@ -84,6 +88,7 @@ func savePublicPEMKey(fileName string, pubKey rsa.PublicKey) {
 	checkError(err)
 }
 
+// checkError 예외 처리
 func checkError(err error) {
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
@@ -91,6 +96,7 @@ func checkError(err error) {
 	}
 }
 
+// GobDecode 생성된 Gob 키 파일 Decoding
 func GobDecode(filename string) map[string]string {
 	var pubKey map[string]string
 
@@ -109,6 +115,7 @@ func GobDecode(filename string) map[string]string {
 	return pubKey
 }
 
+// PrivatePemDecode 생성된 Private PEM 키 Decoding
 func PrivatePemDecode(filename string) *rsa.PrivateKey {
 	privatePem, err := os.ReadFile(filename)
 	if err != nil {
@@ -121,6 +128,7 @@ func PrivatePemDecode(filename string) *rsa.PrivateKey {
 	return privateKey
 }
 
+// PublicPemDecode 생성된 public PEM 키 Decoding
 func PublicPemDecode(filename string) *rsa.PublicKey {
 	publicPem, err := os.ReadFile(filename)
 	publicKey := new(rsa.PublicKey)

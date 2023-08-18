@@ -3,35 +3,41 @@ package validation
 import (
 	"errors"
 	"github.com/go-playground/locales"
-	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
 )
 
 var validate *validator.Validate
-var transErr error
-var trans ut.Translator
+var uni *ut.UniversalTranslator
 
-func init() {
-	validate = newValidator()
+var transErr error
+
+func Validator() *validator.Validate {
+	return validate
 }
 
-func newValidator() *validator.Validate {
-	v := validator.New()
-	trans = newTranslator(en.New())
-	if trans != nil {
-		transErr = enTranslations.RegisterDefaultTranslations(v, trans)
+func NewValidator(fallbackLocale locales.Translator, supportedLocales ...locales.Translator) *validator.Validate {
+	validate = validator.New()
+	defaultTranslator := newTranslator(fallbackLocale, supportedLocales...)
+	if defaultTranslator != nil {
+		transErr = enTranslations.RegisterDefaultTranslations(validate, defaultTranslator)
 		if transErr != nil {
 			panic(transErr)
 		}
 	}
 
-	return v
+	return validate
 }
 
-func newTranslator(locale locales.Translator) (t ut.Translator) {
-	uni := ut.New(locale, locale)
+func checkValidator() {
+	if validate == nil {
+		panic("must create validator, use validation.NewValidator() function")
+	}
+}
+
+func newTranslator(fallbackLocale locales.Translator, supportedLocales ...locales.Translator) (t ut.Translator) {
+	uni = ut.New(fallbackLocale, supportedLocales...)
 	t, found := uni.GetTranslator("en")
 	if found {
 		return t
@@ -41,6 +47,7 @@ func newTranslator(locale locales.Translator) (t ut.Translator) {
 }
 
 func RegisterValidation(tags []Tag) {
+	checkValidator()
 	for _, v := range validations(tags) {
 		_ = validate.RegisterValidation(
 			v.tag,
@@ -50,17 +57,24 @@ func RegisterValidation(tags []Tag) {
 }
 
 func RegisterTranslation(tags []TranslationTag) {
-	for _, t := range translations(trans, tags) {
+	checkValidator()
+
+	for _, t := range translations(tags) {
+		translator, _ := uni.GetTranslator(t.locale)
 		_ = validate.RegisterTranslation(
 			t.tag,
-			t.trans,
+			translator,
 			t.registerFn,
 			t.translationFn,
 		)
 	}
 }
 
-func Validate(data interface{}) map[string]string {
+func Validate(data interface{}, locale ...string) map[string]string {
+	checkValidator()
+
+	translator, _ := uni.FindTranslator(locale...)
+
 	fields := map[string]string{}
 	errs := validate.Struct(data)
 
@@ -77,8 +91,8 @@ func Validate(data interface{}) map[string]string {
 
 	for _, err := range errs.(validator.ValidationErrors) {
 		if err != nil {
-			if transErr == nil && trans != nil {
-				fields[err.Field()] = err.Translate(trans)
+			if transErr == nil && translator != nil {
+				fields[err.Field()] = err.Translate(translator)
 			} else {
 				fields[err.Field()] = err.Error()
 			}

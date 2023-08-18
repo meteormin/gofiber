@@ -1,10 +1,19 @@
 package config
 
 import (
+	"github.com/go-playground/locales/en"
+	"github.com/go-playground/locales/ko"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/miniyus/gofiber/pkg/validation"
 )
+
+func init() {
+	enLocale := en.New()
+	koLocale := ko.New()
+
+	validation.NewValidator(enLocale, koLocale)
+}
 
 type Validation struct {
 	Validations  []validation.Tag
@@ -19,20 +28,14 @@ func validationConfig() Validation {
 }
 
 func validations() []validation.Tag {
-	return []validation.Tag{
-		{
-			Tag: "custom_test",
-			Fn: func(fl validator.FieldLevel) bool {
-				return fl.Field().String() == "test"
-			},
-		},
-	}
+	return []validation.Tag{}
 }
 
 func translations() []validation.TranslationTag {
 	return []validation.TranslationTag{
 		{
-			Tag: "required",
+			Locale: "ko",
+			Tag:    "required",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("required", "{0} 필드는 필수 입니다.", true)
 			},
@@ -42,7 +45,8 @@ func translations() []validation.TranslationTag {
 			},
 		},
 		{
-			Tag: "email",
+			Locale: "ko",
+			Tag:    "email",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("email", "{0} 필드는 Email 형식이어야 합니다.", true)
 			},
@@ -52,7 +56,8 @@ func translations() []validation.TranslationTag {
 			},
 		},
 		{
-			Tag: "url",
+			Locale: "ko",
+			Tag:    "url",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("url", "{0} 필드는 URL 형식이어야 합니다.", true)
 			},
@@ -62,7 +67,8 @@ func translations() []validation.TranslationTag {
 			},
 		},
 		{
-			Tag: "dir",
+			Locale: "ko",
+			Tag:    "dir",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("dir", "{0} 필드는 디렉토리 경로 형식이어야 합니다.", true)
 			},
@@ -72,7 +78,8 @@ func translations() []validation.TranslationTag {
 			},
 		},
 		{
-			Tag: "boolean",
+			Locale: "ko",
+			Tag:    "boolean",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("boolean", "{0} 필드는 boolean 타입이어야 합니다.", true)
 			},
@@ -82,7 +89,8 @@ func translations() []validation.TranslationTag {
 			},
 		},
 		{
-			Tag: "eqfield",
+			Locale: "ko",
+			Tag:    "eqfield",
 			RegisterFn: func(ut ut.Translator) error {
 				return ut.Add("eqfield", "{0} 필드는 {1} 필드와 일치해야 합니다.", true)
 			},

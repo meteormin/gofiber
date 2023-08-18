@@ -6,7 +6,7 @@ import (
 )
 
 // Container
-// 일종의 IoC 컨테이너, fiber.App 객체를 담고 있다.
+// 일종의 IoC 컨테이너
 type Container interface {
 	Instances() map[reflect.Type]interface{}
 	Singleton(instance interface{})
