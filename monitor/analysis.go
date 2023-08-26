@@ -184,8 +184,8 @@ func (ai *AnalysisInfo) Marshal(indent bool) (string, error) {
 }
 
 type ResponseWrapper struct {
-	ApplicationInfo *AnalysisInfo
 	Links           []string `json:"_links"`
+	ApplicationInfo *AnalysisInfo
 }
 
 func makeFullUrl(c *fiber.Ctx, endPoint string) string {
