@@ -13,14 +13,14 @@ import (
 
 type Configs struct {
 	App            app.Config
-	Logger         fLoggerMiddleware.Config
-	Recover        fRecover.Config
+	Logger         fLoggerMiddleware.Config `json:"-"`
+	Recover        fRecover.Config          `json:"-"`
 	CustomLogger   map[string]cLog.Config
 	Database       map[string]database.Config
 	Path           Path
-	RedisConfig    *redis.Options
-	JobQueueConfig worker.DispatcherOption
-	Validation     Validation
+	RedisConfig    *redis.Options          `json:"-"`
+	JobQueueConfig worker.DispatcherOption `json:"-"`
+	Validation     Validation              `json:"-"`
 }
 
 var cfg *Configs

@@ -19,6 +19,7 @@ import (
 	worker "github.com/miniyus/goworker"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -62,10 +63,14 @@ func bind(configs *config.Configs) app.Register {
 			dbConfig.AutoMigrate = nil
 		}
 
-		db := database.New(dbConfig)
-		a.Singleton(func() *gorm.DB {
-			return db
-		})
+		db, err := database.New(dbConfig)
+		if err == nil {
+			a.Singleton(func() *gorm.DB {
+				return db
+			})
+		} else {
+			log.Printf("failed DB connect: %s", err)
+		}
 
 		var zLogger *zap.SugaredLogger
 		a.Bind(&zLogger, func() *zap.SugaredLogger {
@@ -80,8 +85,10 @@ func bind(configs *config.Configs) app.Register {
 			if ok {
 				v.Logger = cLog.New(wLoggerCfg)
 			} else {
-				a.Resolve(&zLogger)
-				v.Logger = zLogger
+				err = a.Resolve(&zLogger)
+				if err == nil {
+					v.Logger = zLogger
+				}
 			}
 
 			return v

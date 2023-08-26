@@ -1,6 +1,7 @@
 package iocontainer
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -11,7 +12,7 @@ type Container interface {
 	Instances() map[reflect.Type]interface{}
 	Singleton(instance interface{})
 	Bind(keyType interface{}, resolver interface{})
-	Resolve(keyType interface{}) interface{}
+	Resolve(keyType interface{}) error
 }
 
 // ContainerStruct
@@ -64,12 +65,12 @@ func (w *ContainerStruct) Bind(keyType interface{}, resolver interface{}) {
 }
 
 // Resolve get or create instance in container
-func (w *ContainerStruct) Resolve(keyType interface{}) interface{} {
+func (w *ContainerStruct) Resolve(keyType interface{}) error {
 	receiverType := reflect.TypeOf(keyType)
 
 	receiver, exists := w.instances[receiverType.Elem()]
 	if !exists {
-		panic(fmt.Sprintf("Can not find %v", receiverType.Elem()))
+		return errors.New(fmt.Sprintf("Can not find %v", receiverType.Elem()))
 	}
 
 	if reflect.TypeOf(receiver).Kind() == reflect.Func {
@@ -80,7 +81,7 @@ func (w *ContainerStruct) Resolve(keyType interface{}) interface{} {
 		reflect.ValueOf(keyType).Elem().Set(reflect.ValueOf(receiver))
 	}
 
-	return receiver
+	return nil
 }
 
 // call

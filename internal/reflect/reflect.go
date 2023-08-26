@@ -12,3 +12,12 @@ func HasField(data interface{}, field string) bool {
 
 	return true
 }
+
+func GetType(v interface{}) (res string) {
+	t := reflect.TypeOf(v)
+	for t.Kind() == reflect.Ptr {
+		t = t.Elem()
+		res += "*"
+	}
+	return res + t.Name()
+}

@@ -238,7 +238,7 @@ func (a *app) Bind(keyType interface{}, resolver interface{}) {
 	a.Container.Bind(keyType, resolver)
 }
 
-func (a *app) Resolve(resolver interface{}) interface{} {
+func (a *app) Resolve(resolver interface{}) error {
 	return a.Container.Resolve(resolver)
 }
 

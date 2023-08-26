@@ -75,7 +75,7 @@ func switchDriver(cfg Config) gorm.Dialector {
 
 // New
 // gorm.DB 객체 생성 함수
-func New(cfg Config) *gorm.DB {
+func New(cfg Config) (*gorm.DB, error) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		cfg.Logger,
@@ -88,7 +88,7 @@ func New(cfg Config) *gorm.DB {
 	})
 
 	if err != nil {
-		log.Fatalf("Failed: Connect DB %v", err)
+		return nil, err
 	}
 
 	log.Println("Success: Connect DB")
@@ -99,7 +99,7 @@ func New(cfg Config) *gorm.DB {
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatalf("Failed: Connect sqlDB %v", err)
+		return nil, err
 	}
 
 	sqlDB.SetConnMaxLifetime(cfg.MaxLifeTime)
@@ -108,5 +108,5 @@ func New(cfg Config) *gorm.DB {
 
 	connections[cfg.Name] = db
 
-	return db
+	return db, nil
 }
