@@ -16,7 +16,7 @@ type Configs struct {
 	Logger         fLoggerMiddleware.Config `json:"-"`
 	Recover        fRecover.Config          `json:"-"`
 	CustomLogger   map[string]cLog.Config
-	Database       map[string]database.Config
+	Database       map[string]database.Config `json:"-"`
 	Path           Path
 	RedisConfig    *redis.Options          `json:"-"`
 	JobQueueConfig worker.DispatcherOption `json:"-"`
