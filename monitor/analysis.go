@@ -197,8 +197,8 @@ func makeFullUrl(c *fiber.Ctx, endPoint string) string {
 
 func New(application app.Application) app.SubRouter {
 	return func(router fiber.Router) {
-		analysisInfo := NewAnalysis(application)
 		router.Get("/", func(c *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return c.Status(fiber.StatusOK).JSON(
 				ResponseWrapper{
 					ApplicationInfo: analysisInfo,
@@ -215,24 +215,31 @@ func New(application app.Application) app.SubRouter {
 			)
 		})
 		router.Get("/container", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.ContainerInfo)
 		})
 		router.Get("/configs", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.Config)
 		})
 		router.Get("/fiber", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.FiberInfo)
 		})
 		router.Get("/routes", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.RouterInfo)
 		})
 		router.Get("/databases", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.DatabaseInfo)
 		})
 		router.Get("/job-queues", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.JobQueueInfo)
 		})
 		router.Get("/schedule", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
 			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.SchedulerInfo)
 		})
 	}
