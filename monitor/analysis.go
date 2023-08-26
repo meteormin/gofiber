@@ -9,6 +9,7 @@ import (
 	"github.com/miniyus/gofiber/schedule"
 	"github.com/miniyus/goworker"
 	gormLogger "gorm.io/gorm/logger"
+	"path"
 	"reflect"
 	"time"
 )
@@ -182,11 +183,57 @@ func (ai *AnalysisInfo) Marshal(indent bool) (string, error) {
 	return string(marshal), nil
 }
 
+type ResponseWrapper struct {
+	ApplicationInfo *AnalysisInfo
+	Links           []string `json:"_links"`
+}
+
+func makeFullUrl(c *fiber.Ctx, endPoint string) string {
+	domain := c.Protocol() + "://" + c.Hostname()
+	url := path.Join(c.OriginalURL(), endPoint)
+
+	return domain + url
+}
+
 func New(application app.Application) app.SubRouter {
+	analysisInfo := NewAnalysis(application)
 	return func(router fiber.Router) {
-		router.Get("/", func(ctx *fiber.Ctx) error {
-			analysisInfo := NewAnalysis(application)
-			return ctx.Status(fiber.StatusOK).JSON(analysisInfo)
+		router.Get("/", func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusOK).JSON(
+				ResponseWrapper{
+					ApplicationInfo: analysisInfo,
+					Links: []string{
+						makeFullUrl(c, "container"),
+						makeFullUrl(c, "configs"),
+						makeFullUrl(c, "fiber"),
+						makeFullUrl(c, "routes"),
+						makeFullUrl(c, "databases"),
+						makeFullUrl(c, "job-queues"),
+						makeFullUrl(c, "schedule"),
+					},
+				},
+			)
+		})
+		router.Get("/container", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.ContainerInfo)
+		})
+		router.Get("/configs", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.Config)
+		})
+		router.Get("/fiber", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.FiberInfo)
+		})
+		router.Get("/routes", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.RouterInfo)
+		})
+		router.Get("/databases", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.DatabaseInfo)
+		})
+		router.Get("/job-queues", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.JobQueueInfo)
+		})
+		router.Get("/schedule", func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo.SchedulerInfo)
 		})
 	}
 }
