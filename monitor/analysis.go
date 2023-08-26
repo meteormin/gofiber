@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"encoding/json"
+	"github.com/gofiber/fiber/v2"
 	"github.com/miniyus/gofiber/app"
 	"github.com/miniyus/gofiber/config"
 	myReflect "github.com/miniyus/gofiber/internal/reflect"
@@ -178,4 +179,13 @@ func (ai *AnalysisInfo) Marshal(indent bool) (string, error) {
 	}
 
 	return string(marshal), nil
+}
+
+func New(application app.Application) app.SubRouter {
+	return func(router fiber.Router) {
+		router.Get("/", func(ctx *fiber.Ctx) error {
+			analysisInfo := NewAnalysis(application)
+			return ctx.Status(fiber.StatusOK).JSON(analysisInfo)
+		})
+	}
 }

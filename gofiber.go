@@ -126,16 +126,28 @@ func middleware(fiberApp *fiber.App, application app.Application) {
 // 등록 과정이 끝난 후 실행되는 로직이나 사전 작업
 func boot(a app.Application) {
 	var dispatcher worker.Dispatcher
-	a.Resolve(&dispatcher)
+	err := a.Resolve(&dispatcher)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var db *gorm.DB
-	a.Resolve(&db)
+	err = a.Resolve(&db)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var cfg *config.Configs
-	a.Resolve(&cfg)
+	err = a.Resolve(&cfg)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var zLogger *zap.SugaredLogger
-	a.Resolve(&zLogger)
+	err = a.Resolve(&zLogger)
+	if err != nil {
+		log.Println(err)
+	}
 
 	jobqueue.New(dispatcher)
 	jobqueue.RecordHistory(db)
