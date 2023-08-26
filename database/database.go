@@ -24,7 +24,7 @@ type Config struct {
 	Port        string
 	TimeZone    string
 	SSLMode     bool
-	AutoMigrate []interface{}
+	AutoMigrate []interface{} `json:"-"`
 	Logger      logger.Config
 	MaxIdleConn int
 	MaxOpenConn int
