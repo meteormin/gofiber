@@ -9,7 +9,6 @@ import (
 	"github.com/miniyus/gofiber/schedule"
 	"github.com/miniyus/goworker"
 	gormLogger "gorm.io/gorm/logger"
-	"log"
 	"reflect"
 	"time"
 )
@@ -75,7 +74,7 @@ func NewAnalysis(a app.Application) *AnalysisInfo {
 	instances := a.Instances()
 	containerInfos := make([]ContainerInfo, 0)
 
-	for key, inst := range instances {
+	for _, inst := range instances {
 		var bt BindType
 		reflectType := reflect.TypeOf(inst)
 		if reflectType.Kind() == reflect.Func {
@@ -83,11 +82,12 @@ func NewAnalysis(a app.Application) *AnalysisInfo {
 		} else {
 			bt = Singleton
 		}
-		log.Print(inst)
+
+		instType := myReflect.GetType(inst)
 		ci := ContainerInfo{
-			Key:          key.Name(),
+			Key:          instType,
 			BindType:     bt,
-			InstanceType: myReflect.GetType(inst),
+			InstanceType: instType,
 		}
 		containerInfos = append(containerInfos, ci)
 	}
