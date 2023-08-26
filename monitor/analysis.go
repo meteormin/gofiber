@@ -9,6 +9,7 @@ import (
 	"github.com/miniyus/gofiber/schedule"
 	"github.com/miniyus/goworker"
 	gormLogger "gorm.io/gorm/logger"
+	"log"
 	"reflect"
 	"time"
 )
@@ -82,7 +83,7 @@ func NewAnalysis(a app.Application) *AnalysisInfo {
 		} else {
 			bt = Singleton
 		}
-
+		log.Print(inst)
 		ci := ContainerInfo{
 			Key:          key.Name(),
 			BindType:     bt,
