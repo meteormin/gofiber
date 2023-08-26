@@ -196,8 +196,8 @@ func makeFullUrl(c *fiber.Ctx, endPoint string) string {
 }
 
 func New(application app.Application) app.SubRouter {
-	analysisInfo := NewAnalysis(application)
 	return func(router fiber.Router) {
+		analysisInfo := NewAnalysis(application)
 		router.Get("/", func(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusOK).JSON(
 				ResponseWrapper{
