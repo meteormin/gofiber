@@ -60,7 +60,11 @@ func switchDriver(cfg Config) gorm.Dialector {
 	case "sqlite", "":
 		dsn := ":memory:"
 		if cfg.Dbname != "" {
-			dsn = fmt.Sprintf("%s.db", cfg.Dbname)
+			path := "."
+			if cfg.Host != "" {
+				path = cfg.Host
+			}
+			dsn = fmt.Sprintf("%s/%s.db", path, cfg.Dbname)
 		}
 
 		return sqlite.Open(dsn)
