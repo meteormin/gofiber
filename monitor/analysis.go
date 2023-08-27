@@ -129,7 +129,6 @@ func New(application app.Application) app.SubRouter {
 							makeFullUrl(c, "databases"),
 							makeFullUrl(c, "job-queues"),
 							makeFullUrl(c, "schedule"),
-							makeFullUrl(c, "metrics"),
 						},
 					},
 				},
