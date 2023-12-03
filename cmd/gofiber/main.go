@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/miniyus/gofiber"
+	App "github.com/miniyus/gofiber/app"
+	"github.com/miniyus/gofiber/monitor"
 )
 
 // @title gofiber Swagger API Documentation
@@ -20,6 +22,9 @@ import (
 // @description				   Bearer token type
 func main() {
 	app := gofiber.New()
+	app.Route("/analysis", func(router App.Router, app App.Application) {
+		router.Route("/", monitor.New(app))
+	})
 	app.Status()
 	app.Run()
 }

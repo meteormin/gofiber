@@ -7,6 +7,7 @@ import (
 	_ "github.com/miniyus/gofiber/config/dotenv"
 	"github.com/miniyus/gofiber/database"
 	cLog "github.com/miniyus/gofiber/log"
+	"github.com/miniyus/gofiber/schedule"
 	worker "github.com/miniyus/goworker"
 	"github.com/redis/go-redis/v9"
 )
@@ -21,6 +22,7 @@ type Configs struct {
 	RedisConfig    *redis.Options          `json:"-"`
 	JobQueueConfig worker.DispatcherOption `json:"-"`
 	Validation     Validation              `json:"-"`
+	Scheduler      schedule.WorkerConfig   `json:"-"`
 }
 
 var cfg *Configs
@@ -36,6 +38,7 @@ func init() {
 		RedisConfig:    redisConfig(),
 		JobQueueConfig: jobQueueConfig(),
 		Validation:     validationConfig(),
+		Scheduler:      schedulerConfig(),
 	}
 }
 

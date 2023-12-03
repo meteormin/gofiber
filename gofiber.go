@@ -102,6 +102,21 @@ func bind(configs *config.Configs) app.Register {
 			return dispatcher
 		})
 
+		schedulerConfig := configs.Scheduler
+		schedulerLoggerCfg, ok := configs.CustomLogger["default_scheduler"]
+		if ok {
+			schedulerConfig.Logger = cLog.New(schedulerLoggerCfg)
+		} else {
+			err = a.Resolve(&zLogger)
+			if err == nil {
+				schedulerConfig.Logger = zLogger
+			}
+		}
+
+		scheduler := schedule.NewWorker(schedulerConfig)
+		a.Singleton(func() *schedule.Worker {
+			return scheduler
+		})
 	}
 }
 
@@ -110,7 +125,11 @@ func bind(configs *config.Configs) app.Register {
 func middleware(fiberApp *fiber.App, application app.Application) {
 	var cfg *config.Configs
 
-	application.Resolve(&cfg)
+	err := application.Resolve(&cfg)
+	if err != nil {
+		log.Fatalf("failed resolve config: %v", err)
+	}
+
 	fiberApp.Use(func(ctx *fiber.Ctx) error {
 		ctx.Locals(utils.StartTime, time.Now())
 		return ctx.Next()
@@ -128,33 +147,35 @@ func boot(a app.Application) {
 	var dispatcher worker.Dispatcher
 	err := a.Resolve(&dispatcher)
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed resolve dispatcher: %v", err)
 	}
 
 	var db *gorm.DB
 	err = a.Resolve(&db)
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed resolve db: %v", err)
 	}
 
 	var cfg *config.Configs
 	err = a.Resolve(&cfg)
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed resolve config: %v", err)
 	}
 
 	var zLogger *zap.SugaredLogger
 	err = a.Resolve(&zLogger)
 	if err != nil {
-		log.Println(err)
+		log.Printf("failed resolve logger: %v", err)
 	}
+
+	validation.NewValidator(cfg.Validation.FallbackLocale, cfg.Validation.SupportedLocales...)
+	validation.RegisterValidation(cfg.Validation.Validations)
+	validation.RegisterTranslation(cfg.Validation.Translations)
 
 	jobqueue.New(dispatcher)
 	jobqueue.RecordHistory(db)
-	gormhooks.Register(&entity.JobHistory{})
 
-	validation.RegisterValidation(cfg.Validation.Validations)
-	validation.RegisterTranslation(cfg.Validation.Translations)
+	gormhooks.Register(&entity.JobHistory{})
 }
 
 func App() app.Application {

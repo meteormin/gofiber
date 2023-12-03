@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/go-playground/locales"
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/ko"
 	ut "github.com/go-playground/universal-translator"
@@ -8,20 +9,20 @@ import (
 	"github.com/miniyus/gofiber/pkg/validation"
 )
 
-func init() {
-	enLocale := en.New()
-	koLocale := ko.New()
-
-	validation.NewValidator(enLocale, koLocale)
-}
-
 type Validation struct {
-	Validations  []validation.Tag
-	Translations []validation.TranslationTag
+	FallbackLocale   locales.Translator
+	SupportedLocales []locales.Translator
+	Validations      []validation.Tag
+	Translations     []validation.TranslationTag
 }
 
 func validationConfig() Validation {
 	return Validation{
+		FallbackLocale: en.New(),
+		SupportedLocales: []locales.Translator{
+			ko.New(),
+			en.New(),
+		},
 		Validations:  validations(),
 		Translations: translations(),
 	}

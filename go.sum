@@ -80,6 +80,8 @@ github.com/golang-jwt/jwt/v4 v4.5.0/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
+github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/jackc/chunkreader v1.0.0/go.mod h1:RT6O25fNZIuasFJRyZ4R/Y2BbhasbmZXF9QQ7T3kePo=
 github.com/jackc/chunkreader/v2 v2.0.0/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=
 github.com/jackc/chunkreader/v2 v2.0.1/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=
@@ -180,6 +182,8 @@ github.com/miniyus/gollection v1.0.0 h1:pAN6mFhDkUuDHIuIFtTZVYb+GXQ+slkpxwMt/txd
 github.com/miniyus/gollection v1.0.0/go.mod h1:3FlPgGHgpBzcPGPfzsVeMI6+sGVBnF7Ns/f9YHtrOmc=
 github.com/miniyus/gollection v1.1.0 h1:E36nQsFAEnHLCB8aOvrpecrOgs5NRKAj5J01lgpMu6o=
 github.com/miniyus/gollection v1.1.0/go.mod h1:wQ2WTBIvZi4RbuTjQgYfsS4kNEdmlkuu2TLulDuzosc=
+github.com/miniyus/gollection v1.1.1 h1:MA6RBiZUR1E+1eYiBMTaOaG3NwoQ7qC8+8Wg6NcPxSI=
+github.com/miniyus/gollection v1.1.1/go.mod h1:wQ2WTBIvZi4RbuTjQgYfsS4kNEdmlkuu2TLulDuzosc=
 github.com/miniyus/gorm-extension v1.0.6/go.mod h1:fxUNVjqmouDN8aYCu7tpnhIuD864wXpHxuKMyUgAoZU=
 github.com/miniyus/gorm-extension v1.0.7 h1:EPUXNz55a3KcICrFEw31EVpBiNqPsk04hCrgHwsogQ4=
 github.com/miniyus/gorm-extension v1.0.7/go.mod h1:5hVhOHC59WutyAj2y717XTp1aV5lxs5/enXnv9tD5v8=
@@ -233,6 +237,8 @@ github.com/miniyus/goworker v1.1.19 h1:n/fM8sBgEyRoK3UYLF8o+xejCYyoyHLL95EBZia/C
 github.com/miniyus/goworker v1.1.19/go.mod h1:zjRbK+pP5u8Enb0OHnmy1YeJ8r0sKq4jFODDq1izTPo=
 github.com/miniyus/goworker v1.1.20 h1:f2RxEbTiVJnP6ITCWMEe5FneIy0dyZDaDfH5Lek//eU=
 github.com/miniyus/goworker v1.1.20/go.mod h1:zjRbK+pP5u8Enb0OHnmy1YeJ8r0sKq4jFODDq1izTPo=
+github.com/miniyus/goworker v1.1.24 h1:rYisSaVwTuuPTdxZ2bY+0VpjkoettWM19q3RAJjuMMU=
+github.com/miniyus/goworker v1.1.24/go.mod h1:JgFxI5FY6dw70mZWkprlV4LaQaHonQWymXsOk71lxaM=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/philhofer/fwd v1.1.1/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
 github.com/philhofer/fwd v1.1.2 h1:bnDivRJ1EWPjUIRXV5KfORO897HTbpFAQddBdE8t7Gw=
@@ -244,6 +250,8 @@ github.com/redis/go-redis/v9 v9.0.2 h1:BA426Zqe/7r56kCcvxYLWe1mkaz71LKF77GwgFzSx
 github.com/redis/go-redis/v9 v9.0.2/go.mod h1:/xDTe9EF1LM61hek62Poq2nzQSGj0xSrEtEHbBQevps=
 github.com/redis/go-redis/v9 v9.0.3 h1:+7mmR26M0IvyLxGZUHxu4GiBkJkVDid0Un+j4ScYu4k=
 github.com/redis/go-redis/v9 v9.0.3/go.mod h1:WqMKv5vnQbRuZstUwxQI195wHy+t4PuXDOjzMvcuQHk=
+github.com/redis/go-redis/v9 v9.3.0 h1:RiVDjmig62jIWp7Kk4XVLs0hzV6pI3PyTnnL0cnn0u0=
+github.com/redis/go-redis/v9 v9.3.0/go.mod h1:hdY0cQFCN4fnSYT6TkisLufl/4W5UIXyv0b/CLO2V2M=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.3/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
 github.com/rivo/uniseg v0.4.4 h1:8TfxU8dW6PdqD27gjM8MVNuicgxIjxpm4K7x4jp8sis=

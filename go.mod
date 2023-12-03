@@ -1,6 +1,6 @@
 module github.com/miniyus/gofiber
 
-go 1.20
+go 1.21
 
 require (
 	github.com/go-playground/assert/v2 v2.2.0
@@ -12,12 +12,12 @@ require (
 	github.com/gofiber/jwt/v3 v3.3.6
 	github.com/gofiber/swagger v0.1.9
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.4.0
 	github.com/joho/godotenv v1.5.1
-	github.com/miniyus/gollection v1.1.0
+	github.com/miniyus/gollection v1.1.1
 	github.com/miniyus/gorm-extension v1.1.12
-	github.com/miniyus/goworker v1.1.20
-	github.com/redis/go-redis/v9 v9.0.3
+	github.com/miniyus/goworker v1.1.24
+	github.com/redis/go-redis/v9 v9.3.0
 	github.com/swaggo/swag v1.8.11
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.7.0

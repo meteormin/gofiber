@@ -92,7 +92,7 @@ func (w *Worker) RemoveJob(name string) {
 }
 
 func (w *Worker) Stats() []JobStats {
-	var stats []JobStats
+	stats := make([]JobStats, 0)
 	for name, job := range w.Jobs() {
 		stats = append(stats, JobStats{
 			Name:            name,
@@ -114,17 +114,23 @@ func (w *Worker) statsJob() {
 	runningTime := time.Now().Sub(w.startAt)
 
 	log.Printf("[schedulerWorker] running time: %f sec", runningTime.Seconds())
-	w.logger.Infof("[schedulerWorker] running time: %f sec", runningTime.Seconds())
+	if w.logger != nil {
+		w.logger.Infof("[schedulerWorker] running time: %f sec", runningTime.Seconds())
+	}
 
 	for _, s := range stats {
 		marshal, err := s.Marshal()
 		if err != nil {
 			log.Printf("[%s] error: %s", logTag, err)
-			w.logger.Infof("[%s] error: %s", logTag, err)
+			if w.logger != nil {
+				w.logger.Infof("[%s] error: %s", logTag, err)
+			}
 			continue
 		}
 		log.Printf("[%s] %s", logTag, marshal)
-		w.logger.Infof("[%s] %s", logTag, marshal)
+		if w.logger != nil {
+			w.logger.Infof("[%s] %s", logTag, marshal)
+		}
 	}
 }
 
@@ -145,12 +151,17 @@ func (w *Worker) Run() {
 
 	w.startAt = time.Now()
 	log.Printf("[%s] Start... %s", logTag, w.startAt)
-	w.logger.Infof("[%s] Start... %s", logTag, w.startAt)
+	if w.logger != nil {
+		w.logger.Infof("[%s] Start... %s", logTag, w.startAt)
+	}
+
 	for {
 		select {
 		case <-w.quitChan:
 			log.Printf("[%s] Stop", logTag)
-			w.logger.Infof("[%s] Stop", logTag)
+			if w.logger != nil {
+				w.logger.Infof("[%s] Stop", logTag)
+			}
 			return
 		default:
 		}

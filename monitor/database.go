@@ -60,6 +60,7 @@ type gormInfo struct {
 }
 
 func newDbInfo(cfg map[string]database.Config, db *gorm.DB) databaseInfo {
+	dbInfo := databaseInfo{}
 	conn := make([]connectionInfo, 0)
 	for _, dbCfg := range cfg {
 		migrates := make([]string, 0)
@@ -83,11 +84,10 @@ func newDbInfo(cfg map[string]database.Config, db *gorm.DB) databaseInfo {
 		})
 	}
 
-	gormCfg := db.Config
-
-	return databaseInfo{
-		Connections: conn,
-		Gorm: gormInfo{
+	gormInfoVar := gormInfo{}
+	if db != nil && db.Config != nil {
+		gormCfg := db.Config
+		gormInfoVar = gormInfo{
 			SkipDefaultTransaction:                   gormCfg.SkipDefaultTransaction,
 			NamingStrategy:                           gormCfg.NamingStrategy,
 			FullSaveAssociations:                     gormCfg.FullSaveAssociations,
@@ -105,6 +105,11 @@ func newDbInfo(cfg map[string]database.Config, db *gorm.DB) databaseInfo {
 			ClauseBuilders:                           gormCfg.ClauseBuilders,
 			ConnPool:                                 gormCfg.ConnPool,
 			Plugins:                                  gormCfg.Plugins,
-		},
+		}
 	}
+
+	dbInfo.Connections = conn
+	dbInfo.Gorm = gormInfoVar
+
+	return dbInfo
 }

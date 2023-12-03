@@ -95,13 +95,13 @@ func (jc *JobContainer) SyncDispatch(jobId string) (*goworker.Job, error) {
 }
 
 func (jc *JobContainer) Status() goworker.StatusWorkerInfo {
-	status := dispatcher.Status()
-	var containerStats goworker.StatusWorkerInfo
-	for _, worker := range status.Workers {
-		if worker.Name == jc.worker.Name {
-			containerStats = worker
-		}
+	w := dispatcher.GetWorker(jc.worker.Name)
+	return goworker.StatusWorkerInfo{
+		Name:        w.GetName(),
+		IsRunning:   w.IsRunning(),
+		IsPending:   w.IsPending(),
+		JobCount:    w.JobCount(),
+		MaxJobCount: w.MaxJobCount(),
+		Queue:       w.Queue().Jobs(),
 	}
-
-	return containerStats
 }
